@@ -123,29 +123,29 @@ def load_model(model_file):
 
 # loads all models
 
-try:
-    ## loads classifiers
-    MNB_word_unigram_model, word_unigram_vectorizer = load_model ("./app/static/models/MNB_Final_model_word_1-gram.pckl")
-    MNB_word_3gram_model, word_3gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_word_3-gram.pckl")
 
-    SVM_word_unigram_model, word_unigram_vectorizer = load_model ("./app/static/models/SVM_Final_model_word_1-gram.pckl")
-    SVM_word_3gram_model, word_3gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_word_3-gram.pckl")
+## loads classifiers
+MNB_word_unigram_model, word_unigram_vectorizer = load_model ("./app/static/models/MNB_Final_model_word_1-gram.pckl")
+MNB_word_3gram_model, word_3gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_word_3-gram.pckl")
 
-    MNB_char_3gram_model, char_3gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_char_3-gram.pckl")
-    MNB_char_5gram_model, char_5gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_char_5-gram.pckl")
+SVM_word_unigram_model, word_unigram_vectorizer = load_model ("./app/static/models/SVM_Final_model_word_1-gram.pckl")
+SVM_word_3gram_model, word_3gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_word_3-gram.pckl")
 
-    SVM_char_3gram_model, char_3gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_char_3-gram.pckl")
-    SVM_char_5gram_model, char_5gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_char_5-gram.pckl")
+MNB_char_3gram_model, char_3gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_char_3-gram.pckl")
+MNB_char_5gram_model, char_5gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_char_5-gram.pckl")
 
-    ## loads vectorizers
-    # word_unigram_vectorizer = load_model("./app/static/models/word_unigram_vectorizer.pckl")
-    # word_bigram_vectorizer = load_model("./app/static/models/word_bigram_vectorizer.pckl")
-    # char_3gram_vectorizer = load_model("./app/static/models/char_3gram_vectorizer.pckl")
-    # char_5gram_vectorizer = load_model("./app/static/models/char_5gram_vectorizer.pckl")
+SVM_char_3gram_model, char_3gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_char_3-gram.pckl")
+SVM_char_5gram_model, char_5gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_char_5-gram.pckl")
 
-    print ("All models loaded")
-except:
-    print ("models not found")
+## loads vectorizers
+# word_unigram_vectorizer = load_model("./app/static/models/word_unigram_vectorizer.pckl")
+# word_bigram_vectorizer = load_model("./app/static/models/word_bigram_vectorizer.pckl")
+# char_3gram_vectorizer = load_model("./app/static/models/char_3gram_vectorizer.pckl")
+# char_5gram_vectorizer = load_model("./app/static/models/char_5gram_vectorizer.pckl")
+
+print ("All models loaded")
+
+print ("models not found")
 
 @app.route('/')
 @app.route('/index')
