@@ -52,13 +52,12 @@ function detect_offense() {
       var level = response['level']
       console.log(level);
       if (level == "NOT"){
-        var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> No Offense </font> </strong> </td></tr>";
+        var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> Non Offensive </font> </strong> </td></tr>";
         $("table tbody").append(markup);
       }
 
-
       else {
-        var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> Obscene </font> </strong></td></tr>";
+        var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> Offensive </font> </strong></td></tr>";
         $("table tbody").append(markup);
       }
 

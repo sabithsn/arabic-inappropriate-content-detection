@@ -15,7 +15,7 @@
       
     
     <div class = "s001">
-      <h1> Welcome to Violence Detection <br/></h1>
+      <h1> Arabic Offensive Language Detection <br/></h1>
       
     </div>
 
@@ -38,7 +38,7 @@
     <div class = "s002">
       <h2> Please choose classifier and enter your text </h2>
       <div class = "line-break"></div>
-      <p1> Your entered text will be run with the classifier selected to detect level of violence in the text. If no classifier is selected, character 5-gram model with Linear SVM classifier will be used. The model only works for Arabic text. </p1>
+      <p1> Your entered text will be run with the classifier selected to detect offensiveness in the text. If no classifier is selected, character 5-gram model with Linear SVM classifier will be used. The model only works for Arabic text. </p1>
     </div>
 
     <div class="s003">
@@ -71,7 +71,7 @@
             </div>
           </div>
           <div class="input-field second-wrap">
-            <input id="search" type="text" placeholder="Enter text for violence detection" />
+            <input id="search" type="text" placeholder="Enter text for offensive language detection" />
           </div>
           <div class="input-field third-wrap">
             <button class="btn-search" type="button" onclick="detect_offense()">
@@ -90,7 +90,7 @@
         <thead width = "20%">
             <tr>
                 <th width = "70%">Text</th>
-                <th width = "30%">Level of Violence</th>
+                <th width = "30%">Offensiveness</th>
             </tr>
         </thead>
         <tbody>
