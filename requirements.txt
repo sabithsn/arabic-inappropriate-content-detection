@@ -24,8 +24,4 @@ unicodecsv==0.14.1
 virtualenv==16.7.9
 Werkzeug==0.16.0
 wrapt==1.11.2
-Click==7.0
-Flask==1.1.1
 gunicorn==19.9.0
-Jinja2==2.10.1
-MarkupSafe==1.1.1
