@@ -57,7 +57,7 @@ function detect_offense() {
       }
 
       else {
-        var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> ofensive </font> </strong></td></tr>";
+        var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> offensive </font> </strong></td></tr>";
         $("table tbody").append(markup);
       }
 
