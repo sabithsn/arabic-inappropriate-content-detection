@@ -25,3 +25,4 @@ virtualenv==16.7.9
 Werkzeug==0.16.0
 wrapt==1.11.2
 gunicorn==19.9.0
+tweepy==3.8.0

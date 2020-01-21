@@ -829,7 +829,7 @@ legend {
 }
 
 .s002 {
-  min-height: 20vh;
+  min-height: 10vh;
   display: block;
   width: 90%;
   margin-left: 50px;
@@ -862,7 +862,7 @@ legend {
 
 .s003 form {
   width: 100%;
-  max-width: 1200px;
+  max-width: 80%;
   margin-bottom: 0;
   margin-top: -50px;
 }
@@ -1032,6 +1032,34 @@ legend {
   }
 }
 
+.s003 form .inner-form .input-field.fourth-wrap {
+  width: 200px;
+}
+.s003 form .inner-form .input-field.fourth-wrap .btn-random {
+  height: 100%;
+  width: 100%;
+  white-space: nowrap;
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  background: #45A3BF;
+  transition: all .2s ease-out, color .2s ease-out;
+}
+
+.s003 form .inner-form .input-field.fourth-wrap .btn-random svg {
+  width: 16px;
+}
+
+.s003 form .inner-form .input-field.fourth-wrap .btn-random:hover {
+  background: #70C0D8;
+}
+
+.s003 form .inner-form .input-field.fourth-wrap .btn-random:focus {
+  outline: 0;
+  box-shadow: none;
+}
+
+
 @media screen and (max-width: 767px) {
   .s003 form .inner-form {
     -ms-flex-wrap: wrap;
@@ -1078,13 +1106,14 @@ legend {
   padding: 15px;
 }
 .s004 table{
-    width: 80%;
+    width: 100%;
+    padding: 1rem;
     margin: auto;
     border-collapse: collapse;
     overflow: auto;
 }
 .s004 table, th, td{
-    border: 2px solid #010100;
+    border: 1px solid #660066;
 }
 .s004 table th, table td{
     padding: 5px;
@@ -1099,6 +1128,39 @@ legend {
   position: absolute;
   z-index: -1;
 }
+#indTable, #indTable2, #indTable4, #indTable5, #indTable7, #indTable8{
+  max-height:400px;
+  overflow-y:scroll;
+  width: 80%;
+  margin: auto;
+  /*border: 3px solid grey;*/
 
+}
 
+#indTable3, #indTable6, #indTable9{
+  max-height:400px;
+  overflow-y:scroll;
+  width: 80%;
+  margin: auto;
+  /*border: 3px solid grey;*/
+}
+
+#indTable, #indTable4, #indTable7 thead{
+  background-color: #F54040;
+}
+#indTable2, #indTable5, #indTable8 thead{
+  background-color: #5EBEF9;
+}
+
+#indTable3, #indTable6, #indTable9 thead{
+  background-color: #F5F9C5;
+}
+
+table tbody {
+  background-color: #FAFAFA;
+}
+
+.nav-tabs .nav-link {
+  border: 1px solid lightgrey !important;
+}
 

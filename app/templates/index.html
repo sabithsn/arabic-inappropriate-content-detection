@@ -4,41 +4,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="author" content="colorlib.com">
+    
+    <!-- FONTS -->
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
     <link href="{{ url_for('static', filename='css/main.css')}}" rel="stylesheet" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="{{ url_for('static', filename='js/choices.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/detect.js')}}"></script>
+    <link href="{{ url_for('static', filename='css/sidebar.css')}}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='css/simulation.css')}}" rel="stylesheet" />
+    <link href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" />
+
+    
+    <!-- JAVASCRIPT -->
+
 
   </head>
   <body>
       
-    
-    <div class = "s001">
-      <h1> Arabic Offensive Language Detection <br/></h1>
-      
+<!-- Top Bar -->
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div class="row container-fluid">
+      <div class="col-lg-4 col-sm-4 col-xs-12 text-left"></div>
+      <div class="col-lg-6 col-sm-6 col-xs-12 text-center" style="display: contents;">
+      <div class="collapse navbar-collapse text-center">
+        <ul class="navbar-nav text-center">
+          <li class="nav-item text-white text-right">
+            <h2 class="">Arabic Inappropriate Content Detection</h2>
+          </li>
+        </ul>
+      </div>
+    </div>
+    </div>
+</nav>
+
+
+  <!-- Frequently asked question (FAQ) section -->
+<section id="FAQ" class="masthead">
+  <div class="row container-fluid" id = "cols" >  
+
+    <div class="col-lg-12 col-sm-12 col-xs-12 text-left" id = "freespace" style = "padding:0rem; margin-top:3rem;" >
+      <ul class="nav nav-tabs" role="tablist" style = "width:100%;">
+        <li class="nav-item " >
+            <a class="nav-link active toptab addressClick"
+               data-toggle="pill" href="#pills-home" role="tab"
+               aria-controls="pills-home" aria-selected="true" id = "plots" style = "width:100%; text-align:center;" onclick="clear_table()" >Offense Detection</a>
+        </li>
+        <li class="nav-item ">
+            <a class="nav-link toptab addressClick"
+               data-toggle="pill" href="#pills-profile" role="tab"
+               aria-controls="pills-profile" aria-selected="false" id = "data" style = "width:100%; text-align:center;" onclick="clear_table()">Advertisement Detection</a>
+        </li>
+
+        <li class="nav-item ">
+            <a class="nav-link toptab addressClick"
+               data-toggle="pill" href="#hate-speech" role="tab"
+               aria-controls="hate-speech" aria-selected="false" id = "data" style = "width:100%; text-align:center;" onclick="clear_table()">Hate-speech Detection</a>
+        </li>
+      </ul>
     </div>
 
-    <!-- <div class = "s002">
-      <h2> Customize your own classifier </h2>
-      <p1> You can customize the classifier with your own training file. The training file needs to be in the same format as the AlJazeera dataset presented in http://www.aclweb.org/anthology/W17-3008. If training file is not provided then pretrained classifiers will be used. Training classifiers will replace old classifiers. </p1>
-      <p></p>
-      <div class="input-group">
 
-          <input type="file" id="fileupload" name="file" >
-
-      </div>
-      <p></p>
-
-      <button class="btn-search" type="button" onclick="upload()"> Train Classifiers </button>
-      <input type="text" id="txtTest" name="txtTest" value="Pretrained classifier in use. Upload file to train your own classifier." size="100" readonly/>
-
-    </div> -->
-
+    <div class="row container-fluid" id = "cols" style = "margin-left:0rem;">
+      <section style=" width:100%; max-width:100%; padding-top: 10px;">
+          <div class="container-fluid">
+            <div class="row">
+               <div class="col-lg-12">
+                  <div class="tab-content" id="pills-tabContent" style = "margin-top:2rem; margin-bottom:7rem;">
+                      <!-- Graph from chartjs  -->
+  <div class="tab-pane fade active show" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
     <div class = "s002">
       <h2> Please choose classifier and enter your text </h2>
       <div class = "line-break"></div>
-      <p1> Your entered text will be run with the classifier selected to detect offensiveness in the text. If no classifier is selected, character 5-gram model with Linear SVM classifier will be used. The model only works for Arabic text. </p1>
+      <p1> Your entered text will be run with the classifier selected to detect offensiveness in the text. 
+       If no classifier is selected, character 5-gram model with Linear SVM classifier will be used.
+       The model only works for Arabic text. </p1>
+    </div>
+    <div style = "width: 80%; margin: auto; padding-left: 1rem;">
+      <input id = "searchType" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
+      <br>
     </div>
 
     <div class="s003">
@@ -47,14 +93,14 @@
       <form name = "myForm" action="#" onsubmit="return false">
         <div class="inner-form">
           <div class="input-field first-wrap">
-            <div class="input-select">
+            <div class="input-select" style= "">
 
-                <select id="classifiername" data-trigger=""  name="choices-single-default">
+                <select id="classifiername" style = "height:100%" data-trigger=""  name="choices-single-default">
                     <option placeholder="">Choose Classifier</option>
-                    <option>Multinomial Naive Bayes (Word Unigram)</option>
+                    <!-- <option>Multinomial Naive Bayes (Word Unigram)</option> -->
                     <option>Multinomial Naive Bayes (Word 3-gram)</option>
-                    <option>Linear SVM (Word Unigram)</option>
-                    <option>Linear SVM (Word 3-gram)</option>
+                    <!-- <option>Linear SVM (Word Unigram)</option> -->
+                    <!-- <option>Linear SVM (Word 3-gram)</option> -->
                     <option>Linear SVM (Char 3-gram)</option>
                     <option>Linear SVM (Char 5-gram)</option>
 
@@ -73,32 +119,327 @@
           <div class="input-field second-wrap">
             <input id="search" type="text" placeholder="Enter text for offensive language detection" />
           </div>
+
           <div class="input-field third-wrap">
-            <button class="btn-search" type="button" onclick="detect_offense()">
+            <button class="btn-search" type="button" onclick="check_offense()">
               <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                 <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
               </svg>
             </button>
           </div>
+            <div class="input-field fourth-wrap">
+              <button class="btn-random" type="button" onclick="randomizeOff()">
+
+              Random Sample
+            </button>
+          </div>
         </div>
       </form>
-
     </div>
 
-    <div class="s004" >
-        <table style="overflow-x:auto;">
-        <thead width = "20%">
-            <tr>
-                <th width = "70%">Text</th>
-                <th width = "30%">Offensiveness</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-              <p1 id = "response"> </p1>
+    <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
+
+    <div class = "chart" style="max-width: 40%; margin: auto;"> 
+
+      <canvas id="pie-chart" width="800" height="450" style = "padding:0.5rem; border: 1px solid;"></canvas>
     </div>
 
+    <div class="s004" style="">
+      <p id = info1 style= "width: 80%;margin: auto; margin-top: 1rem;"> </p>
+      <div id = "indTable">
+        <table style="overflow-x:auto; width = 100%;">
+          <thead width = "20%">
+              <tr>
+                  <!-- <th width = "10%">Tweet No.</th> -->
+                  <th width = "80%">Text</th>
+                  <th width = "20%">Offensive?</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <p id = info2 style= "width: 80%;margin: auto; margin-top: 2rem;"> </p>
+      <div id = "indTable2" style="">
+        <table style="overflow-x:auto; width = 100%;">
+          <thead width = "20%">
+              <tr>
+                  <!-- <th width = "10%">Tweet No.</th> -->
+                  <th width = "80%">Text</th>
+                  <th width = "20%">Offensive?</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div id = "indTable3" style="">
+        <table style="overflow-x:auto; width = 100%;">
+          <thead width = "20%">
+              <tr>
+                  <!-- <th width = "10%">Tweet No.</th> -->
+                  <th width = "80%">Text</th>
+                  <th width = "20%">Offensive?</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <p1 id = "response"> </p1>
+    </div>
+  </div>
+
+  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+    <div class = "s002">
+      <h2> Please choose classifier and enter your text </h2>
+      <div class = "line-break"></div>
+      <p1> Your entered text will be run with the classifier selected to detect if it's an advertisement.
+
+      If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
+      The model only works for Arabic text. </p1>
+    </div>
+    <div style = "width: 80%; margin: auto; padding-left: 1rem;">
+      <input id = "searchType2" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
+      <br>
+    </div>
+    <div class="s003">
+      <form name = "myForm" action="#" onsubmit="return false">
+        <div class="inner-form">
+          <div class="input-field first-wrap">
+            <div class="input-select" style= "">
+
+                <select id="classifiername2" style = "height:100%" data-trigger=""  name="choices-single-default">
+                    <option placeholder="">Choose Classifier</option>
+                    <!-- <option>Multinomial Naive Bayes (Word Unigram)</option> -->
+                    <!-- <option>Multinomial Naive Bayes (Word 3-gram)</option> -->
+                    <!-- <option>Linear SVM (Word Unigram)</option> -->
+                    <!-- <option>Linear SVM (Word 3-gram)</option> -->
+                    <option>Linear SVM (Char 3-gram)</option>
+                    <!-- <option>Linear SVM (Char 5-gram)</option> -->
+
+                </select>
+                    <script>
+                      const choices = new Choices('[data-trigger]',
+                      {
+                        searchEnabled: false,
+                        itemSelectText: '',
+                      });
+
+                    </script>
+
+            </div>
+          </div>
+          <div class="input-field second-wrap">
+            <input id="search2" type="text" placeholder="Enter text for advertisement detection" />
+          </div>
+          <div class="input-field third-wrap">
+            <button class="btn-search" type="button" onclick="check_ad()">
+              <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="input-field fourth-wrap">
+              <button class="btn-random" type="button" onclick="randomizeAd()">
+
+              Random Sample
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
+
+    <div class = "chart" style="max-width: 40%; margin: auto;"> 
+      <canvas id="pie-chart2" width="800" height="450" style = "padding:0.5rem; border: 1px solid;"></canvas>
+    </div>
+    <div class="s004" style="">
+      <p id = info3 style= "width: 80%;margin: auto; margin-top: 1rem;"> </p>
+      <div id = "indTable4">
+        <table style="overflow-x:auto; width = 100%;">
+          <thead width = "20%">
+              <tr>
+                  <!-- <th width = "10%">Tweet No.</th> -->
+                  <th width = "80%">Text</th>
+                  <th width = "20%">Advertisement?</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <p id = info4 style= "width: 80%;margin: auto; margin-top: 2rem;"> </p>
+      <div id = "indTable5" style="">
+        <table style="overflow-x:auto; width = 100%;">
+          <thead width = "20%">
+              <tr>
+                  <!-- <th width = "10%">Tweet No.</th> -->
+                  <th width = "80%">Text</th>
+                  <th width = "20%">Advertisement?</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div id = "indTable6" style="">
+        <table style="overflow-x:auto; width = 100%;">
+          <thead width = "20%">
+              <tr>
+                  <!-- <th width = "10%">Tweet No.</th> -->
+                  <th width = "80%">Text</th>
+                  <th width = "20%">Advertisement?</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <p1 id = "response"> </p1>
+    </div>
+  </div>
+
+   <div class="tab-pane fade" id="hate-speech" role="tabpanel" aria-labelledby="hate-speech-tab">
+    <div class = "s002">
+      <h2> Please choose classifier and enter your text </h2>
+      <div class = "line-break"></div>
+      <p1> Your entered text will be run with the classifier selected to detect if it's hate speech.
+
+      If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
+      The model only works for Arabic text. </p1>
+    </div>
+    <div style = "width: 80%; margin: auto; padding-left: 1rem;">
+      <input id = "searchType3" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
+      <br>
+    </div>
+    <div class="s003">
+      <form name = "myForm" action="#" onsubmit="return false">
+        <div class="inner-form">
+          <div class="input-field first-wrap">
+            <div class="input-select" style= "">
+
+                <select id="classifiername3" style = "height:100%" data-trigger=""  name="choices-single-default">
+                    <option placeholder="">Choose Classifier</option>
+                    <!-- <option>Multinomial Naive Bayes (Word Unigram)</option> -->
+                    <!-- <option>Multinomial Naive Bayes (Word 3-gram)</option> -->
+                    <!-- <option>Linear SVM (Word Unigram)</option> -->
+                    <!-- <option>Linear SVM (Word 3-gram)</option> -->
+                    <option>Linear SVM (Char 3-gram)</option>
+                    <!-- <option>Linear SVM (Char 5-gram)</option> -->
+
+                </select>
+                    <script>
+                      const choices = new Choices('[data-trigger]',
+                      {
+                        searchEnabled: false,
+                        itemSelectText: '',
+                      });
+
+                    </script>
+
+            </div>
+          </div>
+          <div class="input-field second-wrap">
+            <input id="search3" type="text" placeholder="Enter text for advertisement detection" />
+          </div>
+          <div class="input-field third-wrap">
+            <button class="btn-search" type="button" onclick="check_hate()">
+              <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
+              </svg>
+            </button>
+          </div>
+          <div class="input-field fourth-wrap">
+              <button class="btn-random" type="button" onclick="randomizeHate()">
+
+              Random Sample
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
+
+    <div class = "chart" style="max-width: 40%; margin: auto;"> 
+      <canvas id="pie-chart3" width="800" height="450" style = "padding:0.5rem; border: 1px solid;"></canvas>
+    </div>
+    <div class="s004" style="">
+      <p id = info5 style= "width: 80%;margin: auto; margin-top: 1rem;"> </p>
+      <div id = "indTable7">
+        <table style="overflow-x:auto; width = 100%;">
+          <thead width = "20%">
+              <tr>
+                  <!-- <th width = "10%">Tweet No.</th> -->
+                  <th width = "80%">Text</th>
+                  <th width = "20%">Hate-speech?</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <p id = info6 style= "width: 80%;margin: auto; margin-top: 2rem;"> </p>
+      <div id = "indTable8" style="">
+        <table style="overflow-x:auto; width = 100%;">
+          <thead width = "20%">
+              <tr>
+                  <!-- <th width = "10%">Tweet No.</th> -->
+                  <th width = "80%">Text</th>
+                  <th width = "20%">Hate-speech?</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+
+      <div id = "indTable9" style="">
+        <table style="overflow-x:auto; width = 100%;">
+          <thead width = "20%">
+              <tr>
+                  <!-- <th width = "10%">Tweet No.</th> -->
+                  <th width = "80%">Text</th>
+                  <th width = "20%">Hate-speech?</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+        </table>
+      </div>
+      <p1 id = "response"> </p1>
+    </div>
+  </div>
+                  </div>
+                  </div>
+              </div> <!-- END row-->
+          </div> <!-- END container-->
+      </section>
+    </div>
+  </section> <!-- end of FAQ section -->
+</div>
+  <!-- Footer -->
+  <footer class="small text-left text-white-50" style = "padding-right:0rem; padding-bottom:2rem; max-height: 3rem;" id = "simfooter">
+    
+    <div class="row container-fluid">
+      <div class="col-lg-12 text-right"> Copyright &copy; 2019 QCRI </div>
+    </div>
+  </footer>
+    <script src="{{ url_for('static', filename='js/jquery/jquery.min.js')}}"></script>
+
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+
+
+    <script src="{{ url_for('static', filename='js/choices.js')}}"></script>
+    <script src="{{ url_for('static', filename='js/detect.js')}}"></script>
 
   </body>
   <!-- This templates was made by Colorlib (https://colorlib.com)
