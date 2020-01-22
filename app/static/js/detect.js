@@ -94,9 +94,9 @@ $(document).ready(function(){
   pieChart3 =  new Chart(document.getElementById("pie-chart3"), {
     type: 'pie',
     data: {
-      labels: ["Hate-speech", "Not Hate-speech"],
+      labels: ["Hate speech", "Not Hate speech"],
       datasets: [{
-        label: "Hate-speech distribution",
+        label: "Hate speech distribution",
         backgroundColor: ["#D8401F", "#1F70D8"],
         data: [0,0]
       }]
@@ -119,7 +119,7 @@ $(document).ready(function(){
   },
       title: {
         display: true,
-        text: 'Hate-speech distribution'
+        text: 'Hate speech distribution'
       }
     }
   });
@@ -557,19 +557,19 @@ function query_hate(){
         text = tweets[i];
         if (level == "NOT_HS"){
           count1 += 1;
-          var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not hate-speech </font> </strong> </td></tr>";
+          var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not hate speech </font> </strong> </td></tr>";
           $("#indTable8 table tbody").append(markup);
         }
 
         else {
           count2 += 1;
-          var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> hate-speech </font> </strong></td></tr>";
+          var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> hate speech </font> </strong></td></tr>";
           $("#indTable7 table tbody").append(markup);
         }
       }
 
-      $("#info5").html("Found <strong>" + count2.toString() + "</strong> hate-speech tweets out of <strong>" + (count1 + count2).toString() + "</strong> tweets.");
-      $("#info6").html("Found <strong>" + count1.toString() + "</strong> not hate-speech tweets out of <strong>" + (count1 + count2).toString() +  "</strong> tweets.");
+      $("#info5").html("Found <strong>" + count2.toString() + "</strong> hate speech tweets out of <strong>" + (count1 + count2).toString() + "</strong> tweets.");
+      $("#info6").html("Found <strong>" + count1.toString() + "</strong> not hate speech tweets out of <strong>" + (count1 + count2).toString() +  "</strong> tweets.");
 
       $("#info5").show();
       $("#info6").show();
@@ -626,12 +626,12 @@ function detect_hate() {
       console.log(level);
 
       if (level == "NOT_HS"){
-        var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not hate-speech </font> </strong> </td></tr>";
+        var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not hate speech </font> </strong> </td></tr>";
         $("#indTable9 table tbody").append(markup);
       }
 
       else {
-        var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> hate-speech </font> </strong></td></tr>";
+        var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> hate speech </font> </strong></td></tr>";
         $("#indTable9 table tbody").append(markup);
       }
 
