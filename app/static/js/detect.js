@@ -236,6 +236,8 @@ var hateSamples = [
 function clear_table(){
   $("#pie-chart").hide();
   $("#pie-chart2").hide();
+  $("#pie-chart3").hide();
+
   
   $("#indTable").hide();
   $('#indTable2').hide();
