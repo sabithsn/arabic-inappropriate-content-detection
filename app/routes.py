@@ -91,6 +91,7 @@ SVM_word_unigram_model_ad, word_unigram_vectorizer_ad = load_model ("./app/stati
 SVM_char_3gram_model_ad, char_3gram_vectorizer_ad = load_model ("./app/static/models/SVM_Add_model_char_3-gram.pckl")
 # SVM_char_5gram_model_ad, char_5gram_vectorizer_ad = load_model ("./app/static/models/SVM_Add_model_char_5-gram.pckl")
 
+SVM_char_5gram_model_hate, char_5gram_vectorizer_hate = load_model ("./app/static/models/SVM_Hate_model_char_5-gram.pckl")
 
 print ("All models loaded")
 
@@ -349,6 +350,119 @@ def queryOffense():
     # gets word n gram features and performs classification using
     if len (searched_tweets) == 0:
         return jsonify({"tweets":[], "levels": []})
+    # model chosen
+    n_gram_features = vectorizer.transform(searched_tweets)
+    predicted_labels = model.predict(n_gram_features)
+    # prediction = str(predicted_labels[0])
+    # print (prediction)
+
+    return jsonify({"tweets":list(searched_tweets), "levels": list(predicted_labels)})
+
+
+# detect hatespeech
+@app.route('/detectHate', methods=['POST'])
+def detectHate():
+    global char_5gram_vectorizer_hate
+
+    global SVM_char_5gram_model_hate
+    ''' detects level of offensiveness in text posted'''
+
+    # Gets text and classifier from client
+    user_query = [request.form["text"]]
+    classifier = request.form["model"]
+
+
+    # gets the model chosen by client
+    model = None
+    vectorizer = None
+
+    if (classifier == "Multinomial Naive Bayes (Word Unigram)"):
+        model = MNB_word_unigram_model_hate
+        vectorizer = word_unigram_vectorizer_hate
+    elif (classifier == "Multinomial Naive Bayes (Word Bigram)"):
+        model = MNB_word_3gram_model_hate
+        vectorizer = word_3gram_vectorizer_hate
+    elif (classifier == "Linear SVM (Word Unigram)"):
+        model = SVM_word_unigram_model_hate
+        vectorizer = word_unigram_vectorizer_hate
+    elif (classifier == "Linear SVM (Word 3-gram)"):
+        model = SVM_word_3gram_model_hate
+        vectorizer = word_3gram_vectorizer_hate
+    elif (classifier == "Linear SVM (Char 3-gram)"):
+        model = SVM_char_3gram_model_hate
+        vectorizer = char_3gram_vectorizer_hate
+    else:
+        model = SVM_char_5gram_model_hate
+        vectorizer = char_5gram_vectorizer_hate
+
+    # gets word n gram features and performs classification using
+    # model chosen
+    n_gram_features = vectorizer.transform(user_query)
+    predicted_labels = model.predict(n_gram_features)
+    prediction = str(predicted_labels[0])
+    print (prediction)
+
+    return jsonify({"level": prediction})
+
+@app.route('/queryHate', methods=['POST'])
+def queryHate():
+    global char_5gram_vectorizer_hate
+    global SVM_char_5gram_model_hate
+    ''' detects level of offensiveness in text posted'''
+
+    # Gets text and classifier from client
+    user_query = request.form["text"]
+    classifier = request.form["model"]
+
+
+    # gets the model chosen by client
+    model = None
+    vectorizer = None
+
+    if (classifier == "Multinomial Naive Bayes (Word Unigram)"):
+        model = MNB_word_unigram_model_hate
+        vectorizer = word_unigram_vectorizer_hate
+    elif (classifier == "Multinomial Naive Bayes (Word Bigram)"):
+        model = MNB_word_3gram_model_hate
+        vectorizer = word_3gram_vectorizer_hate
+    elif (classifier == "Linear SVM (Word Unigram)"):
+        model = SVM_word_unigram_model_hate
+        vectorizer = word_unigram_vectorizer_hate
+    elif (classifier == "Linear SVM (Word 3-gram)"):
+        model = SVM_word_3gram_model_hate
+        vectorizer = word_3gram_vectorizer_hate
+    elif (classifier == "Linear SVM (Char 3-gram)"):
+        model = SVM_char_3gram_model_hate
+        vectorizer = char_3gram_vectorizer_hate
+    else:
+        model = SVM_char_5gram_model_hate
+        vectorizer = char_5gram_vectorizer_hate
+
+    ## searches twitter for query
+    searched_tweets = []
+    last_id = -1
+    while len(searched_tweets) < max_tweets:
+        # print ("pookey")
+        count = max_tweets - len(searched_tweets)
+        # count = 5
+        try:
+            new_tweets = api.search(q=user_query, count=count, max_id=str(last_id - 1), result_type = result_type, lang = "ar")
+            if not new_tweets:
+                break
+            searched_tweets.extend(new_tweets)
+            last_id = new_tweets[-1].id
+        except tweepy.TweepError as e:
+            print (e)
+            # depending on TweepError.code, one may want to retry or wait
+            # to keep things simple, we will give up on an error
+            break
+    searched_tweets = searched_tweets[:max_tweets]
+    for i in range (len(searched_tweets)):
+        searched_tweets[i] = searched_tweets[i].text
+
+    if len (searched_tweets) == 0:
+        return jsonify({"tweets":[], "levels": []})
+    # gets word n gram features and performs classification using
     # model chosen
     n_gram_features = vectorizer.transform(searched_tweets)
     predicted_labels = model.predict(n_gram_features)
