@@ -63,17 +63,17 @@ def load_model(model_file):
 
 
 ## loads classifiers
-MNB_word_unigram_model, word_unigram_vectorizer = load_model ("./app/static/models/MNB_Final_model_word_1-gram.pckl")
-MNB_word_3gram_model, word_3gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_word_3-gram.pckl")
+# MNB_word_unigram_model, word_unigram_vectorizer = load_model ("./app/static/models/MNB_Final_model_word_1-gram.pckl")
+# MNB_word_3gram_model, word_3gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_word_3-gram.pckl")
 
-SVM_word_unigram_model, word_unigram_vectorizer = load_model ("./app/static/models/SVM_Final_model_word_1-gram.pckl")
-SVM_word_3gram_model, word_3gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_word_3-gram.pckl")
+# SVM_word_unigram_model, word_unigram_vectorizer = load_model ("./app/static/models/SVM_Final_model_word_1-gram.pckl")
+# SVM_word_3gram_model, word_3gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_word_3-gram.pckl")
 
-MNB_char_3gram_model, char_3gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_char_3-gram.pckl")
-MNB_char_5gram_model, char_5gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_char_5-gram.pckl")
+# MNB_char_3gram_model, char_3gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_char_3-gram.pckl")
+# MNB_char_5gram_model, char_5gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_char_5-gram.pckl")
 
 SVM_char_3gram_model, char_3gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_char_3-gram.pckl")
-SVM_char_5gram_model, char_5gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_char_5-gram.pckl")
+# SVM_char_5gram_model, char_5gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_char_5-gram.pckl")
 
 
 #####################
@@ -91,7 +91,7 @@ SVM_word_unigram_model_ad, word_unigram_vectorizer_ad = load_model ("./app/stati
 SVM_char_3gram_model_ad, char_3gram_vectorizer_ad = load_model ("./app/static/models/SVM_Add_model_char_3-gram.pckl")
 # SVM_char_5gram_model_ad, char_5gram_vectorizer_ad = load_model ("./app/static/models/SVM_Add_model_char_5-gram.pckl")
 
-SVM_char_5gram_model_hate, char_5gram_vectorizer_hate = load_model ("./app/static/models/SVM_Hate_model_char_5-gram.pckl")
+SVM_char_3gram_model_hate, char_3gram_vectorizer_hate = load_model ("./app/static/models/SVM_Hate_model_char_5-gram.pckl")
 
 print ("All models loaded")
 
@@ -279,8 +279,8 @@ def detectOffense():
         model = SVM_char_3gram_model
         vectorizer = char_3gram_vectorizer
     else:
-        model = SVM_char_5gram_model
-        vectorizer = char_5gram_vectorizer
+        model = SVM_char_3gram_model
+        vectorizer = char_3gram_vectorizer
 
     # gets word n gram features and performs classification using
     # model chosen
@@ -362,9 +362,9 @@ def queryOffense():
 # detect hatespeech
 @app.route('/detectHate', methods=['POST'])
 def detectHate():
-    global char_5gram_vectorizer_hate
+    global char_3gram_vectorizer_hate
 
-    global SVM_char_5gram_model_hate
+    global SVM_char_3gram_model_hate
     ''' detects level of offensiveness in text posted'''
 
     # Gets text and classifier from client
@@ -392,8 +392,8 @@ def detectHate():
         model = SVM_char_3gram_model_hate
         vectorizer = char_3gram_vectorizer_hate
     else:
-        model = SVM_char_5gram_model_hate
-        vectorizer = char_5gram_vectorizer_hate
+        model = SVM_char_3gram_model_hate
+        vectorizer = char_3gram_vectorizer_hate
 
     # gets word n gram features and performs classification using
     # model chosen
@@ -435,8 +435,8 @@ def queryHate():
         model = SVM_char_3gram_model_hate
         vectorizer = char_3gram_vectorizer_hate
     else:
-        model = SVM_char_5gram_model_hate
-        vectorizer = char_5gram_vectorizer_hate
+        model = SVM_char_3gram_model_hate
+        vectorizer = char_3gram_vectorizer_hate
 
     ## searches twitter for query
     searched_tweets = []

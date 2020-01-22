@@ -79,7 +79,7 @@
       <h2> Please choose classifier and enter your text </h2>
       <div class = "line-break"></div>
       <p1> Your entered text will be run with the classifier selected to detect offensiveness in the text. 
-       If no classifier is selected, character 5-gram model with Linear SVM classifier will be used.
+       If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
        The model only works for Arabic text. </p1>
     </div>
     <div style = "width: 80%; margin: auto; padding-left: 1rem;">
@@ -98,11 +98,11 @@
                 <select id="classifiername" style = "height:100%" data-trigger=""  name="choices-single-default">
                     <option placeholder="">Choose Classifier</option>
                     <!-- <option>Multinomial Naive Bayes (Word Unigram)</option> -->
-                    <option>Multinomial Naive Bayes (Word 3-gram)</option>
+                    <!-- <option>Multinomial Naive Bayes (Word 3-gram)</option> -->
                     <!-- <option>Linear SVM (Word Unigram)</option> -->
                     <!-- <option>Linear SVM (Word 3-gram)</option> -->
                     <option>Linear SVM (Char 3-gram)</option>
-                    <option>Linear SVM (Char 5-gram)</option>
+                    <!-- <option>Linear SVM (Char 5-gram)</option> -->
 
                 </select>
                     <script>
@@ -311,7 +311,7 @@
       <div class = "line-break"></div>
       <p1> Your entered text will be run with the classifier selected to detect if it's hate speech.
 
-      If no classifier is selected, character 5-gram model with Linear SVM classifier will be used.
+      If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
       The model only works for Arabic text. </p1>
     </div>
     <div style = "width: 80%; margin: auto; padding-left: 1rem;">
@@ -331,7 +331,7 @@
                     <!-- <option>Linear SVM (Word Unigram)</option> -->
                     <!-- <option>Linear SVM (Word 3-gram)</option> -->
                     <!-- <option>Linear SVM (Char 3-gram)</option> -->
-                    <option>Linear SVM (Char 5-gram)</option>
+                    <option>Linear SVM (Char 3-gram)</option>
 
                 </select>
                     <script>
