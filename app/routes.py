@@ -325,8 +325,8 @@ def queryOffense():
         model = SVM_char_3gram_model
         vectorizer = char_3gram_vectorizer
     else:
-        model = SVM_char_5gram_model
-        vectorizer = char_5gram_vectorizer
+        model = SVM_char_3gram_model
+        vectorizer = char_3gram_vectorizer
 
     searched_tweets = []
     last_id = -1
