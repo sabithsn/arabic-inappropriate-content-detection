@@ -634,7 +634,9 @@ function detect_ad() {
       $('#indTable5').hide();
       $('#indTable6').show();
       $(".top-blue").hide();
-      $(".top-red").hide(); 
+      $(".top-red").hide();
+      $(".jqcloud").hide();
+ 
 
 
       // $("#word-cloud-ad").jQCloud('destroy');
@@ -816,6 +818,8 @@ function detect_hate() {
       $('#indTable9').show();
       $(".top-blue").hide();
       $(".top-red").hide(); 
+      $(".jqcloud").hide();
+
       // $(".jqcloud").hide();
 
       // $("#word-cloud-hate").jQCloud('destroy');
@@ -994,6 +998,7 @@ function detect_sentiment() {
       $('#indTable12').show();
       $(".top-blue").hide();
       $(".top-red").hide(); 
+      $(".jqcloud").hide();
 
       // $("#word-cloud-hate").jQCloud('destroy');
       // $("#hash-cloud-hate").jQCloud('destroy');

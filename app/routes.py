@@ -29,7 +29,7 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify=True)
 
 
-max_tweets = 100
+max_tweets = 1000
 # query = "@QF OR @ajarabic"
 result_type = "recent"
 
@@ -265,10 +265,8 @@ def queryAd():
         names.append(name)
 
         searched_tweets[i] = searched_tweets[i].text
-        alltext += (" " + searched_tweets[i])
 
 
-    word_counts, hash_counts = get_frequency(alltext, 20)
 
 
     if len (searched_tweets) == 0:
@@ -303,7 +301,9 @@ def queryAd():
                 red_users[user] += 1
             else:
                 red_users[user] = 1
+            alltext += (" " + searched_tweets[i])
 
+    word_counts, hash_counts = get_frequency(alltext, 20)
     sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
     sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
 
@@ -439,10 +439,8 @@ def queryOffense():
         names.append(name)
 
         searched_tweets[i] = searched_tweets[i].text
-        alltext += (" " + searched_tweets[i])
 
 
-    word_counts, hash_counts = get_frequency(alltext, 20)
 
 
     if len (searched_tweets) == 0:
@@ -477,7 +475,9 @@ def queryOffense():
                 red_users[user] += 1
             else:
                 red_users[user] = 1
+            alltext += (" " + searched_tweets[i])
 
+    word_counts, hash_counts = get_frequency(alltext, 20)
     sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
     sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
 
@@ -610,10 +610,6 @@ def queryHate():
         names.append(name)
 
         searched_tweets[i] = searched_tweets[i].text
-        alltext += (" " + searched_tweets[i])
-
-
-    word_counts, hash_counts = get_frequency(alltext, 20)
 
 
     if len (searched_tweets) == 0:
@@ -648,6 +644,9 @@ def queryHate():
                 red_users[user] += 1
             else:
                 red_users[user] = 1
+            alltext += (" " + searched_tweets[i])
+    word_counts, hash_counts = get_frequency(alltext, 20)
+
 
     sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
     sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
@@ -784,10 +783,8 @@ def querySentiment():
         names.append(name)
 
         searched_tweets[i] = searched_tweets[i].text
-        alltext += (" " + searched_tweets[i])
 
 
-    word_counts, hash_counts = get_frequency(alltext, 20)
 
 
     if len (searched_tweets) == 0:
@@ -816,13 +813,16 @@ def querySentiment():
             else:
                 blue_users[user] = 1
         elif (label == "Negative"):
+
             #stores name of the red user
             reds[user] = name
             if user in red_users:
                 red_users[user] += 1
             else:
                 red_users[user] = 1
+            alltext += (" " + searched_tweets[i])
 
+    word_counts, hash_counts = get_frequency(alltext, 20)
     sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
     sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
 
