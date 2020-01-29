@@ -12,14 +12,15 @@ from sklearn.multiclass import OneVsRestClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC
 from sklearn.naive_bayes import MultinomialNB
+import operator
 
 
 import tweepy
 
-consumer_key = "eUed9xOxK2WXmrGoC5YYONnrI"
-consumer_secret = "lQJHgwt3mxUFRvyfzpxoYCeV1itPv0aVaC7GRjqJ52NuqUHlJZ"
-access_token = "767679563514208260-3k1PuvqHDe05BA8URfTxX8mGu5ERY8N"
-access_token_secret = "EGmghjfCjLHvWdhjvBaLxZGMMjFjY5xFOvQrCCIdq2jwo"
+consumer_key = "17vtdwEOtyZhiJvaIsweWPySu"
+consumer_secret = "lufEk9iMyrmWj5rR6ka7jW4DhYw6KRNGrUtD1UDcWulwUR8kxh"
+access_token = "767679563514208260-lTCPp3wwTRnGqogRyJNG5fr5A1ounvf"
+access_token_secret = "hIIQat4QMJ4s5jkqReCqIIiqV89GqaHFdGLuTEOhKNpcv"
 
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
@@ -28,7 +29,7 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify=True)
 
 
-max_tweets = 1000
+max_tweets = 2000
 # query = "@QF OR @ajarabic"
 result_type = "recent"
 
@@ -230,20 +231,71 @@ def queryAd():
             # depending on TweepError.code, one may want to retry or wait
             # to keep things simple, we will give up on an error
             break
+
+    users = []
+    names = []
     searched_tweets = searched_tweets[:max_tweets]
+
+    # gets tweet text and info about the user
     for i in range (len(searched_tweets)):
+
+        user = searched_tweets[i].user.screen_name
+        name = searched_tweets[i].user.name
+
+        users.append(user)
+        names.append(name)
+
         searched_tweets[i] = searched_tweets[i].text
 
     if len (searched_tweets) == 0:
-        return jsonify({"tweets":[], "levels": []})
+        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[]})
     # gets word n gram features and performs classification using
     # model chosen
     n_gram_features = vectorizer.transform(searched_tweets)
-    predicted_labels = model.predict(n_gram_features)
+    predicted_labels = list(model.predict(n_gram_features))
+
+    red_users = {}
+    blue_users = {}
+
+    reds = {}
+    blues = {}
+
+    for i in range (len(predicted_labels)):
+        label = predicted_labels[i]
+        user = users[i]
+        name = names[i]
+
+        if (label == "__label__NOTADS"):
+            # stores name of the user
+            blues[user] = name
+            if user in blue_users:
+                blue_users[user] += 1
+            else:
+                blue_users[user] = 1
+        else:
+            #stores name of the red user
+            reds[user] = name
+            if user in red_users:
+                red_users[user] += 1
+            else:
+                red_users[user] = 1
+
+    sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
+    sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
+
+    blue_names = []
+    red_names = []
+    # gets user names of top 20
+    for x in sorted_blue:
+        blue_names.append(blues[x[0]])
+
+    for x in sorted_red:
+        red_names.append(reds[x[0]])
+
     # prediction = str(predicted_labels[0])
     # print (prediction)
 
-    return jsonify({"tweets":list(searched_tweets), "levels": list(predicted_labels)})
+    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names})
 
 @app.route('/detectOffense', methods=['POST'])
 def detectOffense():
@@ -344,19 +396,72 @@ def queryOffense():
             # depending on TweepError.code, one may want to retry or wait
             # to keep things simple, we will give up on an error
             break
+
+
+    users = []
+    names = []
     searched_tweets = searched_tweets[:max_tweets]
+
+    # gets tweet text and info about the user
     for i in range (len(searched_tweets)):
+
+        user = searched_tweets[i].user.screen_name
+        name = searched_tweets[i].user.name
+
+        users.append(user)
+        names.append(name)
+
         searched_tweets[i] = searched_tweets[i].text
-    # gets word n gram features and performs classification using
+
     if len (searched_tweets) == 0:
-        return jsonify({"tweets":[], "levels": []})
+        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[]})
+    # gets word n gram features and performs classification using
     # model chosen
     n_gram_features = vectorizer.transform(searched_tweets)
-    predicted_labels = model.predict(n_gram_features)
+    predicted_labels = list(model.predict(n_gram_features))
+
+    red_users = {}
+    blue_users = {}
+
+    reds = {}
+    blues = {}
+
+    for i in range (len(predicted_labels)):
+        label = predicted_labels[i]
+        user = users[i]
+        name = names[i]
+
+        if (label == "NOT"):
+            # stores name of the user
+            blues[user] = name
+            if user in blue_users:
+                blue_users[user] += 1
+            else:
+                blue_users[user] = 1
+        else:
+            #stores name of the red user
+            reds[user] = name
+            if user in red_users:
+                red_users[user] += 1
+            else:
+                red_users[user] = 1
+
+    sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
+    sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
+
+    blue_names = []
+    red_names = []
+    # gets user names of top 20
+    for x in sorted_blue:
+        blue_names.append(blues[x[0]])
+
+    for x in sorted_red:
+        red_names.append(reds[x[0]])
+
     # prediction = str(predicted_labels[0])
     # print (prediction)
 
-    return jsonify({"tweets":list(searched_tweets), "levels": list(predicted_labels)})
+    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names})
 
 
 # detect hatespeech
@@ -456,17 +561,69 @@ def queryHate():
             # depending on TweepError.code, one may want to retry or wait
             # to keep things simple, we will give up on an error
             break
+
+
+    users = []
+    names = []
     searched_tweets = searched_tweets[:max_tweets]
+
+    # gets tweet text and info about the user
     for i in range (len(searched_tweets)):
+
+        user = searched_tweets[i].user.screen_name
+        name = searched_tweets[i].user.name
+
+        users.append(user)
+        names.append(name)
+
         searched_tweets[i] = searched_tweets[i].text
 
     if len (searched_tweets) == 0:
-        return jsonify({"tweets":[], "levels": []})
+        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[]})
     # gets word n gram features and performs classification using
     # model chosen
     n_gram_features = vectorizer.transform(searched_tweets)
-    predicted_labels = model.predict(n_gram_features)
+    predicted_labels = list(model.predict(n_gram_features))
+
+    red_users = {}
+    blue_users = {}
+
+    reds = {}
+    blues = {}
+
+    for i in range (len(predicted_labels)):
+        label = predicted_labels[i]
+        user = users[i]
+        name = names[i]
+
+        if (label == "NOT_HS"):
+            # stores name of the user
+            blues[user] = name
+            if user in blue_users:
+                blue_users[user] += 1
+            else:
+                blue_users[user] = 1
+        else:
+            #stores name of the red user
+            reds[user] = name
+            if user in red_users:
+                red_users[user] += 1
+            else:
+                red_users[user] = 1
+
+    sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
+    sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
+
+    blue_names = []
+    red_names = []
+    # gets user names of top 20
+    for x in sorted_blue:
+        blue_names.append(blues[x[0]])
+
+    for x in sorted_red:
+        red_names.append(reds[x[0]])
+
     # prediction = str(predicted_labels[0])
     # print (prediction)
 
-    return jsonify({"tweets":list(searched_tweets), "levels": list(predicted_labels)})
+    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names})

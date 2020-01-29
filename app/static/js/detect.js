@@ -1,132 +1,9 @@
+// for initiating charts
 var pieChart = "";
 var pieChart2 = "";
 var pieChart3 = "";
 
-$(document).ready(function(){
-  $("#indTable").hide();
-  $('#indTable2').hide();
-  $('#indTable3').hide();
-  $("#indTable4").hide();
-  $('#indTable5').hide();
-  $('#indTable6').hide();
-  $("#indTable7").hide();
-  $('#indTable8').hide();
-  $('#indTable9').hide();
-
-
-  $("#info1").hide();
-  $("#info2").hide();
-  $("#info3").hide();
-  $("#info4").hide();
-  $("#info5").hide();
-  $("#info6").hide();
-
-  $(".processing").hide();
-
-  pieChart =  new Chart(document.getElementById("pie-chart"), {
-    type: 'pie',
-    data: {
-      labels: ["Offensive", "Not Offensive"],
-      datasets: [{
-        label: "Offensiveness distribution",
-        backgroundColor: ["#D8401F", "#1F70D8"],
-        data: [0,0]
-      }]
-    },
-    options: {
-       tooltips: {
-    callbacks: {
-      label: function(tooltipItem, data) {
-        var dataset = data.datasets[tooltipItem.datasetIndex];
-        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-        var total = meta.total;
-        var currentValue = dataset.data[tooltipItem.index];
-        var percentage = parseFloat((currentValue/total*100).toFixed(1));
-        return currentValue + ' (' + percentage + '%)';
-      },
-      title: function(tooltipItem, data) {
-        return data.labels[tooltipItem[0].index];
-      }
-    }
-  },
-      title: {
-        display: true,
-        text: 'Offensiveness distribution'
-      }
-    }
-  });
-  $("#pie-chart").hide();
-
-    pieChart2 =  new Chart(document.getElementById("pie-chart2"), {
-    type: 'pie',
-    data: {
-      labels: ["Advertisement", "Not Advertisement"],
-      datasets: [{
-        label: "Advertisement distribution",
-        backgroundColor: ["#D8401F", "#1F70D8"],
-        data: [0,0]
-      }]
-    },
-    options: {
-       tooltips: {
-    callbacks: {
-      label: function(tooltipItem, data) {
-        var dataset = data.datasets[tooltipItem.datasetIndex];
-        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-        var total = meta.total;
-        var currentValue = dataset.data[tooltipItem.index];
-        var percentage = parseFloat((currentValue/total*100).toFixed(1));
-        return currentValue + ' (' + percentage + '%)';
-      },
-      title: function(tooltipItem, data) {
-        return data.labels[tooltipItem[0].index];
-      }
-    }
-  },
-      title: {
-        display: true,
-        text: 'Advertisement distribution'
-      }
-    }
-  });
-  $("#pie-chart2").hide();
-
-  pieChart3 =  new Chart(document.getElementById("pie-chart3"), {
-    type: 'pie',
-    data: {
-      labels: ["Hate speech", "Not Hate speech"],
-      datasets: [{
-        label: "Hate speech distribution",
-        backgroundColor: ["#D8401F", "#1F70D8"],
-        data: [0,0]
-      }]
-    },
-    options: {
-       tooltips: {
-    callbacks: {
-      label: function(tooltipItem, data) {
-        var dataset = data.datasets[tooltipItem.datasetIndex];
-        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-        var total = meta.total;
-        var currentValue = dataset.data[tooltipItem.index];
-        var percentage = parseFloat((currentValue/total*100).toFixed(1));
-        return currentValue + ' (' + percentage + '%)';
-      },
-      title: function(tooltipItem, data) {
-        return data.labels[tooltipItem[0].index];
-      }
-    }
-  },
-      title: {
-        display: true,
-        text: 'Hate speech distribution'
-      }
-    }
-  });
-  $("#pie-chart3").hide();
-
-});
-
+// sample queries
 var queries = [
 "@QF",
 "@ajarabic",
@@ -134,6 +11,7 @@ var queries = [
 "#Qatar"
 ]
 
+// offensive/non-offensive samples
 var offensiveSamples = [
 "يا صبر الأرض عليك يا مدرب يا حثاله المشكلة يدفعون ملايين لمدرب سبااااااك",
 "@USER وجمهور الاهلى لن ينسى موقفكم يا اتحاد العار يا مرتزقة يا مرتشين والحساب قريبا وياريت ماتتمسحش فى جمهور الاهلى عشان الكلاب اللى زيك جمهور الاهلى داس عليهم بالجزمة خلاص لان ده مقامك يا قذر",
@@ -157,6 +35,7 @@ var offensiveSamples = [
 "فى مثل هذا اليوم فى مثل هذه الساعة و بعد صلاة الظهر منذ عام بالتمام و الكمال واريتك فى التراب يا أغلى الناس يا اعز الناس، رحمة الله عليك يا أبي، اللهم اغفر له وارحمه واسكنه فسيح جناتك و اكرم منزله و ابعثه مع... URL"
 ]
 
+// ad/non-ad samples
 var adSamples = [
 "@USER 👑🐝👑🐝👑🐝👑🐝👑🐝<LF>-امن🤛 صحي<LF>- تأخير القذف<LF><LF>👌بخاخ سوبر دراجون 👌<LF>-ليس له اضرار جانبية<LF>-ياخر القذف ما بين 20 ل 30 دقيقة<LF><LF>للتواصل واتساب :<LF>URL<LF>WFaHOQ",
 "@USER 🔷🔷 منتج طبيعي من نبات الالوفيرا والعسل #كلين9 🔷<LF> تخلص من دهون جسمك مرة والي الابد<LF><LF>🇸🇦 🇰🇼<LF><LF>🇴🇲 🇦🇪<LF> لا تعرض حياتك لخطر ستندم عليه لاحقا بسبب السمنة <LF><LF>للتواصل عبر الخااص<LF>URL<LF>BMFkfb",
@@ -180,6 +59,7 @@ var adSamples = [
 "RT @USER: اللهم إن أبي كان باسمٌ الوجه، جميلُ الخلق، صابرًا في البلاء فأجعل مُستقره الجنة، ضاحكًا مستبشرًا يا أرحم الراحمين.",
 ]
 
+//hate/non-hate samples
 var hateSamples = [
 "يادلخ القصيم فيها حروب و مطران لا تحسب ان القصيم بكبرها  مافيها غير النازيين",
 "يجيك اعرابي راعي جاهل بالتاريخ والأنساب يطعن بأنساب أسر بني تميم العريقة",
@@ -203,73 +83,140 @@ var hateSamples = [
 "اخواني المترجمين. استفسار بسيط  NEWLINE مين عنده خبره باختبار الترجمة بشركة ڤينيل والمقابلة فيها؟ وكيف استعد لها. وشكرًا…",
 ]
 
-// function upload(){
+/* initiating function. hides some elements and initiates charts */
+$(document).ready(function(){
+  // hide all tables, info about tables etc
+  $('.tables').hide();
+  $(".infos").hide();
+  $(".processing").hide();
+  $(".top-blue").hide();
+  $(".top-red").hide();
 
-//   var data=new FormData();
-//           var file = $("#fileupload")[0].files[0];
-//           if (typeof file == "undefined"){
-//             alert ("Please choose file.");
-//             return;
-//           }
-//           data.append('file',file);
-//           $("#txtTest").val("Classifier training in progress. Please wait.....");
 
-//           $.ajax({
-//               url:"/upload",
-//               type:'POST',
-//               data:data,
-//               cache:false,
-//               processData:false,
-//               contentType:false,
-//               error:function(){
-//                   alert ("Upload error");
-//                   console.log("upload error");
-//               },
-//               success:function(data){
-//                   console.log(data);
-//                   $("#txtTest").val("Classifier training complete. Your classifier will be used for violence detection.");
-//               }
-//           })
-// }
+  // initiates pie chart for offensive lang detection
+  pieChart =  new Chart(document.getElementById("pie-chart"), {
+    type: 'pie',
+    data: {
+      labels: ["Offensive", "Not Offensive"],
+      datasets: [{
+        label: "Offensiveness distribution",
+        backgroundColor: ["#D8401F", "#1F70D8"],
+        data: [0,0]
+      }]
+    },
+    options: {
+       tooltips: {
+    callbacks: {
+      // percentage label
+      label: function(tooltipItem, data) {
+        var dataset = data.datasets[tooltipItem.datasetIndex];
+        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
+        var total = meta.total;
+        var currentValue = dataset.data[tooltipItem.index];
+        var percentage = parseFloat((currentValue/total*100).toFixed(1));
+        return currentValue + ' (' + percentage + '%)';
+      },
+      title: function(tooltipItem, data) {
+        return data.labels[tooltipItem[0].index];
+      }
+    }
+  },
+      title: {
+        display: true,
+        text: 'Offensiveness distribution'
+      }
+    }
+  });
 
+  // initiates pie chart for advertisement detection
+  pieChart2 =  new Chart(document.getElementById("pie-chart2"), {
+    type: 'pie',
+    data: {
+      labels: ["Advertisement", "Not Advertisement"],
+      datasets: [{
+        label: "Advertisement distribution",
+        backgroundColor: ["#D8401F", "#1F70D8"],
+        data: [0,0]
+      }]
+    },
+    options: {
+       tooltips: {
+    callbacks: {
+      // percentage label
+      label: function(tooltipItem, data) {
+        var dataset = data.datasets[tooltipItem.datasetIndex];
+        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
+        var total = meta.total;
+        var currentValue = dataset.data[tooltipItem.index];
+        var percentage = parseFloat((currentValue/total*100).toFixed(1));
+        return currentValue + ' (' + percentage + '%)';
+      },
+      title: function(tooltipItem, data) {
+        return data.labels[tooltipItem[0].index];
+      }
+    }
+  },
+      title: {
+        display: true,
+        text: 'Advertisement distribution'
+      }
+    }
+  });
+
+  // initiates pie chart for hate speech detection
+  pieChart3 =  new Chart(document.getElementById("pie-chart3"), {
+    type: 'pie',
+    data: {
+      labels: ["Hate speech", "Not Hate speech"],
+      datasets: [{
+        label: "Hate speech distribution",
+        backgroundColor: ["#D8401F", "#1F70D8"],
+        data: [0,0]
+      }]
+    },
+    options: {
+       tooltips: {
+    callbacks: {
+      // percentage label
+      label: function(tooltipItem, data) {
+        var dataset = data.datasets[tooltipItem.datasetIndex];
+        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
+        var total = meta.total;
+        var currentValue = dataset.data[tooltipItem.index];
+        var percentage = parseFloat((currentValue/total*100).toFixed(1));
+        return currentValue + ' (' + percentage + '%)';
+      },
+      title: function(tooltipItem, data) {
+        return data.labels[tooltipItem[0].index];
+      }
+    }
+  },
+      title: {
+        display: true,
+        text: 'Hate speech distribution'
+      }
+    }
+  });
+
+  // hides all the initiated charts
+  $(".pies").hide();
+});
+
+/* clears all tables and hides related information */
 function clear_table(){
-  $("#pie-chart").hide();
-  $("#pie-chart2").hide();
-  $("#pie-chart3").hide();
-
-  
-  $("#indTable").hide();
-  $('#indTable2').hide();
-  $('#indTable3').hide();
-  $("#indTable4").hide();
-  $('#indTable5').hide();
-  $('#indTable6').hide();
-  $("#indTable7").hide();
-  $('#indTable8').hide();
-  $('#indTable9').hide();
-
-
-
-  $("#info1").hide();
-  $("#info2").hide();
-  $("#info3").hide();
-  $("#info4").hide();
-  $("#info5").hide();
-  $("#info6").hide();
-
+  $(".pies").hide();
+  $(".tables").hide();
+  $(".infos").hide();
+  $(".top-blue").hide();
+  $(".top-red").hide();
   $("table tbody").html('');
-  console.log("hallo");
 }
-
-
-
 
 /**
 Gets input from user, makes call to server and updates DOM based on level of 
 offensivebess in text input by user as returned from server.
 **/
 function query_offense() {
-
 
   // gets input from user
   var classifier = $('#classifiername').find(":selected").text();
@@ -288,22 +235,33 @@ function query_offense() {
       text: text,
       model: classifier,
   }).done(function(response) {
-      console.log(response);
+
       $('#indTable3').hide();
       $("#indTable").show();
       $('#indTable2').show();
       $("#indTable table tbody").html("");
       $("#indTable2 table tbody").html("");
       $("#indTable3 table tbody").html("");
-
+      $(".top-red table tbody").html("");
+      $(".top-blue table tbody").html("");
 
       var levels = response['levels'];
+      var tweets = response['tweets'];
+      var topBlue = response['blue'];
+      var topRed = response['red'];
+
+
+      console.log("BLUE");
+      console.log(topBlue);
+      console.log("RED");
+      console.log(topRed);
+
       var level = '';
       var text = '';
       var count1 = 0;
       var count2 = 0;
-      var tweets = response['tweets'];
-      console.log(level);
+
+      // inserts into red table if offensive, blue table if not.
       for (var i = 0; i < levels.length; i++){
         level = levels[i];
         text = tweets[i];
@@ -311,40 +269,54 @@ function query_offense() {
           count1 += 1;
           var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not offensive </font> </strong> </td></tr>";
           $("#indTable2 table tbody").append(markup);
-        }
-
-        else {
+        } else {
           count2 += 1;
           var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> offensive </font> </strong></td></tr>";
           $("#indTable table tbody").append(markup);
         }
       }
 
+      // info about collected tweets
       $("#info1").html("Found <strong>" + count2.toString() + "</strong> offensive tweets out of <strong>" + (count1 + count2).toString() + "</strong> tweets.");
       $("#info2").html("Found <strong>" + count1.toString() + "</strong> non offensive tweets out of <strong>" + (count1 + count2).toString() +  "</strong> tweets.");
 
       $("#info1").show();
       $("#info2").show();
 
+      // names of usesrs
+      var redNames = response["red_names"];
+      var blueNames = response["blue_names"];
+
+      // UPDATES DOM WITH TOP 20 BLUE USERSS
+      for (var i = 0; i < topBlue.length; i++){
+         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'> <strong> <font color = 'RED'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + blueNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topBlue[i][1] + "</font> </strong> </td></tr>";
+         $(".top-blue table tbody").append(markup);
+      }
+
+
+      // UPDATES DOM WITH TOP 20 RED USERSS
+      for (var i = 0; i < topRed.length; i++){
+         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'> <strong> <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + redNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topRed[i][1] + "</font> </strong> </td></tr>";
+         $(".top-red table tbody").append(markup);
+      }
+
+      // display the tables containing top users
+      $(".top-blue").show();
+      $(".top-red").show(); 
+
+      // update pie chart based on new info
       pieChart.data.datasets[0].data = [count2, count1]
       pieChart.update();
       $("#pie-chart").show();
       $(".processing").hide();
-
-
       $('html, body').css("cursor", "auto");
 
-
-
-
   }).fail(function() {
+      // error 
       alert("Server error");
       $('html, body').css("cursor", "auto");
       $(".processing").hide();
-
-
-  });
-  
+  })
 } 
 
 
@@ -375,15 +347,15 @@ function detect_offense() {
       $("#indTable").hide();
       $('#indTable2').hide();
       $('#indTable3').show();
-
+      $(".top-blue").hide();
+      $(".top-red").hide(); 
+      
+      //  updates table based on label
       var level = response['level']
-      console.log(level);
       if (level == "NOT"){
         var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not offensive </font> </strong> </td></tr>";
         $("#indTable3 table tbody").append(markup);
-      }
-
-      else {
+      } else {
         var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> offensive </font> </strong></td></tr>";
         $("#indTable3 table tbody").append(markup);
       }
@@ -391,9 +363,9 @@ function detect_offense() {
   }).fail(function() {
       alert("Server error");
   });
-  
 } 
 
+/* query twitter to find tweets and then classify */
 function query_ad(){
   // gets input from user
   var classifier = $('#classifiername2').find(":selected").text();
@@ -413,7 +385,7 @@ function query_ad(){
       text: text,
       model: classifier,
   }).done(function(response) {
-      console.log(response);
+
       $('#indTable6').hide();
       $("#indTable4").show();
       $('#indTable5').show();
@@ -421,13 +393,20 @@ function query_ad(){
       $("#indTable4 table tbody").html("");
       $("#indTable5 table tbody").html("");
       $("#indTable6 table tbody").html("");
+      $(".top-red table tbody").html("");
+      $(".top-blue table tbody").html("");
+      
       var levels = response['levels'];
+      var tweets = response['tweets'];
+      var topBlue = response['blue'];
+      var topRed = response['red'];
+
       var level = '';
       var text = '';
       var count1 = 0;
       var count2 = 0;
-      var tweets = response['tweets'];
-      console.log(level);
+
+      // updates query tables based on predicted labels for each tweet in query
       for (var i = 0; i < levels.length; i++){
         level = levels[i];
         text = tweets[i];
@@ -435,22 +414,42 @@ function query_ad(){
           count1 += 1;
           var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not advertisement </font> </strong> </td></tr>";
           $("#indTable5 table tbody").append(markup);
-        }
-
-        else {
+        } else {
           count2 += 1;
           var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> advertisement </font> </strong></td></tr>";
           $("#indTable4 table tbody").append(markup);
         }
       }
 
+      // displays information about query results
       $("#info3").html("Found <strong>" + count2.toString() + "</strong> advertisement tweets out of <strong>" + (count1 + count2).toString() + "</strong> tweets.");
       $("#info4").html("Found <strong>" + count1.toString() + "</strong> non advertisement tweets out of <strong>" + (count1 + count2).toString() +  "</strong> tweets.");
-
       $("#info3").show();
       $("#info4").show();
 
 
+      // names of usesrs
+      var redNames = response["red_names"];
+      var blueNames = response["blue_names"];
+
+      // UPDATES DOM WITH TOP 20 BLUE USERSS
+      for (var i = 0; i < topBlue.length; i++){
+         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'> <strong> <font color = 'RED'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + blueNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topBlue[i][1] + "</font> </strong> </td></tr>";
+         $(".top-blue table tbody").append(markup);
+      }
+
+
+      // UPDATES DOM WITH TOP 20 RED USERSS
+      for (var i = 0; i < topRed.length; i++){
+         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'> <strong> <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + redNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topRed[i][1] + "</font> </strong> </td></tr>";
+         $(".top-red table tbody").append(markup);
+      }
+
+      // display the tables containing top users
+      $(".top-blue").show();
+      $(".top-red").show(); 
+
+      // updates pie chart of advertisment distribution
       pieChart2.data.datasets[0].data = [count2, count1]
       pieChart2.update();
       $("#pie-chart2").show();
@@ -458,17 +457,12 @@ function query_ad(){
       $('html, body').css("cursor", "auto");
       $(".processing").hide();
 
-
-
-
   }).fail(function() {
       alert("Server error");
       $('html, body').css("cursor", "auto");
       $(".processing").hide();
 
-
-  });
-  
+  }); 
 }
 
 
@@ -493,20 +487,20 @@ function detect_ad() {
       text: text,
       model: classifier,
   }).done(function(response) {
+
+      // hide query tables
       $("#info3").hide();
       $("#info4").hide();
       $("#indTable4").hide();
       $('#indTable5').hide();
       $('#indTable6').show();
-      var level = response['level']
-      console.log(level);
 
+      // updates table based on predicted label
+      var level = response['level']
       if (level == "__label__NOTADS"){
         var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not advertisement </font> </strong> </td></tr>";
         $("#indTable6 table tbody").append(markup);
-      }
-
-      else {
+      } else {
         var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> advertisement </font> </strong></td></tr>";
         $("#indTable6 table tbody").append(markup);
       }
@@ -517,7 +511,7 @@ function detect_ad() {
   
 } 
 
-
+/* query twitter to find tweets and then classify */
 function query_hate(){
   // gets input from user
   var classifier = $('#classifiername3').find(":selected").text();
@@ -537,7 +531,7 @@ function query_hate(){
       text: text,
       model: classifier,
   }).done(function(response) {
-      console.log(response);
+
       $('#indTable9').hide();
       $("#indTable7").show();
       $('#indTable8').show();
@@ -545,13 +539,20 @@ function query_hate(){
       $("#indTable7 table tbody").html("");
       $("#indTable8 table tbody").html("");
       $("#indTable9 table tbody").html("");
+      $(".top-red table tbody").html("");
+      $(".top-blue table tbody").html("");
+
       var levels = response['levels'];
+      var tweets = response['tweets'];
+      var topBlue = response['blue'];
+      var topRed = response['red'];
+
       var level = '';
       var text = '';
       var count1 = 0;
       var count2 = 0;
-      var tweets = response['tweets'];
-      console.log(level);
+      
+      // updates tables based on HS or NOT-HS
       for (var i = 0; i < levels.length; i++){
         level = levels[i];
         text = tweets[i];
@@ -559,31 +560,48 @@ function query_hate(){
           count1 += 1;
           var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not hate speech </font> </strong> </td></tr>";
           $("#indTable8 table tbody").append(markup);
-        }
-
-        else {
+        } else {
           count2 += 1;
           var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> hate speech </font> </strong></td></tr>";
           $("#indTable7 table tbody").append(markup);
         }
       }
 
+      // displays info about tweets found
       $("#info5").html("Found <strong>" + count2.toString() + "</strong> hate speech tweets out of <strong>" + (count1 + count2).toString() + "</strong> tweets.");
       $("#info6").html("Found <strong>" + count1.toString() + "</strong> not hate speech tweets out of <strong>" + (count1 + count2).toString() +  "</strong> tweets.");
-
       $("#info5").show();
       $("#info6").show();
 
 
+      // names of usesrs
+      var redNames = response["red_names"];
+      var blueNames = response["blue_names"];
+
+      // UPDATES DOM WITH TOP 20 BLUE USERSS
+      for (var i = 0; i < topBlue.length; i++){
+         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'> <strong> <font color = 'RED'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + blueNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topBlue[i][1] + "</font> </strong> </td></tr>";
+         $(".top-blue table tbody").append(markup);
+      }
+
+
+      // UPDATES DOM WITH TOP 20 RED USERSS
+      for (var i = 0; i < topRed.length; i++){
+         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'> <strong> <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + redNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topRed[i][1] + "</font> </strong> </td></tr>";
+         $(".top-red table tbody").append(markup);
+      }
+
+      // display the tables containing top users
+      $(".top-blue").show();
+      $(".top-red").show(); 
+      
+      // updates piechart
       pieChart3.data.datasets[0].data = [count2, count1]
       pieChart3.update();
       $("#pie-chart3").show();
 
       $('html, body').css("cursor", "auto");
       $(".processing").hide();
-
-
-
 
   }).fail(function() {
       alert("Server error");
@@ -617,20 +635,19 @@ function detect_hate() {
       text: text,
       model: classifier,
   }).done(function(response) {
+      // hide query tables
       $("#info5").hide();
       $("#info6").hide();
       $("#indTable7").hide();
       $('#indTable8').hide();
       $('#indTable9').show();
-      var level = response['level']
-      console.log(level);
 
+      //  updates table based on predicted label
+      var level = response['level']
       if (level == "NOT_HS"){
         var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not hate speech </font> </strong> </td></tr>";
         $("#indTable9 table tbody").append(markup);
-      }
-
-      else {
+      } else {
         var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> hate speech </font> </strong></td></tr>";
         $("#indTable9 table tbody").append(markup);
       }
@@ -638,7 +655,6 @@ function detect_hate() {
   }).fail(function() {
       alert("Server error");
   });
-  
 }
 
 
@@ -699,8 +715,7 @@ function check_ad(){
   }
 }
 
-
-
+// checks if user wants to analyze text or make a query. redirects request accordingly
 function check_hate(){
   if (document.getElementById('searchType3').checked){
     query_hate();

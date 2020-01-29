@@ -16,431 +16,569 @@
     <link href="{{ url_for('static', filename='css/sidebar.css')}}" rel="stylesheet" />
     <link href="{{ url_for('static', filename='css/simulation.css')}}" rel="stylesheet" />
     <link href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css')}}" rel="stylesheet" />
-
-    
-    <!-- JAVASCRIPT -->
-
-
   </head>
   <body>
       
-<!-- Top Bar -->
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+  <!-- Top Bar -->
+  <nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
     <div class="row container-fluid">
       <div class="col-lg-4 col-sm-4 col-xs-12 text-left"></div>
-      <div class="col-lg-6 col-sm-6 col-xs-12 text-center" style="display: contents;">
-      <div class="collapse navbar-collapse text-center">
-        <ul class="navbar-nav text-center">
-          <li class="nav-item text-white text-right">
-            <h2 class="">Arabic Inappropriate Content Detection</h2>
+        <div class="col-lg-6 col-sm-6 col-xs-12 text-center" style="display: contents;">
+        <div class="collapse navbar-collapse text-center">
+          <ul class="navbar-nav text-center">
+            <li class="nav-item text-white text-right">
+              <h2 class="">Arabic Inappropriate Content Detection</h2>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <!-- end of Top Bar -->
+
+
+<!-- main section containing graphs, tables -->
+  <section id="FAQ" class="masthead">
+    <div class="row container-fluid" id = "cols" >
+
+      <!-- tabs for different kinds of content detection -->
+      <div class="col-lg-12 col-sm-12 col-xs-12 text-left" id = "freespace" style = "padding:0rem; margin-top:3rem;" >
+        <ul class="nav nav-tabs" role="tablist" style = "width:100%;">
+          <!-- offensive lang detection tab -->
+          <li class="nav-item " >
+              <a class="nav-link active toptab addressClick"
+                 data-toggle="pill" href="#offensive" role="tab"
+                 aria-controls="offensive" aria-selected="true" id = "plots" style = "width:100%; text-align:center;" onclick="clear_table()" >Offense Detection</a>
+          </li>
+
+          <!-- advertisement detection tab -->
+          <li class="nav-item ">
+              <a class="nav-link toptab addressClick"
+                 data-toggle="pill" href="#advertisement" role="tab"
+                 aria-controls="advertisement" aria-selected="false" id = "data" style = "width:100%; text-align:center;" onclick="clear_table()">Advertisement Detection</a>
+          </li>
+
+          <!-- hate speech detection tab -->
+          <li class="nav-item ">
+              <a class="nav-link toptab addressClick"
+                 data-toggle="pill" href="#hate-speech" role="tab"
+                 aria-controls="hate-speech" aria-selected="false" id = "data" style = "width:100%; text-align:center;" onclick="clear_table()">Hate speech Detection</a>
           </li>
         </ul>
-      </div>
-    </div>
-    </div>
-</nav>
+      </div> 
+      <!-- end of tabs for content detection -->
 
-
-  <!-- Frequently asked question (FAQ) section -->
-<section id="FAQ" class="masthead">
-  <div class="row container-fluid" id = "cols" >  
-
-    <div class="col-lg-12 col-sm-12 col-xs-12 text-left" id = "freespace" style = "padding:0rem; margin-top:3rem;" >
-      <ul class="nav nav-tabs" role="tablist" style = "width:100%;">
-        <li class="nav-item " >
-            <a class="nav-link active toptab addressClick"
-               data-toggle="pill" href="#pills-home" role="tab"
-               aria-controls="pills-home" aria-selected="true" id = "plots" style = "width:100%; text-align:center;" onclick="clear_table()" >Offense Detection</a>
-        </li>
-        <li class="nav-item ">
-            <a class="nav-link toptab addressClick"
-               data-toggle="pill" href="#pills-profile" role="tab"
-               aria-controls="pills-profile" aria-selected="false" id = "data" style = "width:100%; text-align:center;" onclick="clear_table()">Advertisement Detection</a>
-        </li>
-
-        <li class="nav-item ">
-            <a class="nav-link toptab addressClick"
-               data-toggle="pill" href="#hate-speech" role="tab"
-               aria-controls="hate-speech" aria-selected="false" id = "data" style = "width:100%; text-align:center;" onclick="clear_table()">Hate speech Detection</a>
-        </li>
-      </ul>
-    </div>
-
-
-    <div class="row container-fluid" id = "cols" style = "margin-left:0rem;">
-      <section style=" width:100%; max-width:100%; padding-top: 10px;">
+      <!-- offensive language detection -->
+      <div class="row container-fluid" id = "cols" style = "margin-left:0rem;">
+        <section style=" width:100%; max-width:100%; padding-top: 10px;">
           <div class="container-fluid">
             <div class="row">
-               <div class="col-lg-12">
-                  <div class="tab-content" id="pills-tabContent" style = "margin-top:2rem; margin-bottom:7rem;">
-                      <!-- Graph from chartjs  -->
-  <div class="tab-pane fade active show" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-    <div class = "s002">
-      <h2> Please choose classifier and enter your text </h2>
-      <div class = "line-break"></div>
-      <p1> Your entered text will be run with the classifier selected to detect offensiveness in the text. 
-       If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
-       The model only works for Arabic text. </p1>
-    </div>
-    <div style = "width: 80%; margin: auto; padding-left: 1rem;">
-      <input id = "searchType" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
-      <br>
-    </div>
+              <div class="col-lg-12">
+                <div class="tab-content" id="pills-tabContent" style = "margin-top:2rem; margin-bottom:7rem;">
+                  
+                  <!-- tab content for offensive lang detection -->
+                  <div class="tab-pane fade active show" id="offensive" role="tabpanel" aria-labelledby="offensive"> 
+                        
+                        <!-- instructions for user -->
+                        <div class = "s002">
+                          <h2> Please choose classifier and enter your text </h2>
+                          <div class = "line-break"></div>
+                          <p1> Your entered text will be run with the classifier selected to detect offensiveness in the text. 
+                           If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
+                           The model only works for Arabic text. </p1>
+                        </div>
+                        <!-- end of class s002 -->
 
-    <div class="s003">
+                        <!-- checkbox to decide whether to query twitter and analyze tweets or analyze input text -->
+                        <div style = "width: 80%; margin: auto; padding-left: 1rem;">
+                          <input id = "searchType" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
+                          <br>
+                        </div> <!-- end of checkbox -->
+
+                        <!-- search box and buttons -->
+                        <div class="s003">
+                          <form name = "myForm" action="#" onsubmit="return false">
+                            <div class="inner-form">
+                              
+                              <!-- choose classifier -->
+                              <div class="input-field first-wrap">
+                                <div class="input-select" style= "">
+                                    <select id="classifiername" style = "height:100%" data-trigger=""  name="choices-single-default">
+                                        <option placeholder="">Choose Classifier</option>
+                                        <!-- <option>Multinomial Naive Bayes (Word Unigram)</option> -->
+                                        <!-- <option>Multinomial Naive Bayes (Word 3-gram)</option> -->
+                                        <!-- <option>Linear SVM (Word Unigram)</option> -->
+                                        <!-- <option>Linear SVM (Word 3-gram)</option> -->
+                                        <option>Linear SVM (Char 3-gram)</option>
+                                        <!-- <option>Linear SVM (Char 5-gram)</option> -->
+                                    </select>
+                                </div>
+                              </div>
+
+                              <!-- input field for query/text -->
+                              <div class="input-field second-wrap">
+                                <input id="search" type="text" placeholder="Enter text for offensive language detection" />
+                              </div>
+
+                              <!-- btn for making query -->
+                              <div class="input-field third-wrap">
+                                <button class="btn-search" type="button" onclick="check_offense()">
+                                  <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                    <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
+                                  </svg>
+                                </button>
+                              </div>
+                              
+                              <!-- button for generating random samples -->
+                              <div class="input-field fourth-wrap">
+                                <button class="btn-random" type="button" onclick="randomizeOff()"> Random Sample </button>
+                              </div>
+                            </div> <!-- end of inner-form -->
+                          </form>
+                        </div> <!-- end of searchbox and buttons -->
 
 
-      <form name = "myForm" action="#" onsubmit="return false">
-        <div class="inner-form">
-          <div class="input-field first-wrap">
-            <div class="input-select" style= "">
+                        <!-- processomg message -->
+                        <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
 
-                <select id="classifiername" style = "height:100%" data-trigger=""  name="choices-single-default">
-                    <option placeholder="">Choose Classifier</option>
-                    <!-- <option>Multinomial Naive Bayes (Word Unigram)</option> -->
-                    <!-- <option>Multinomial Naive Bayes (Word 3-gram)</option> -->
-                    <!-- <option>Linear SVM (Word Unigram)</option> -->
-                    <!-- <option>Linear SVM (Word 3-gram)</option> -->
-                    <option>Linear SVM (Char 3-gram)</option>
-                    <!-- <option>Linear SVM (Char 5-gram)</option> -->
 
-                </select>
-                    <script>
-                      const choices = new Choices('[data-trigger]',
-                      {
-                        searchEnabled: false,
-                        itemSelectText: '',
-                      });
+                        <!-- pie chart for offensive lang queries -->
+                        <div class = "row" style = "max-width: 80%; margin: auto;">
 
-                    </script>
+                          <div class="col-lg-4 col-sm-4 col-xs-4 text-center"> 
+                            <div id = "" class = "top-red" style="">
+                              <h4 class = "text-danger" style = "margin: auto; margin-top: 1rem;"> Top users posting offensive tweets </h4> <br>
+                              <table style="width:70%; overflow-x:auto; margin: auto; padding-top: 1.5rem;">
+                                <thead width = "20%">
+                                  <tr>
+                                    <th width = "35%">User</th>
+                                    <th width = "40%">Name</th>
+                                    <th width = "25%">Tweet Count</th>
+                                  </tr>
+                                </thead>
+                                <tbody> <!-- body will be appended from javascript --> </tbody>
+                              </table>
+                            </div>
+                           </div>
 
-            </div>
-          </div>
-          <div class="input-field second-wrap">
-            <input id="search" type="text" placeholder="Enter text for offensive language detection" />
-          </div>
+                          <div class="col-lg-4 col-sm-4 col-xs-4 text-center"> 
+                            <div class = "chart" style="max-width: 90%; margin: auto;"> 
+                              <canvas id="pie-chart" class = "pies" width="800" height="600" style = ""></canvas>
+                            </div>
+                          </div>
 
-          <div class="input-field third-wrap">
-            <button class="btn-search" type="button" onclick="check_offense()">
-              <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
-              </svg>
-            </button>
-          </div>
-            <div class="input-field fourth-wrap">
-              <button class="btn-random" type="button" onclick="randomizeOff()">
 
-              Random Sample
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
+                          <div class="col-lg-4 col-sm-4 col-xs-4 text-center"> 
+                            <div id = "" class = "top-blue" style="">
+                              <h4 class = "text-primary" style = "margin: auto; margin-top: 1rem;"> Top users posting non offensive tweets </h4> <br>
+                              <table style="width:70%; overflow-x:auto; margin: auto; padding-top: 1.5rem;">
+                                <thead width = "20%">
+                                  <tr>
+                                    <th width = "35%">User</th>
+                                    <th width = "40%">Name</th>
+                                    <th width = "25%">Tweet Count</th>
+                                  </tr>
+                                </thead>
+                                <tbody> <!-- body will be appended from javascript --> </tbody>
+                              </table>
+                            </div>
+                          </div>
 
-    <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
 
-    <div class = "chart" style="max-width: 40%; margin: auto;"> 
+                         </div>
 
-      <canvas id="pie-chart" width="800" height="450" style = "padding:0.5rem; border: 1px solid;"></canvas>
-    </div>
 
-    <div class="s004" style="">
-      <p id = info1 style= "width: 80%;margin: auto; margin-top: 1rem;"> </p>
-      <div id = "indTable">
-        <table style="overflow-x:auto; width = 100%;">
-          <thead width = "20%">
-              <tr>
-                  <!-- <th width = "10%">Tweet No.</th> -->
-                  <th width = "80%">Text</th>
-                  <th width = "20%">Offensive?</th>
-              </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
+                        <!-- tables with results -->
+                        <div class="s004" style="">
+                          <!-- infor about the table -->
+                          <p id = info1 class = "infos" style= "width: 80%;margin: auto; margin-top: 1rem;"> </p>
+                          
+                          <!-- contains offensive tweets in case of query -->
+                          <div id = "indTable" class = "tables red-table">
+                            <table style="overflow-x:auto; width = 100%;">
+                              <thead width = "20%">
+                                <tr>
+                                  <th width = "80%">Text</th>
+                                  <th width = "20%">Offensive?</th>
+                                </tr>
+                              </thead>
+                              <tbody> <!-- body will be appended from javascript --> </tbody>
+                            </table>
+                          </div>  <!-- end of offensive table -->
+                          
+                          <!-- infor about the table -->
+                          <p id = info2 class = "infos" style= "width: 80%;margin: auto; margin-top: 2rem;"> </p>
 
-      <p id = info2 style= "width: 80%;margin: auto; margin-top: 2rem;"> </p>
-      <div id = "indTable2" style="">
-        <table style="overflow-x:auto; width = 100%;">
-          <thead width = "20%">
-              <tr>
-                  <!-- <th width = "10%">Tweet No.</th> -->
-                  <th width = "80%">Text</th>
-                  <th width = "20%">Offensive?</th>
-              </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
+                          <!-- contains non offensive tweets in case of query -->
+                          <div id = "indTable2" class = "tables blue-table" style="">
+                            <table style="overflow-x:auto; width = 100%;">
+                              <thead width = "20%">
+                                <tr>
+                                  <th width = "80%">Text</th>
+                                  <th width = "20%">Offensive?</th>
+                                </tr>
+                              </thead>
+                              <tbody> <!-- body will be appended from javascript --> </tbody>
+                            </table>
+                          </div>
 
-      <div id = "indTable3" style="">
-        <table style="overflow-x:auto; width = 100%;">
-          <thead width = "20%">
-              <tr>
-                  <!-- <th width = "10%">Tweet No.</th> -->
-                  <th width = "80%">Text</th>
-                  <th width = "20%">Offensive?</th>
-              </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
-      <p1 id = "response"> </p1>
-    </div>
-  </div>
+                          <!-- contains results for single text analysis. both offensive and non-offensive are putt together -->
+                          <div id = "indTable3" class = "tables both-table" style="">
+                            <table style="overflow-x:auto; width = 100%;">
+                              <thead width = "20%">
+                                <tr>
+                                  <th width = "80%">Text</th>
+                                  <th width = "20%">Offensive?</th>
+                                </tr>
+                              </thead>
+                              <tbody> <!-- body will be appended from javascript --> </tbody>
+                            </table>
+                          </div> 
 
-  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
-    <div class = "s002">
-      <h2> Please choose classifier and enter your text </h2>
-      <div class = "line-break"></div>
-      <p1> Your entered text will be run with the classifier selected to detect if it's an advertisement.
+                        </div> <!-- end of tables with results -->
+                  </div> <!-- end of violence detection tab -->
 
-      If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
-      The model only works for Arabic text. </p1>
-    </div>
-    <div style = "width: 80%; margin: auto; padding-left: 1rem;">
-      <input id = "searchType2" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
-      <br>
-    </div>
-    <div class="s003">
-      <form name = "myForm" action="#" onsubmit="return false">
-        <div class="inner-form">
-          <div class="input-field first-wrap">
-            <div class="input-select" style= "">
+                  <!-- advertisement detection tab -->
+                  <div class="tab-pane fade" id="advertisement" role="tabpanel" aria-labelledby="advertisement">
+                        
+                        <!-- user instructions -->
+                        <div class = "s002">
+                          <h2> Please choose classifier and enter your text </h2>
+                          <div class = "line-break"></div>
+                          <p1> Your entered text will be run with the classifier selected to detect if it's an advertisement.
+                          If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
+                          The model only works for Arabic text. </p1>
+                        </div>
 
-                <select id="classifiername2" style = "height:100%" data-trigger=""  name="choices-single-default">
-                    <option placeholder="">Choose Classifier</option>
-                    <!-- <option>Multinomial Naive Bayes (Word Unigram)</option> -->
-                    <!-- <option>Multinomial Naive Bayes (Word 3-gram)</option> -->
-                    <!-- <option>Linear SVM (Word Unigram)</option> -->
-                    <!-- <option>Linear SVM (Word 3-gram)</option> -->
-                    <option>Linear SVM (Char 3-gram)</option>
-                    <!-- <option>Linear SVM (Char 5-gram)</option> -->
+                        <!-- checkbox for deciding whether to query twitter and analyze result or just analyze input text -->
+                        <div style = "width: 80%; margin: auto; padding-left: 1rem;">
+                          <input id = "searchType2" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
+                          <br>
+                        </div>
 
-                </select>
-                    <script>
-                      const choices = new Choices('[data-trigger]',
-                      {
-                        searchEnabled: false,
-                        itemSelectText: '',
-                      });
+                        <!-- form for user input -->
+                        <div class="s003">
+                          <form name = "myForm" action="#" onsubmit="return false">
+                            <div class="inner-form">
 
-                    </script>
+                              <!-- choose classifier -->
+                              <div class="input-field first-wrap">
+                                <div class="input-select" style= "">
+                                    <select id="classifiername2" style = "height:100%" data-trigger=""  name="choices-single-default">
+                                        <option placeholder="">Choose Classifier</option>
+                                        <!-- <option>Multinomial Naive Bayes (Word Unigram)</option> -->
+                                        <!-- <option>Multinomial Naive Bayes (Word 3-gram)</option> -->
+                                        <!-- <option>Linear SVM (Word Unigram)</option> -->
+                                        <!-- <option>Linear SVM (Word 3-gram)</option> -->
+                                        <option>Linear SVM (Char 3-gram)</option>
+                                        <!-- <option>Linear SVM (Char 5-gram)</option> -->
 
-            </div>
-          </div>
-          <div class="input-field second-wrap">
-            <input id="search2" type="text" placeholder="Enter text for advertisement detection" />
-          </div>
-          <div class="input-field third-wrap">
-            <button class="btn-search" type="button" onclick="check_ad()">
-              <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
-              </svg>
-            </button>
-          </div>
-          <div class="input-field fourth-wrap">
-              <button class="btn-random" type="button" onclick="randomizeAd()">
+                                    </select>
+                                </div>
+                              </div>
 
-              Random Sample
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
+                              <!-- text for query/analysis -->
+                              <div class="input-field second-wrap">
+                                <input id="search2" type="text" placeholder="Enter text for advertisement detection" />
+                              </div>
 
-    <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
+                              <!-- search button -->
+                              <div class="input-field third-wrap">
+                                <button class="btn-search" type="button" onclick="check_ad()">
+                                  <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                    <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
+                                  </svg>
+                                </button>
+                              </div>
 
-    <div class = "chart" style="max-width: 40%; margin: auto;"> 
-      <canvas id="pie-chart2" width="800" height="450" style = "padding:0.5rem; border: 1px solid;"></canvas>
-    </div>
-    <div class="s004" style="">
-      <p id = info3 style= "width: 80%;margin: auto; margin-top: 1rem;"> </p>
-      <div id = "indTable4">
-        <table style="overflow-x:auto; width = 100%;">
-          <thead width = "20%">
-              <tr>
-                  <!-- <th width = "10%">Tweet No.</th> -->
-                  <th width = "80%">Text</th>
-                  <th width = "20%">Advertisement?</th>
-              </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
+                              <!-- generate random ad samples/queries -->
+                              <div class="input-field fourth-wrap">
+                                  <button class="btn-random" type="button" onclick="randomizeAd()">Random Sample</button>
+                              </div>
 
-      <p id = info4 style= "width: 80%;margin: auto; margin-top: 2rem;"> </p>
-      <div id = "indTable5" style="">
-        <table style="overflow-x:auto; width = 100%;">
-          <thead width = "20%">
-              <tr>
-                  <!-- <th width = "10%">Tweet No.</th> -->
-                  <th width = "80%">Text</th>
-                  <th width = "20%">Advertisement?</th>
-              </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
+                            </div> <!-- end of inner-form -->
+                          </form>
+                        </div> <!-- end of searchbox and buttons -->
 
-      <div id = "indTable6" style="">
-        <table style="overflow-x:auto; width = 100%;">
-          <thead width = "20%">
-              <tr>
-                  <!-- <th width = "10%">Tweet No.</th> -->
-                  <th width = "80%">Text</th>
-                  <th width = "20%">Advertisement?</th>
-              </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
-      <p1 id = "response"> </p1>
-    </div>
-  </div>
+                        <!--  message shown whilr processing  -->
+                        <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
 
-   <div class="tab-pane fade" id="hate-speech" role="tabpanel" aria-labelledby="hate-speech-tab">
-    <div class = "s002">
-      <h2> Please choose classifier and enter your text </h2>
-      <div class = "line-break"></div>
-      <p1> Your entered text will be run with the classifier selected to detect if it's hate speech.
+                        <!-- pie chart for advertisment distribution if twitter is queried -->
+                        <div class = "row" style = "max-width: 80%; margin: auto;">
 
-      If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
-      The model only works for Arabic text. </p1>
-    </div>
-    <div style = "width: 80%; margin: auto; padding-left: 1rem;">
-      <input id = "searchType3" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
-      <br>
-    </div>
-    <div class="s003">
-      <form name = "myForm" action="#" onsubmit="return false">
-        <div class="inner-form">
-          <div class="input-field first-wrap">
-            <div class="input-select" style= "">
+                          <div class="col-lg-3 col-sm-3 col-xs-3 text-center"> 
+                            <div id = "" class = "top-red" style="">
+                              <h4 class = "text-danger" style = "margin: auto; margin-top: 1rem;"> Top users posting ad tweets </h4> <br>
+                              <table style="width:70%; overflow-x:auto; margin: auto; padding-top: 1.5rem;">
+                                <thead width = "20%">
+                                  <tr>
+                                    <th width = "35%">User</th>
+                                    <th width = "40%">Name</th>
+                                    <th width = "25%">Tweet Count</th>
+                                  </tr>
+                                </thead>
+                                <tbody> <!-- body will be appended from javascript --> </tbody>
+                              </table>
+                            </div>
+                           </div>
 
-                <select id="classifiername3" style = "height:100%" data-trigger=""  name="choices-single-default">
-                    <option placeholder="">Choose Classifier</option>
-                    <!-- <option>Multinomial Naive Bayes (Word Unigram)</option> -->
-                    <!-- <option>Multinomial Naive Bayes (Word 3-gram)</option> -->
-                    <!-- <option>Linear SVM (Word Unigram)</option> -->
-                    <!-- <option>Linear SVM (Word 3-gram)</option> -->
-                    <!-- <option>Linear SVM (Char 3-gram)</option> -->
-                    <option>Linear SVM (Char 3-gram)</option>
+                          <div class="col-lg-6 col-sm-3 col-xs-3 text-center"> 
+                            <div class = "chart" style="max-width: 90%; margin: auto;"> 
+                              <canvas id="pie-chart2" class = "pies" width="800" height="600" style = ""></canvas>
+                            </div>
+                          </div>
 
-                </select>
-                    <script>
-                      const choices = new Choices('[data-trigger]',
-                      {
-                        searchEnabled: false,
-                        itemSelectText: '',
-                      });
 
-                    </script>
+                          <div class="col-lg-3 col-sm-3 col-xs-3 text-center"> 
+                            <div id = "" class = "top-blue" style="">
+                              <h4 class = "text-primary" style = "margin: auto; margin-top: 1rem;"> Top users posting non ad tweets </h4> <br>
+                              <table style="width:70%; overflow-x:auto; margin: auto; padding-top: 1.5rem;">
+                                <thead width = "20%">
+                                  <tr>
+                                    <th width = "35%">User</th>
+                                    <th width = "40%">Name</th>
+                                    <th width = "25%">Tweet Count</th>
+                                  </tr>
+                                </thead>
+                                <tbody> <!-- body will be appended from javascript --> </tbody>
+                              </table>
+                            </div>
+                          </div>
 
-            </div>
-          </div>
-          <div class="input-field second-wrap">
-            <input id="search3" type="text" placeholder="Enter text for hate speech detection" />
-          </div>
-          <div class="input-field third-wrap">
-            <button class="btn-search" type="button" onclick="check_hate()">
-              <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
-              </svg>
-            </button>
-          </div>
-          <div class="input-field fourth-wrap">
-              <button class="btn-random" type="button" onclick="randomizeHate()">
 
-              Random Sample
-            </button>
-          </div>
-        </div>
-      </form>
-    </div>
+                         </div>
 
-    <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
+                        <!-- tables containing resules -->
+                        <div class="s004" style="">
 
-    <div class = "chart" style="max-width: 40%; margin: auto;"> 
-      <canvas id="pie-chart3" width="800" height="450" style = "padding:0.5rem; border: 1px solid;"></canvas>
-    </div>
-    <div class="s004" style="">
-      <p id = info5 style= "width: 80%;margin: auto; margin-top: 1rem;"> </p>
-      <div id = "indTable7">
-        <table style="overflow-x:auto; width = 100%;">
-          <thead width = "20%">
-              <tr>
-                  <!-- <th width = "10%">Tweet No.</th> -->
-                  <th width = "80%">Text</th>
-                  <th width = "20%">Hate speech?</th>
-              </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
+                          <!-- info about advertisement tweets -->
+                          <p id = info3 class = "infos" style= "width: 80%;margin: auto; margin-top: 1rem;"> </p>
+                          
+                          <!-- table with advertisment tweets -->
+                          <div id = "indTable4" class = "tables red-table">
+                            <table style="overflow-x:auto; width = 100%;">
+                              <thead width = "20%">
+                                <tr>
+                                  <th width = "80%">Text</th>
+                                  <th width = "20%">Advertisement?</th>
+                                </tr>
+                              </thead>
+                              <tbody> <!-- body will be appended from javascript --> </tbody>
+                            </table>
+                          </div>
 
-      <p id = info6 style= "width: 80%;margin: auto; margin-top: 2rem;"> </p>
-      <div id = "indTable8" style="">
-        <table style="overflow-x:auto; width = 100%;">
-          <thead width = "20%">
-              <tr>
-                  <!-- <th width = "10%">Tweet No.</th> -->
-                  <th width = "80%">Text</th>
-                  <th width = "20%">Hate speech?</th>
-              </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
+                          <!-- info about non-advertisement tweets -->
+                          <p id = info4 style= "width: 80%;margin: auto; margin-top: 2rem;"> </p>
+                          
+                          <!-- table containing advertisement tweets -->
+                          <div id = "indTable5" class = "tables blue-table" style="">
+                            <table style="overflow-x:auto; width = 100%;">
+                              <thead width = "20%">
+                                <tr>
+                                  <th width = "80%">Text</th>
+                                  <th width = "20%">Advertisement?</th>
+                                </tr>
+                              </thead>
+                              <tbody> <!-- body will be appended from javascript --> </tbody>
+                            </table>
+                          </div>
 
-      <div id = "indTable9" style="">
-        <table style="overflow-x:auto; width = 100%;">
-          <thead width = "20%">
-              <tr>
-                  <!-- <th width = "10%">Tweet No.</th> -->
-                  <th width = "80%">Text</th>
-                  <th width = "20%">Hate speech?</th>
-              </tr>
-          </thead>
-          <tbody>
-          </tbody>
-        </table>
-      </div>
-      <p1 id = "response"> </p1>
-    </div>
-  </div>
-                  </div>
-                  </div>
-              </div> <!-- END row-->
+                          <!-- table containing both ad and non-ad tweets when query checkbox is not checked -->
+                          <div id = "indTable6" class = "tables both-table" style="">
+                            <table style="overflow-x:auto; width = 100%;">
+                              <thead width = "20%">
+                                <tr>
+                                  <th width = "80%">Text</th>
+                                  <th width = "20%">Advertisement?</th>
+                                </tr>
+                              </thead>
+                              <tbody> <!-- body will be appended from javascript --> </tbody>
+                            </table>
+                          </div>
+
+                        </div> <!-- end of all tables -->
+                  </div> <!-- end of ad-detection tab -->
+
+                  <!-- tab for hate speech -->
+                  <div class="tab-pane fade" id="hate-speech" role="tabpanel" aria-labelledby="hate-speech-tab">
+                        
+                        <!-- instructions for user -->
+                        <div class = "s002">
+                          <h2> Please choose classifier and enter your text </h2>
+                          <div class = "line-break"></div>
+                          <p1> Your entered text will be run with the classifier selected to detect if it's hate speech.
+
+                          If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
+                          The model only works for Arabic text. </p1>
+                        </div>
+
+                        <!-- checkbox for deciding whether to query twitter and analyze result or just analyze input text -->
+                        <div style = "width: 80%; margin: auto; padding-left: 1rem;">
+                          <input id = "searchType3" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
+                          <br>
+                        </div>
+
+                        <!-- user input -->
+                        <div class="s003">
+                          <form name = "myForm" action="#" onsubmit="return false">
+                            <div class="inner-form">
+
+                              <!-- choose classifier -->
+                              <div class="input-field first-wrap">
+                                <div class="input-select" style= "">
+                                    <select id="classifiername3" style = "height:100%" data-trigger=""  name="choices-single-default">
+                                        <option placeholder="">Choose Classifier</option>
+                                        <!-- <option>Multinomial Naive Bayes (Word Unigram)</option> -->
+                                        <!-- <option>Multinomial Naive Bayes (Word 3-gram)</option> -->
+                                        <!-- <option>Linear SVM (Word Unigram)</option> -->
+                                        <!-- <option>Linear SVM (Word 3-gram)</option> -->
+                                        <!-- <option>Linear SVM (Char 3-gram)</option> -->
+                                        <option>Linear SVM (Char 3-gram)</option>
+                                    </select>
+                                </div>
+                              </div>
+
+                              <!-- input text/query -->
+                              <div class="input-field second-wrap">
+                                <input id="search3" type="text" placeholder="Enter text for hate speech detection" />
+                              </div>
+
+                              <!-- search button -->
+                              <div class="input-field third-wrap">
+                                <button class="btn-search" type="button" onclick="check_hate()">
+                                  <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                    <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
+                                  </svg>
+                                </button>
+                              </div>
+
+                              <!-- generate random ad samples -->
+                              <div class="input-field fourth-wrap">
+                                <button class="btn-random" type="button" onclick="randomizeHate()"> Random Sample </button>
+                              </div>
+
+                            </div> <!-- end of inner-form -->
+                          </form>
+                        </div> <!-- end of searchbox and buttons -->
+
+                        <!--  message shown whilE processing  -->
+                        <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
+
+                        <!-- pie chart for hate speech detection -->
+                        <div class = "row" style = "max-width: 80%; margin: auto;">
+
+                          <div class="col-lg-3 col-sm-3 col-xs-3 text-center"> 
+                            <div id = "" class = "top-red" style="">
+                              <h4 class = "text-danger" style = "margin: auto; margin-top: 1rem;"> Top users posting hate speech tweets </h4> <br>
+                              <table style="width:70%; overflow-x:auto; margin: auto; padding-top: 1.5rem;">
+                                <thead width = "20%">
+                                  <tr>
+                                    <th width = "35%">User</th>
+                                    <th width = "40%">Name</th>
+                                    <th width = "25%">Tweet Count</th>
+                                  </tr>
+                                </thead>
+                                <tbody> <!-- body will be appended from javascript --> </tbody>
+                              </table>
+                            </div>
+                           </div>
+
+                          <div class="col-lg-6 col-sm-3 col-xs-3 text-center"> 
+                            <div class = "chart" style="max-width: 90%; margin: auto;"> 
+                              <canvas id="pie-chart3" class = "pies" width="800" height="600" style = ""></canvas>
+                            </div>
+                          </div>
+
+
+                          <div class="col-lg-3 col-sm-3 col-xs-3 text-center"> 
+                            <div id = "" class = "top-blue" style="">
+                              <h4 class = "text-primary" style = "margin: auto; margin-top: 1rem;"> Top users posting non hate speech tweets </h4> <br>
+                              <table style="width:70%; overflow-x:auto; margin: auto; padding-top: 1.5rem;">
+                                <thead width = "20%">
+                                  <tr>
+                                    <th width = "35%">User</th>
+                                    <th width = "40%">Name</th>
+                                    <th width = "25%">Tweet Count</th>
+                                  </tr>
+                                </thead>
+                                <tbody> <!-- body will be appended from javascript --> </tbody>
+                              </table>
+                            </div>
+                          </div>
+
+
+                         </div>
+
+                        <!-- Tables for results -->
+                        <div class="s004" style="">
+                          <!-- info about table containing hate speech -->
+                          <p id = info5 class = "infos" style= "width: 80%;margin: auto; margin-top: 1rem;"> </p>
+                          
+                          <!-- contains hate speech tweets -->
+                          <div id = "indTable7" class = "tables red-table">
+                            <table style="overflow-x:auto; width = 100%;">
+                              <thead width = "20%">
+                                <tr>
+                                  <th width = "80%">Text</th>
+                                  <th width = "20%">Hate speech?</th>
+                                </tr>
+                              </thead>
+                              <tbody> <!-- body will be appended from javascript --> </tbody>
+                            </table>
+                          </div>
+
+                          <!-- info about non hate speech tweets -->
+                          <p id = info6 class = "infos" style= "width: 80%;margin: auto; margin-top: 2rem;"> </p>
+
+                          <!-- contains non hate speech tweets -->
+                          <div id = "indTable8" class = "tables blue-table" style="">
+                            <table style="overflow-x:auto; width = 100%;">
+                              <thead width = "20%">
+                                <tr>
+                                  <th width = "80%">Text</th>
+                                  <th width = "20%">Hate speech?</th>
+                                </tr>
+                              </thead>
+                              <tbody> <!-- body will be appended from javascript --> </tbody>
+                            </table>
+                          </div>
+
+                          <!-- contains both hs/non-hs results when query checkbox is unchecked. i.e single text analysis -->
+                          <div id = "indTable9" class = "tables both-table" style="">
+                            <table style="overflow-x:auto; width = 100%;">
+                              <thead width = "20%">
+                                <tr>
+                                  <th width = "80%">Text</th>
+                                  <th width = "20%">Hate speech?</th>
+                                </tr>
+                              </thead>
+                              <tbody> <!-- body will be appended from javascript --> </tbody>
+                            </table>
+                          </div>
+
+                        </div> <!-- end of tables for hs detection -->
+                  </div> <!-- end of hs detection tab -->
+                </div> <!-- END tab-content -->
+              </div> <!-- END col-lg-12 -->
+            </div> <!-- END row-->
           </div> <!-- END container-->
-      </section>
-    </div>
-  </section> <!-- end of FAQ section -->
-</div>
+        </section> <!-- END internal section -->
+      </div> <!-- END row container-fluid -->
+  </section> <!-- END of main section -->
+
+
   <!-- Footer -->
   <footer class="small text-left text-white-50" style = "padding-right:0rem; padding-bottom:2rem; max-height: 3rem;" id = "simfooter">
-    
     <div class="row container-fluid">
       <div class="col-lg-12 text-right"> Copyright &copy; 2019 QCRI </div>
     </div>
   </footer>
-    <script src="{{ url_for('static', filename='js/jquery/jquery.min.js')}}"></script>
 
-    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
-
-
-    <script src="{{ url_for('static', filename='js/choices.js')}}"></script>
-    <script src="{{ url_for('static', filename='js/detect.js')}}"></script>
+  <!-- JAVASCRIPT -->
+  <script src="{{ url_for('static', filename='js/jquery/jquery.min.js')}}"></script>
+  <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"></script>
+  <script src="{{ url_for('static', filename='js/detect.js')}}"></script>
 
   </body>
-  <!-- This templates was made by Colorlib (https://colorlib.com)
 </html>
