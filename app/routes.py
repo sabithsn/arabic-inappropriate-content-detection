@@ -29,7 +29,7 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify=True)
 
 
-max_tweets = 2000
+max_tweets = 100
 # query = "@QF OR @ajarabic"
 result_type = "recent"
 
@@ -252,6 +252,7 @@ def queryAd():
 
     users = []
     names = []
+    alltext = ""
     searched_tweets = searched_tweets[:max_tweets]
 
     # gets tweet text and info about the user
@@ -264,9 +265,14 @@ def queryAd():
         names.append(name)
 
         searched_tweets[i] = searched_tweets[i].text
+        alltext += (" " + searched_tweets[i])
+
+
+    word_counts, hash_counts = get_frequency(alltext, 20)
+
 
     if len (searched_tweets) == 0:
-        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[]})
+        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[], "word_counts":[], "hash_counts":[]})
     # gets word n gram features and performs classification using
     # model chosen
     n_gram_features = vectorizer.transform(searched_tweets)
@@ -313,7 +319,7 @@ def queryAd():
     # prediction = str(predicted_labels[0])
     # print (prediction)
 
-    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names})
+    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names, "word_counts":word_counts, "hash_counts":hash_counts})
 
 @app.route('/detectOffense', methods=['POST'])
 def detectOffense():
@@ -591,6 +597,7 @@ def queryHate():
 
     users = []
     names = []
+    alltext = ""
     searched_tweets = searched_tweets[:max_tweets]
 
     # gets tweet text and info about the user
@@ -603,9 +610,14 @@ def queryHate():
         names.append(name)
 
         searched_tweets[i] = searched_tweets[i].text
+        alltext += (" " + searched_tweets[i])
+
+
+    word_counts, hash_counts = get_frequency(alltext, 20)
+
 
     if len (searched_tweets) == 0:
-        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[]})
+        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[], "word_counts":[], "hash_counts":[]})
     # gets word n gram features and performs classification using
     # model chosen
     n_gram_features = vectorizer.transform(searched_tweets)
@@ -652,7 +664,7 @@ def queryHate():
     # prediction = str(predicted_labels[0])
     # print (prediction)
 
-    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names})
+    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names, "word_counts":word_counts, "hash_counts":hash_counts})
 
 
 @app.route('/detectSentiment', methods=['POST'])
@@ -759,6 +771,7 @@ def querySentiment():
 
     users = []
     names = []
+    alltext = ""
     searched_tweets = searched_tweets[:max_tweets]
 
     # gets tweet text and info about the user
@@ -771,9 +784,14 @@ def querySentiment():
         names.append(name)
 
         searched_tweets[i] = searched_tweets[i].text
+        alltext += (" " + searched_tweets[i])
+
+
+    word_counts, hash_counts = get_frequency(alltext, 20)
+
 
     if len (searched_tweets) == 0:
-        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[]})
+        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[], "word_counts":[], "hash_counts":[]})
     # gets word n gram features and performs classification using
     # model chosen
     n_gram_features = vectorizer.transform(searched_tweets)
@@ -790,14 +808,14 @@ def querySentiment():
         user = users[i]
         name = names[i]
 
-        if (label == "Negative"):
+        if (label == "Positive"):
             # stores name of the user
             blues[user] = name
             if user in blue_users:
                 blue_users[user] += 1
             else:
                 blue_users[user] = 1
-        elif (label == "Positive"):
+        elif (label == "Negative"):
             #stores name of the red user
             reds[user] = name
             if user in red_users:
@@ -820,5 +838,5 @@ def querySentiment():
     # prediction = str(predicted_labels[0])
     # print (prediction)
 
-    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names})
+    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names, "word_counts":word_counts, "hash_counts":hash_counts})
 

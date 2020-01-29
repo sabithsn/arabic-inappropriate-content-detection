@@ -113,8 +113,20 @@ var hateSamples = [
 "اخواني المترجمين. استفسار بسيط  NEWLINE مين عنده خبره باختبار الترجمة بشركة ڤينيل والمقابلة فيها؟ وكيف استعد لها. وشكرًا…",
 ]
 
+var wordCloud = "";
+var hashCloud = "";
 /* initiating function. hides some elements and initiates charts */
 $(document).ready(function(){
+
+    wordCloud = $("#word-cloud").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+    hashCloud = $("#hash-cloud").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+
+    wordCloud = $("#word-cloud-ad").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
+    hashCloud = $("#hash-cloud-ad").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
+    wordCloud = $("#word-cloud-hate").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
+    hashCloud = $("#hash-cloud-hate").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
+    wordCloud = $("#word-cloud-sentiment").jQCloud([], { width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
+    hashCloud = $("#hash-cloud-sentiment").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
   // hide all tables, info about tables etc
   $('.tables').hide();
   $(".infos").hide();
@@ -276,6 +288,13 @@ function clear_table(){
   $(".top-blue").hide();
   $(".top-red").hide();
   $("table tbody").html('');
+
+
+  // $("#word-cloud").hide();
+  // $("#word-cloud").hide();
+  $(".jqcloud").hide();
+
+
 }
 
 /**
@@ -305,6 +324,10 @@ function query_offense() {
       $('#indTable3').hide();
       $("#indTable").show();
       $('#indTable2').show();
+      $("#word-cloud").show();
+      $("#hash-cloud").show();
+
+
       $("#indTable table tbody").html("");
       $("#indTable2 table tbody").html("");
       $("#indTable3 table tbody").html("");
@@ -369,8 +392,22 @@ function query_offense() {
 
       var wordCounts = response["word_counts"];
       var hashCounts = response["hash_counts"];
-      console.log(wordCounts);
-      console.log(hashCounts);
+
+      var freqWords = []
+      var freqHash = []
+
+      for (var i = 0; i < wordCounts.length; i++){
+        freqWords.push({text : wordCounts[i][0], weight : wordCounts[i][1]});
+      }
+
+      for (var i = 0; i < hashCounts.length; i++){
+        freqHash.push({text : hashCounts[i][0], weight : hashCounts[i][1]});
+      }
+      console.log (freqHash);
+      console.log(freqWords);
+
+      $('#word-cloud').jQCloud('update', freqWords);
+      $('#hash-cloud').jQCloud('update', freqHash);
 
 
       // display the tables containing top users
@@ -422,6 +459,8 @@ function detect_offense() {
       $('#indTable3').show();
       $(".top-blue").hide();
       $(".top-red").hide(); 
+      $(".jqcloud").hide();
+
       
       //  updates table based on label
       var level = response['level']
@@ -462,6 +501,14 @@ function query_ad(){
       $('#indTable6').hide();
       $("#indTable4").show();
       $('#indTable5').show();
+      $("#word-cloud-ad").show();
+      $("#hash-cloud-ad").show();
+
+      // $("#word-cloud-ad").jQCloud('destroy');
+      // $("#hash-cloud-ad").jQCloud('destroy');
+      // wordCloudSent = $("#word-cloud-ad").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+      // hashCloudSent = $("#hash-cloud-ad").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+
 
       $("#indTable4 table tbody").html("");
       $("#indTable5 table tbody").html("");
@@ -518,6 +565,25 @@ function query_ad(){
          $(".top-red table tbody").append(markup);
       }
 
+      var wordCounts = response["word_counts"];
+      var hashCounts = response["hash_counts"];
+
+      var freqWords = []
+      var freqHash = []
+
+      for (var i = 0; i < wordCounts.length; i++){
+        freqWords.push({text : wordCounts[i][0], weight : wordCounts[i][1]});
+      }
+
+      for (var i = 0; i < hashCounts.length; i++){
+        freqHash.push({text : hashCounts[i][0], weight : hashCounts[i][1]});
+      }
+      console.log (freqHash);
+      console.log(freqWords);
+
+      $('#word-cloud-ad').jQCloud('update', freqWords);
+      $('#hash-cloud-ad').jQCloud('update', freqHash);
+
       // display the tables containing top users
       $(".top-blue").show();
       $(".top-red").show(); 
@@ -567,6 +633,13 @@ function detect_ad() {
       $("#indTable4").hide();
       $('#indTable5').hide();
       $('#indTable6').show();
+      $(".top-blue").hide();
+      $(".top-red").hide(); 
+
+
+      // $("#word-cloud-ad").jQCloud('destroy');
+      // $("#hash-cloud-ad").jQCloud('destroy');
+      // $(".jqcloud").hide();
 
       // updates table based on predicted label
       var level = response['level']
@@ -608,6 +681,14 @@ function query_hate(){
       $('#indTable9').hide();
       $("#indTable7").show();
       $('#indTable8').show();
+      $("#word-cloud-hate").show();
+      $("#hash-cloud-hate").show();
+
+      // $("#word-cloud-hate").jQCloud('destroy');
+      // $("#hash-cloud-hate").jQCloud('destroy');
+      // wordCloudSent = $("#word-cloud-hate").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+      // hashCloudSent = $("#hash-cloud-hate").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+
 
       $("#indTable7 table tbody").html("");
       $("#indTable8 table tbody").html("");
@@ -664,6 +745,25 @@ function query_hate(){
          $(".top-red table tbody").append(markup);
       }
 
+
+      var wordCounts = response["word_counts"];
+      var hashCounts = response["hash_counts"];
+
+      var freqWords = []
+      var freqHash = []
+
+      for (var i = 0; i < wordCounts.length; i++){
+        freqWords.push({text : wordCounts[i][0], weight : wordCounts[i][1]});
+      }
+
+      for (var i = 0; i < hashCounts.length; i++){
+        freqHash.push({text : hashCounts[i][0], weight : hashCounts[i][1]});
+      }
+      console.log (freqHash);
+      console.log(freqWords);
+
+      $('#word-cloud-hate').jQCloud('update', freqWords);
+      $('#hash-cloud-hate').jQCloud('update', freqHash);
       // display the tables containing top users
       $(".top-blue").show();
       $(".top-red").show(); 
@@ -714,6 +814,12 @@ function detect_hate() {
       $("#indTable7").hide();
       $('#indTable8').hide();
       $('#indTable9').show();
+      $(".top-blue").hide();
+      $(".top-red").hide(); 
+      // $(".jqcloud").hide();
+
+      // $("#word-cloud-hate").jQCloud('destroy');
+      // $("#hash-cloud-hate").jQCloud('destroy');
 
       //  updates table based on predicted label
       var level = response['level']
@@ -754,6 +860,12 @@ function query_sentiment(){
       $('#indTable12').hide();
       $("#indTable11").show();
       $('#indTable10').show();
+
+      $('#word-cloud-sentiment').show();
+      $('#hash-cloud-sentiment').show();
+      // $("#word-cloud-sentiment").jQCloud('destroy');
+      // $("#hash-cloud-sentiment").jQCloud('destroy');
+
 
       $("#indTable10 table tbody").html("");
       $("#indTable11 table tbody").html("");
@@ -810,6 +922,26 @@ function query_sentiment(){
          $(".top-red table tbody").append(markup);
       }
 
+      var wordCounts = response["word_counts"];
+      var hashCounts = response["hash_counts"];
+
+      var freqWords = []
+      var freqHash = []
+
+      for (var i = 0; i < wordCounts.length; i++){
+        freqWords.push({text : wordCounts[i][0], weight : wordCounts[i][1]});
+      }
+
+      for (var i = 0; i < hashCounts.length; i++){
+        freqHash.push({text : hashCounts[i][0], weight : hashCounts[i][1]});
+      }
+
+      console.log("HUHAH");
+      console.log (freqHash);
+      console.log(freqWords);
+
+      $('#word-cloud-sentiment').jQCloud('update', freqWords);
+      $('#hash-cloud-sentiment').jQCloud('update', freqHash);
       // display the tables containing top users
       $(".top-blue").show();
       $(".top-red").show(); 
@@ -860,6 +992,12 @@ function detect_sentiment() {
       $("#indTable10").hide();
       $('#indTable11').hide();
       $('#indTable12').show();
+      $(".top-blue").hide();
+      $(".top-red").hide(); 
+
+      // $("#word-cloud-hate").jQCloud('destroy');
+      // $("#hash-cloud-hate").jQCloud('destroy');
+      // $(".jqcloud").hide();
 
       //  updates table based on predicted label
       var level = response['level']
