@@ -1128,7 +1128,7 @@ legend {
   position: absolute;
   z-index: -1;
 }
-#indTable, #indTable2, #indTable4, #indTable5, #indTable7, #indTable8{
+#indTable, #indTable2, #indTable4, #indTable5, #indTable7, #indTable8, #indTable10, #indTable11{
   max-height:400px;
   overflow-y:scroll;
   width: 80%;
@@ -1137,7 +1137,7 @@ legend {
 
 }
 
-#indTable3, #indTable6, #indTable9{
+#indTable3, #indTable6, #indTable9, #indTable12{
   max-height:400px;
   overflow-y:scroll;
   width: 80%;
@@ -1145,14 +1145,14 @@ legend {
   /*border: 3px solid grey;*/
 }
 
-#indTable, #indTable4, #indTable7 thead{
+#indTable, #indTable4, #indTable7, #indTable10 thead{
   background-color: #F54040;
 }
-#indTable2, #indTable5, #indTable8 thead{
+#indTable2, #indTable5, #indTable8, #indTable11 thead{
   background-color: #5EBEF9;
 }
 
-#indTable3, #indTable6, #indTable9 thead{
+#indTable3, #indTable6, #indTable9, #indTable12 thead{
   background-color: #F5F9C5;
 }
 

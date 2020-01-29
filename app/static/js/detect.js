@@ -2,6 +2,7 @@
 var pieChart = "";
 var pieChart2 = "";
 var pieChart3 = "";
+var pieChart4 = "";
 
 // sample queries
 var queries = [
@@ -198,9 +199,45 @@ $(document).ready(function(){
     }
   });
 
+    // initiates pie chart for hate speech detection
+  pieChart4 =  new Chart(document.getElementById("pie-chart4"), {
+    type: 'pie',
+    data: {
+      labels: ["Positive", "Negative"],
+      datasets: [{
+        label: "Sentiment distribution",
+        backgroundColor: ["#D8401F", "#1F70D8"],
+        data: [0,0]
+      }]
+    },
+    options: {
+       tooltips: {
+    callbacks: {
+      // percentage label
+      label: function(tooltipItem, data) {
+        var dataset = data.datasets[tooltipItem.datasetIndex];
+        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
+        var total = meta.total;
+        var currentValue = dataset.data[tooltipItem.index];
+        var percentage = parseFloat((currentValue/total*100).toFixed(1));
+        return currentValue + ' (' + percentage + '%)';
+      },
+      title: function(tooltipItem, data) {
+        return data.labels[tooltipItem[0].index];
+      }
+    }
+  },
+      title: {
+        display: true,
+        text: 'Sentiment distribution'
+      }
+    }
+  });
+
   // hides all the initiated charts
   $(".pies").hide();
 });
+
 
 /* clears all tables and hides related information */
 function clear_table(){
@@ -267,18 +304,18 @@ function query_offense() {
         text = tweets[i];
         if (level == "NOT"){
           count1 += 1;
-          var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not offensive </font> </strong> </td></tr>";
+          var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not offensive </font>  </td></tr>";
           $("#indTable2 table tbody").append(markup);
         } else {
           count2 += 1;
-          var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> offensive </font> </strong></td></tr>";
+          var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  offensive </font> </td></tr>";
           $("#indTable table tbody").append(markup);
         }
       }
 
       // info about collected tweets
-      $("#info1").html("Found <strong>" + count2.toString() + "</strong> offensive tweets out of <strong>" + (count1 + count2).toString() + "</strong> tweets.");
-      $("#info2").html("Found <strong>" + count1.toString() + "</strong> non offensive tweets out of <strong>" + (count1 + count2).toString() +  "</strong> tweets.");
+      $("#info1").html("Found " + count2.toString() + " offensive tweets out of " + (count1 + count2).toString() + " tweets.");
+      $("#info2").html("Found " + count1.toString() + " non offensive tweets out of " + (count1 + count2).toString() +  " tweets.");
 
       $("#info1").show();
       $("#info2").show();
@@ -289,16 +326,23 @@ function query_offense() {
 
       // UPDATES DOM WITH TOP 20 BLUE USERSS
       for (var i = 0; i < topBlue.length; i++){
-         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'> <strong> <font color = 'RED'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + blueNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topBlue[i][1] + "</font> </strong> </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font color = 'blue'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'blue'> " + blueNames[i] + "</font>  </td><td> </font> <font color = 'blue'> " + topBlue[i][1] + "</font>  </td></tr>";
          $(".top-blue table tbody").append(markup);
       }
 
 
       // UPDATES DOM WITH TOP 20 RED USERSS
       for (var i = 0; i < topRed.length; i++){
-         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'> <strong> <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + redNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topRed[i][1] + "</font> </strong> </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> " + redNames[i] + "</font>  </td><td> </font> <font color = 'red'> " + topRed[i][1] + "</font>  </td></tr>";
          $(".top-red table tbody").append(markup);
       }
+
+
+      var wordCounts = response["word_counts"];
+      var hashCounts = response["hash_counts"];
+      console.log(wordCounts);
+      console.log(hashCounts);
+
 
       // display the tables containing top users
       $(".top-blue").show();
@@ -353,10 +397,10 @@ function detect_offense() {
       //  updates table based on label
       var level = response['level']
       if (level == "NOT"){
-        var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not offensive </font> </strong> </td></tr>";
+        var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not offensive </font>  </td></tr>";
         $("#indTable3 table tbody").append(markup);
       } else {
-        var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> offensive </font> </strong></td></tr>";
+        var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  offensive </font> </td></tr>";
         $("#indTable3 table tbody").append(markup);
       }
 
@@ -412,18 +456,18 @@ function query_ad(){
         text = tweets[i];
         if (level == "__label__NOTADS"){
           count1 += 1;
-          var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not advertisement </font> </strong> </td></tr>";
+          var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not advertisement </font>  </td></tr>";
           $("#indTable5 table tbody").append(markup);
         } else {
           count2 += 1;
-          var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> advertisement </font> </strong></td></tr>";
+          var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  advertisement </font> </td></tr>";
           $("#indTable4 table tbody").append(markup);
         }
       }
 
       // displays information about query results
-      $("#info3").html("Found <strong>" + count2.toString() + "</strong> advertisement tweets out of <strong>" + (count1 + count2).toString() + "</strong> tweets.");
-      $("#info4").html("Found <strong>" + count1.toString() + "</strong> non advertisement tweets out of <strong>" + (count1 + count2).toString() +  "</strong> tweets.");
+      $("#info3").html("Found " + count2.toString() + " advertisement tweets out of " + (count1 + count2).toString() + " tweets.");
+      $("#info4").html("Found " + count1.toString() + " non advertisement tweets out of " + (count1 + count2).toString() +  " tweets.");
       $("#info3").show();
       $("#info4").show();
 
@@ -434,14 +478,14 @@ function query_ad(){
 
       // UPDATES DOM WITH TOP 20 BLUE USERSS
       for (var i = 0; i < topBlue.length; i++){
-         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'> <strong> <font color = 'RED'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + blueNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topBlue[i][1] + "</font> </strong> </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font color = 'blue'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'blue'> " + blueNames[i] + "</font>  </td><td> </font> <font color = 'blue'> " + topBlue[i][1] + "</font>  </td></tr>";
          $(".top-blue table tbody").append(markup);
       }
 
 
       // UPDATES DOM WITH TOP 20 RED USERSS
       for (var i = 0; i < topRed.length; i++){
-         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'> <strong> <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + redNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topRed[i][1] + "</font> </strong> </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> " + redNames[i] + "</font>  </td><td> </font> <font color = 'red'> " + topRed[i][1] + "</font>  </td></tr>";
          $(".top-red table tbody").append(markup);
       }
 
@@ -498,10 +542,10 @@ function detect_ad() {
       // updates table based on predicted label
       var level = response['level']
       if (level == "__label__NOTADS"){
-        var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not advertisement </font> </strong> </td></tr>";
+        var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not advertisement </font>  </td></tr>";
         $("#indTable6 table tbody").append(markup);
       } else {
-        var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> advertisement </font> </strong></td></tr>";
+        var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  advertisement </font> </td></tr>";
         $("#indTable6 table tbody").append(markup);
       }
 
@@ -558,18 +602,18 @@ function query_hate(){
         text = tweets[i];
         if (level == "NOT_HS"){
           count1 += 1;
-          var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not hate speech </font> </strong> </td></tr>";
+          var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not hate speech </font>  </td></tr>";
           $("#indTable8 table tbody").append(markup);
         } else {
           count2 += 1;
-          var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> hate speech </font> </strong></td></tr>";
+          var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  hate speech </font> </td></tr>";
           $("#indTable7 table tbody").append(markup);
         }
       }
 
       // displays info about tweets found
-      $("#info5").html("Found <strong>" + count2.toString() + "</strong> hate speech tweets out of <strong>" + (count1 + count2).toString() + "</strong> tweets.");
-      $("#info6").html("Found <strong>" + count1.toString() + "</strong> not hate speech tweets out of <strong>" + (count1 + count2).toString() +  "</strong> tweets.");
+      $("#info5").html("Found " + count2.toString() + " hate speech tweets out of " + (count1 + count2).toString() + " tweets.");
+      $("#info6").html("Found " + count1.toString() + " not hate speech tweets out of " + (count1 + count2).toString() +  " tweets.");
       $("#info5").show();
       $("#info6").show();
 
@@ -580,21 +624,21 @@ function query_hate(){
 
       // UPDATES DOM WITH TOP 20 BLUE USERSS
       for (var i = 0; i < topBlue.length; i++){
-         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'> <strong> <font color = 'RED'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + blueNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topBlue[i][1] + "</font> </strong> </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font color = 'blue'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'blue'> " + blueNames[i] + "</font>  </td><td> </font> <font color = 'blue'> " + topBlue[i][1] + "</font>  </td></tr>";
          $(".top-blue table tbody").append(markup);
       }
 
 
       // UPDATES DOM WITH TOP 20 RED USERSS
       for (var i = 0; i < topRed.length; i++){
-         var markup = "<tr><td><strong> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'> <strong> <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> <strong>" + redNames[i] + "</font> </strong> </td><td> </font> <font color = 'red'> <strong>" + topRed[i][1] + "</font> </strong> </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> " + redNames[i] + "</font>  </td><td> </font> <font color = 'red'> " + topRed[i][1] + "</font>  </td></tr>";
          $(".top-red table tbody").append(markup);
       }
 
       // display the tables containing top users
       $(".top-blue").show();
       $(".top-red").show(); 
-      
+
       // updates piechart
       pieChart3.data.datasets[0].data = [count2, count1]
       pieChart3.update();
@@ -645,10 +689,10 @@ function detect_hate() {
       //  updates table based on predicted label
       var level = response['level']
       if (level == "NOT_HS"){
-        var markup = "<tr><td><strong> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'> <strong> not hate speech </font> </strong> </td></tr>";
+        var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not hate speech </font>  </td></tr>";
         $("#indTable9 table tbody").append(markup);
       } else {
-        var markup = "<tr><td> <strong><font color = 'red'>" + text + "</td><td> </font> <font color = 'red'> <strong> hate speech </font> </strong></td></tr>";
+        var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  hate speech </font> </td></tr>";
         $("#indTable9 table tbody").append(markup);
       }
 
@@ -657,6 +701,157 @@ function detect_hate() {
   });
 }
 
+/* query twitter to find tweets and then classify */
+function query_sentiment(){
+  // gets input from user
+  var classifier = $('#classifiername4').find(":selected").text();
+  var text = $('#search4').val();
+
+  if (text.length < 1){
+    alert ("Empty text. Please enter text.");
+    return
+  }
+
+  $('html, body').css("cursor", "wait");
+  $(".processing").show();
+
+
+  // makes request to server and updates dom
+  $.post('/querySentiment', {
+      text: text,
+      model: classifier,
+  }).done(function(response) {
+
+      $('#indTable12').hide();
+      $("#indTable11").show();
+      $('#indTable10').show();
+
+      $("#indTable10 table tbody").html("");
+      $("#indTable11 table tbody").html("");
+      $("#indTable12 table tbody").html("");
+      $(".top-red table tbody").html("");
+      $(".top-blue table tbody").html("");
+
+      var levels = response['levels'];
+      var tweets = response['tweets'];
+      var topBlue = response['blue'];
+      var topRed = response['red'];
+
+      var level = '';
+      var text = '';
+      var count1 = 0;
+      var count2 = 0;
+      
+      // updates tables based on HS or NOT-HS
+      for (var i = 0; i < levels.length; i++){
+        level = levels[i];
+        text = tweets[i];
+        if (level == "Positive"){
+          count1 += 1;
+          var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  positive </font>  </td></tr>";
+          $("#indTable11 table tbody").append(markup);
+        } else if (level == "Negative") {
+          count2 += 1;
+          var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  negative </font> </td></tr>";
+          $("#indTable10 table tbody").append(markup);
+        }
+      }
+
+      // displays info about tweets found
+      $("#info7").html("Found " + count2.toString() + " negative tweets out of " + (count1 + count2).toString() + " tweets.");
+      $("#info8").html("Found " + count1.toString() + " positive speech tweets out of " + (count1 + count2).toString() +  " tweets.");
+      $("#info7").show();
+      $("#info8").show();
+
+
+      // names of usesrs
+      var redNames = response["red_names"];
+      var blueNames = response["blue_names"];
+
+      // UPDATES DOM WITH TOP 20 BLUE USERSS
+      for (var i = 0; i < topBlue.length; i++){
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font color = 'blue'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'blue'> " + blueNames[i] + "</font>  </td><td> </font> <font color = 'blue'> " + topBlue[i][1] + "</font>  </td></tr>";
+         $(".top-blue table tbody").append(markup);
+      }
+
+
+      // UPDATES DOM WITH TOP 20 RED USERSS
+      for (var i = 0; i < topRed.length; i++){
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> " + redNames[i] + "</font>  </td><td> </font> <font color = 'red'> " + topRed[i][1] + "</font>  </td></tr>";
+         $(".top-red table tbody").append(markup);
+      }
+
+      // display the tables containing top users
+      $(".top-blue").show();
+      $(".top-red").show(); 
+
+      // updates piechart
+      pieChart4.data.datasets[0].data = [count2, count1]
+      pieChart4.update();
+      $("#pie-chart4").show();
+
+      $('html, body').css("cursor", "auto");
+      $(".processing").hide();
+
+  }).fail(function() {
+      alert("Server error");
+      $('html, body').css("cursor", "auto");
+      $(".processing").hide();
+
+
+  });
+  
+}
+
+
+/**
+Gets input from user, makes call to server and updates DOM based on 
+hate-speech in text input by user as returned from server.
+**/
+function detect_sentiment() {
+  $("#pie-chart4").hide();
+
+  // gets input from user
+  var classifier = $('#classifiername4').find(":selected").text();
+  var text = $('#search4').val();
+
+  if (text.length < 1){
+    alert ("Empty text. Please enter text.");
+    return
+  }
+
+  // makes request to server and updates dom
+  $.post('/detectSentiment', {
+      text: text,
+      model: classifier,
+  }).done(function(response) {
+      // hide query tables
+      $("#info7").hide();
+      $("#info8").hide();
+      $("#indTable10").hide();
+      $('#indTable11').hide();
+      $('#indTable12').show();
+
+      //  updates table based on predicted label
+      var level = response['level']
+      if (level == "Positive"){
+        var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  positive </font>  </td></tr>";
+        $("#indTable12 table tbody").append(markup);
+      } else if (level == "Negative") {
+        var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  negative </font> </td></tr>";
+        $("#indTable12 table tbody").append(markup);
+      } else if (level == "Mixed") {
+        var markup = "<tr><td> <font color = 'orange'>" + text + "</td><td> </font> <font color = 'orange'>  mixed </font> </td></tr>";
+        $("#indTable12 table tbody").append(markup);
+      } else {
+        var markup = "<tr><td> <font color = 'black'>" + text + "</td><td> </font> <font color = 'black'>  neutral </font> </td></tr>";
+        $("#indTable12 table tbody").append(markup);
+      }
+
+  }).fail(function() {
+      alert("Server error");
+  });
+}
 
 // gets random input for offense detection
 function randomizeOff() {
@@ -697,6 +892,20 @@ function randomizeHate() {
   }
 }
 
+// gets random input for hate-speech detection
+function randomizeSentiment() {
+  if (document.getElementById('searchType4').checked){
+    console.log ("GOTCHU");
+    var rand = queries[Math.floor(Math.random() * queries.length)];
+    document.getElementById("search4").value = rand;
+  } else {
+    console.log("I WEEP");
+    var rand = offensiveSamples[Math.floor(Math.random() * offensiveSamples.length)];
+    document.getElementById("search4").value = rand;
+  }
+}
+
+
 // checks if user wants to analyze text or make a query. redirects request accordingly
 function check_offense(){
   if (document.getElementById('searchType').checked){
@@ -721,5 +930,14 @@ function check_hate(){
     query_hate();
   } else {
     detect_hate();
+  }
+}
+
+// checks if user wants to analyze text or make a query. redirects request accordingly
+function check_sentiment(){
+  if (document.getElementById('searchType4').checked){
+    query_sentiment();
+  } else {
+    detect_sentiment();
   }
 }
