@@ -235,7 +235,7 @@ $(document).ready(function(){
       labels: ["Positive", "Negative"],
       datasets: [{
         label: "Sentiment distribution",
-        backgroundColor: ["#D8401F", "#1F70D8"],
+        backgroundColor: ["#1F70D8", "#D8401F" ],
         data: [0,0]
       }]
     },
@@ -815,7 +815,7 @@ function query_sentiment(){
       $(".top-red").show(); 
 
       // updates piechart
-      pieChart4.data.datasets[0].data = [count2, count1]
+      pieChart4.data.datasets[0].data = [count1, count2]
       pieChart4.update();
       $("#pie-chart4").show();
 
