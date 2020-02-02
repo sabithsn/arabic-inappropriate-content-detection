@@ -14,23 +14,24 @@ from sklearn.svm import LinearSVC
 from sklearn.naive_bayes import MultinomialNB
 import operator
 from collections import Counter
-
 import tweepy
 
+from flask import send_file, send_from_directory, safe_join, abort
+
+
+# credentials
 consumer_key = "17vtdwEOtyZhiJvaIsweWPySu"
 consumer_secret = "lufEk9iMyrmWj5rR6ka7jW4DhYw6KRNGrUtD1UDcWulwUR8kxh"
 access_token = "767679563514208260-lTCPp3wwTRnGqogRyJNG5fr5A1ounvf"
 access_token_secret = "hIIQat4QMJ4s5jkqReCqIIiqV89GqaHFdGLuTEOhKNpcv"
 
-
+# authentication
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, access_token_secret)
-
 api = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify=True)
 
-
+# search params
 max_tweets = 1000
-# query = "@QF OR @ajarabic"
 result_type = "recent"
 
 
@@ -43,8 +44,6 @@ def get_n_gram_feats (input, n, mode):
     vectorizer = TfidfVectorizer(lowercase=False, ngram_range= n, analyzer=mode,tokenizer = tokenizer)
     X_t = vectorizer.fit_transform(input)
     return X_t, vectorizer
-
-
 
 
 def load_model(model_file):
@@ -88,7 +87,7 @@ def get_valence_score(freqs1, freqs2):
 
     for freq in freqs1:
         try:
-            if freqs1[freq] < 5:
+            if freqs1[freq] < 2:
                 continue
             new_freqs1[freq] = 2.0*((1.0*freqs1[freq]/tot_words1)/ ((1.0*freqs1[freq]/tot_words1) + (1.0*freqs2[freq]/tot_words2)))-1.0
             # if (new_freqs1[freq] >= 1):
@@ -101,7 +100,7 @@ def get_valence_score(freqs1, freqs2):
 
     for freq in freqs2:
         try:
-            if freqs2[freq] < 5:
+            if freqs2[freq] < 2:
                 continue
             new_freqs2[freq] = 2.0*((1.0*freqs2[freq]/tot_words2)/ ((1.0*freqs2[freq]/tot_words2) + (1.0*freqs1[freq]/tot_words1)))-1.0
         except:
@@ -125,7 +124,7 @@ def get_frequency_words(blue_text, red_text, threshold, query):
     word_counts_red = Counter(red_text)
     word_counts_red = Counter({x: word_counts_red[x] for x in word_counts_red if (filter_word(x,query))})
 
-    word_counts_blue, word_counts_red = get_valence_score(word_counts_blue, word_counts_red)
+    # word_counts_blue, word_counts_red = get_valence_score(word_counts_blue, word_counts_red)
 
     word_counts_blue = word_counts_blue.most_common(threshold)
     word_counts_red = word_counts_red.most_common(threshold)
@@ -141,7 +140,7 @@ def get_frequency_hashtags(blue_text, red_text, threshold, query):
     hash_counts_red = Counter(red_text)
     hash_counts_red = Counter({x: hash_counts_red[x] for x in hash_counts_red if (filter_hash(x,query))})
     
-    hash_counts_blue, hash_counts_red = get_valence_score (hash_counts_blue, hash_counts_red)
+    # hash_counts_blue, hash_counts_red = get_valence_score (hash_counts_blue, hash_counts_red)
 
     hash_counts_blue = hash_counts_blue.most_common(threshold)
     hash_counts_red = hash_counts_red.most_common(threshold)
@@ -150,13 +149,15 @@ def get_frequency_hashtags(blue_text, red_text, threshold, query):
     return (hash_counts_blue, hash_counts_red)
 
 
+
+# calls twitter with query, classifies each tweet with model and vectorizer. analyzes results.
 def processTweets (user_query, model, vectorizer, pos_label, neg_label):
+
+    # searches twitter with query
     searched_tweets = []
     last_id = -1
     while len(searched_tweets) < max_tweets:
-        # print ("pookey")
         count = max_tweets - len(searched_tweets)
-        # count = 5
         try:
             new_tweets = api.search(q=user_query, count=count, max_id=str(last_id - 1), result_type = result_type, lang = "ar")
             if not new_tweets:
@@ -168,11 +169,12 @@ def processTweets (user_query, model, vectorizer, pos_label, neg_label):
             # to keep things simple, we will give up on an error
             break
 
+    # in case more than max_tweets are retrieved
+    searched_tweets = searched_tweets[:max_tweets]
 
+    # screen name + user name
     users = []
     names = []
-
-    searched_tweets = searched_tweets[:max_tweets]
 
     # gets tweet text and info about the user
     for i in range (len(searched_tweets)):
@@ -185,25 +187,29 @@ def processTweets (user_query, model, vectorizer, pos_label, neg_label):
 
         searched_tweets[i] = searched_tweets[i].text
 
-
-
-
+    # no tweets found
     if len (searched_tweets) == 0:
         return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[], 
             "word_counts_red":[], "hash_counts_red":[], "word_counts_blue":[], "hash_counts_blue":[]})
-    # gets word n gram features and performs classification using
-    # model chosen
+    
+    # gets word n gram features and performs classification using model chosen
     n_gram_features = vectorizer.transform(searched_tweets)
     predicted_labels = list(model.predict(n_gram_features))
 
+    # users/tweets who post "negative tweets" are red, and users/tweets who post "positive tweets" are blue
+    
+    # dictionary of user: tweet count for red and blue tweets
     red_users = {}
     blue_users = {}
 
+    # stores user names of users
     reds = {}
     blues = {}
 
+    # accumulates all text, depending on whether red or blue
     red_text = ""
     blue_text = ""
+
     for i in range (len(predicted_labels)):
         label = predicted_labels[i]
         user = users[i]
@@ -217,7 +223,8 @@ def processTweets (user_query, model, vectorizer, pos_label, neg_label):
             else:
                 blue_users[user] = 1
             blue_text += (" " + searched_tweets[i])
-        else:
+
+        elif (label == pos_label):
             #stores name of the red user
             reds[user] = name
             if user in red_users:
@@ -226,22 +233,26 @@ def processTweets (user_query, model, vectorizer, pos_label, neg_label):
                 red_users[user] = 1
             red_text += (" " + searched_tweets[i])
 
+    # splits text into words. wordpunct tokenizer could be used instead
     blue_text = blue_text.split(" ")
     red_text = red_text.split(" ")
 
-    # print (blue_text)
-    # print (red_text)
-
+    # gets top n words for blue/red tweets based on valence score
     word_counts_blue, word_counts_red = get_frequency_words(blue_text, red_text, 20, user_query)
-    print (word_counts_blue, word_counts_red)
+    # print (word_counts_blue, word_counts_red)
+    
+    # gets top n hashtags for blue/red tweets based on valence score
     hash_counts_blue, hash_counts_red = get_frequency_hashtags(blue_text, red_text, 20, user_query)
-    print (hash_counts_blue, hash_counts_red)
+    # print (hash_counts_blue, hash_counts_red)
 
+    # gets top n users who post blue and red tweets
     sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
     sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
 
+    # gets usernames of top 20. 
     blue_names = []
     red_names = []
+
     # gets user names of top 20
     for x in sorted_blue:
         blue_names.append(blues[x[0]])
@@ -249,45 +260,16 @@ def processTweets (user_query, model, vectorizer, pos_label, neg_label):
     for x in sorted_red:
         red_names.append(reds[x[0]])
 
-    # prediction = str(predicted_labels[0])
-    # print (prediction)
-
     return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names, 
         "word_counts_red":word_counts_red, "hash_counts_red":hash_counts_red, "word_counts_blue":word_counts_blue, "hash_counts_blue":hash_counts_blue})
+
+
 # loads all models
-
-
-## loads classifiers
-# MNB_word_unigram_model, word_unigram_vectorizer = load_model ("./app/static/models/MNB_Final_model_word_1-gram.pckl")
-# MNB_word_3gram_model, word_3gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_word_3-gram.pckl")
-
-# SVM_word_unigram_model, word_unigram_vectorizer = load_model ("./app/static/models/SVM_Final_model_word_1-gram.pckl")
-# SVM_word_3gram_model, word_3gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_word_3-gram.pckl")
-
-# MNB_char_3gram_model, char_3gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_char_3-gram.pckl")
-# MNB_char_5gram_model, char_5gram_vectorizer = load_model ("./app/static/models/MNB_Final_model_char_5-gram.pckl")
-
+#####################
+#####################
 SVM_char_3gram_model, char_3gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_char_3-gram.pckl")
-# SVM_char_5gram_model, char_5gram_vectorizer = load_model ("./app/static/models/SVM_Final_model_char_5-gram.pckl")
-
-
-#####################
-#####################
-
-MNB_word_unigram_model_ad, word_unigram_vectorizer_ad = load_model ("./app/static/models/MNB_Add_model_word_1-gram.pckl")
-# MNB_word_3gram_model_ad, word_3gram_vectorizer_ad = load_model ("./app/static/models/MNB_Add_model_word_3-gram.pckl")
-
-SVM_word_unigram_model_ad, word_unigram_vectorizer_ad = load_model ("./app/static/models/SVM_Add_model_word_1-gram.pckl")
-# SVM_word_3gram_model_ad, word_3gram_vectorizer_ad = load_model ("./app/static/models/SVM_Add_model_word_3-gram.pckl")
-
-# MNB_char_3gram_model_ad, char_3gram_vectorizer_ad = load_model ("./app/static/models/MNB_Add_model_char_3-gram.pckl")
-# MNB_char_5gram_model_ad, char_5gram_vectorizer_ad = load_model ("./app/static/models/MNB_Add_model_char_5-gram.pckl")
-
 SVM_char_3gram_model_ad, char_3gram_vectorizer_ad = load_model ("./app/static/models/SVM_Add_model_char_3-gram.pckl")
-# SVM_char_5gram_model_ad, char_5gram_vectorizer_ad = load_model ("./app/static/models/SVM_Add_model_char_5-gram.pckl")
-
 SVM_char_3gram_model_hate, char_3gram_vectorizer_hate = load_model ("./app/static/models/SVM_Hate_model_char_5-gram.pckl")
-
 SVM_char_3gram_model_sentiment, char_3gram_vectorizer_sentiment = load_model ("./app/static/models/SVM_Sent_model_char_3-gram.pckl")
 
 
@@ -307,34 +289,78 @@ def upload():
 
     ## gets file from request and saves it
     file=request.files['file']
-    filename=file.filename.split('.')[0]+'_new.'+file.filename.split('.')[-1]
-    path=app.config['UPLOAD_FOLDER']+'/'+filename
+    filename=file.filename.split('.')[0]+'_output.'+file.filename.split('.')[-1]
+    path=app.config['UPLOAD_FOLDER']+filename
     file.save(path)
 
+    input_text = []
     ## reads file
     try:
-        readfile = pd.read_excel(path, sheet_name = "Sheet1")    
-        train_input = readfile['body'].values
-        train_labels = readfile['languagecomment'].values
+        with open (path, "r") as f:
+            for line in f:
+                input_text.append(line.strip())
+
     except:
-        return jsonify("ERROR IN FILE FORMAT")
+        print ("ERRRRRROR")
+        return jsonify("ERROR")
+    
+    print (len (input_text))
+    model = SVM_char_3gram_model
+    vectorizer = char_3gram_vectorizer
+
+    n_gram_features = vectorizer.transform(input_text)
+    predicted_labels = list(model.predict(n_gram_features))
+
+    with open (path, 'w') as f:
+        for i in range (len(input_text)):
+            f.write(input_text[i] + "\t" + predicted_labels[i] + "\n")
+
+    # path = "/static/data/" + filename
+    # file = open(path, 'rb')
+    # path = "static/data/" + filename
+    # response = FileResponse(file)
+
+    print (filename)
+    # print (app.config['UPLOAD_FOLDER'])
+    return send_from_directory ("static/data/", filename=filename, as_attachment=True)
+
+
 
     ## trains classifier
-    try:
-        train_all_classifiers(train_input,train_labels)
-    except:
-        return jsonify("CLASSIFIER COULD NOT BE TRAINED")
 
-    return jsonify("TRAINING COMPLETE")
+
+# @app.route('/upload', methods=['POST'])
+# def upload():
+#     '''saves file in the request and loads it for training'''
+
+#     ## gets file from request and saves it
+#     file=request.files['file']
+#     filename=file.filename.split('.')[0]+'_new.'+file.filename.split('.')[-1]
+#     path=app.config['UPLOAD_FOLDER']+'/'+filename
+#     file.save(path)
+
+#     ## reads file
+#     try:
+#         readfile = pd.read_excel(path, sheet_name = "Sheet1")    
+#         train_input = readfile['body'].values
+#         train_labels = readfile['languagecomment'].values
+#     except:
+#         return jsonify("ERROR IN FILE FORMAT")
+
+#     ## trains classifier
+#     try:
+#         train_all_classifiers(train_input,train_labels)
+#     except:
+#         return jsonify("CLASSIFIER COULD NOT BE TRAINED")
+
+#     return jsonify("TRAINING COMPLETE")
+
 
 @app.route('/detectAd', methods=['POST'])
 def detectAd():
-    global word_unigram_vectorizer_ad, word_3gram_vectorizer_ad
-    global char_3gram_vectorizer_ad, char_5gram_vectorizer_ad
-    global MNB_word_unigram_model_ad, MNB_word_3gram_model_ad
-    global SVM_word_unigram_model_ad, SVM_word_3gram_model_ad
-    global SVM_char_3gram_model_ad, SVM_char_5gram_model_ad
     ''' detects level of offensiveness in text posted'''
+
+    global char_3gram_vectorizer_ad, SVM_char_3gram_model_ad
 
     # Gets text and classifier from client
     user_query = [request.form["text"]]
@@ -369,18 +395,15 @@ def detectAd():
     n_gram_features = vectorizer.transform(user_query)
     predicted_labels = model.predict(n_gram_features)
     prediction = str(predicted_labels[0])
-    print (prediction)
 
     return jsonify({"level": prediction})
 
 @app.route('/queryAd', methods=['POST'])
 def queryAd():
-    global word_unigram_vectorizer_ad, word_3gram_vectorizer_ad
-    global char_3gram_vectorizer_ad, char_5gram_vectorizer_ad
-    global MNB_word_unigram_model_ad, MNB_word_3gram_model_ad
-    global SVM_word_unigram_model_ad, SVM_word_3gram_model_ad
-    global SVM_char_3gram_model_ad, SVM_char_5gram_model_ad
     ''' detects level of offensiveness in text posted'''
+
+    # preloaded model
+    global char_3gram_vectorizer_ad, SVM_char_3gram_model_ad
 
     # Gets text and classifier from client
     user_query = request.form["text"]
@@ -410,104 +433,13 @@ def queryAd():
         model = SVM_char_3gram_model_ad
         vectorizer = char_3gram_vectorizer_ad
 
-    ## searches twitter for query
-    searched_tweets = []
-    last_id = -1
-    while len(searched_tweets) < max_tweets:
-        # print ("pookey")
-        count = max_tweets - len(searched_tweets)
-        # count = 5
-        try:
-            new_tweets = api.search(q=user_query, count=count, max_id=str(last_id - 1), result_type = result_type, lang = "ar")
-            if not new_tweets:
-                break
-            searched_tweets.extend(new_tweets)
-            last_id = new_tweets[-1].id
-        except tweepy.TweepError as e:
-            print (e)
-            # depending on TweepError.code, one may want to retry or wait
-            # to keep things simple, we will give up on an error
-            break
+    return processTweets(user_query, model, vectorizer, "__label__ADS", "__label__NOTADS")
 
-    users = []
-    names = []
-    alltext = ""
-    searched_tweets = searched_tweets[:max_tweets]
-
-    # gets tweet text and info about the user
-    for i in range (len(searched_tweets)):
-
-        user = searched_tweets[i].user.screen_name
-        name = searched_tweets[i].user.name
-
-        users.append(user)
-        names.append(name)
-
-        searched_tweets[i] = searched_tweets[i].text
-
-
-
-
-    if len (searched_tweets) == 0:
-        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[], "word_counts":[], "hash_counts":[]})
-    # gets word n gram features and performs classification using
-    # model chosen
-    n_gram_features = vectorizer.transform(searched_tweets)
-    predicted_labels = list(model.predict(n_gram_features))
-
-    red_users = {}
-    blue_users = {}
-
-    reds = {}
-    blues = {}
-
-    for i in range (len(predicted_labels)):
-        label = predicted_labels[i]
-        user = users[i]
-        name = names[i]
-
-        if (label == "__label__NOTADS"):
-            # stores name of the user
-            blues[user] = name
-            if user in blue_users:
-                blue_users[user] += 1
-            else:
-                blue_users[user] = 1
-        else:
-            #stores name of the red user
-            reds[user] = name
-            if user in red_users:
-                red_users[user] += 1
-            else:
-                red_users[user] = 1
-            alltext += (" " + searched_tweets[i])
-
-    word_counts, hash_counts = get_frequency(alltext, 20)
-    sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
-    sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
-
-    blue_names = []
-    red_names = []
-    # gets user names of top 20
-    for x in sorted_blue:
-        blue_names.append(blues[x[0]])
-
-    for x in sorted_red:
-        red_names.append(reds[x[0]])
-
-    # prediction = str(predicted_labels[0])
-    # print (prediction)
-
-    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names, "word_counts":word_counts, "hash_counts":hash_counts})
 
 @app.route('/detectOffense', methods=['POST'])
 def detectOffense():
-    global word_unigram_vectorizer, word_3gram_vectorizer
-    global char_3gram_vectorizer, char_5gram_vectorizer
-    global MNB_word_unigram_model, MNB_word_3gram_model
-    global SVM_word_unigram_model, SVM_word_3gram_model
-    global SVM_char_3gram_model, SVM_char_5gram_model
     ''' detects level of offensiveness in text posted'''
+    global char_3gram_vectorizer, SVM_char_3gram_model
 
     # Gets text and classifier from client
     user_query = [request.form["text"]]
@@ -542,23 +474,16 @@ def detectOffense():
     n_gram_features = vectorizer.transform(user_query)
     predicted_labels = model.predict(n_gram_features)
     prediction = str(predicted_labels[0])
-    print (prediction)
 
     return jsonify({"level": prediction})
 
 
 
-
-
-
 @app.route('/queryOffense', methods=['POST'])
 def queryOffense():
-    global word_unigram_vectorizer, word_3gram_vectorizer
-    global char_3gram_vectorizer, char_5gram_vectorizer
-    global MNB_word_unigram_model, MNB_word_3gram_model
-    global SVM_word_unigram_model, SVM_word_3gram_model
-    global SVM_char_3gram_model, SVM_char_5gram_model
     ''' detects level of offensiveness in text posted'''
+    global char_3gram_vectorizer, SVM_char_3gram_model
+
 
     # Gets text and classifier from client
     user_query = request.form["text"]
@@ -594,10 +519,8 @@ def queryOffense():
 # detect hatespeech
 @app.route('/detectHate', methods=['POST'])
 def detectHate():
-    global char_3gram_vectorizer_hate
-
-    global SVM_char_3gram_model_hate
-    ''' detects level of offensiveness in text posted'''
+    ''' detects level of hate speech in text posted'''
+    global char_3gram_vectorizer_hate, SVM_char_3gram_model_hate
 
     # Gets text and classifier from client
     user_query = [request.form["text"]]
@@ -632,15 +555,13 @@ def detectHate():
     n_gram_features = vectorizer.transform(user_query)
     predicted_labels = model.predict(n_gram_features)
     prediction = str(predicted_labels[0])
-    print (prediction)
 
     return jsonify({"level": prediction})
 
 @app.route('/queryHate', methods=['POST'])
 def queryHate():
-    global char_5gram_vectorizer_hate
-    global SVM_char_5gram_model_hate
     ''' detects level of offensiveness in text posted'''
+    global char_3gram_vectorizer_hate, SVM_char_3gram_model_hate
 
     # Gets text and classifier from client
     user_query = request.form["text"]
@@ -670,105 +591,14 @@ def queryHate():
         model = SVM_char_3gram_model_hate
         vectorizer = char_3gram_vectorizer_hate
 
-    ## searches twitter for query
-    searched_tweets = []
-    last_id = -1
-    while len(searched_tweets) < max_tweets:
-        # print ("pookey")
-        count = max_tweets - len(searched_tweets)
-        # count = 5
-        try:
-            new_tweets = api.search(q=user_query, count=count, max_id=str(last_id - 1), result_type = result_type, lang = "ar")
-            if not new_tweets:
-                break
-            searched_tweets.extend(new_tweets)
-            last_id = new_tweets[-1].id
-        except tweepy.TweepError as e:
-            print (e)
-            # depending on TweepError.code, one may want to retry or wait
-            # to keep things simple, we will give up on an error
-            break
+    return processTweets(user_query, model, vectorizer, "HS", "NOT_HS")
 
-
-    users = []
-    names = []
-    alltext = ""
-    searched_tweets = searched_tweets[:max_tweets]
-
-    # gets tweet text and info about the user
-    for i in range (len(searched_tweets)):
-
-        user = searched_tweets[i].user.screen_name
-        name = searched_tweets[i].user.name
-
-        users.append(user)
-        names.append(name)
-
-        searched_tweets[i] = searched_tweets[i].text
-
-
-    if len (searched_tweets) == 0:
-        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[], "word_counts":[], "hash_counts":[]})
-    # gets word n gram features and performs classification using
-    # model chosen
-    n_gram_features = vectorizer.transform(searched_tweets)
-    predicted_labels = list(model.predict(n_gram_features))
-
-    red_users = {}
-    blue_users = {}
-
-    reds = {}
-    blues = {}
-
-    for i in range (len(predicted_labels)):
-        label = predicted_labels[i]
-        user = users[i]
-        name = names[i]
-
-        if (label == "NOT_HS"):
-            # stores name of the user
-            blues[user] = name
-            if user in blue_users:
-                blue_users[user] += 1
-            else:
-                blue_users[user] = 1
-        else:
-            #stores name of the red user
-            reds[user] = name
-            if user in red_users:
-                red_users[user] += 1
-            else:
-                red_users[user] = 1
-            alltext += (" " + searched_tweets[i])
-    word_counts, hash_counts = get_frequency(alltext, 20)
-
-
-    sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
-    sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
-
-    blue_names = []
-    red_names = []
-    # gets user names of top 20
-    for x in sorted_blue:
-        blue_names.append(blues[x[0]])
-
-    for x in sorted_red:
-        red_names.append(reds[x[0]])
-
-    # prediction = str(predicted_labels[0])
-    # print (prediction)
-
-    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names, "word_counts":word_counts, "hash_counts":hash_counts})
 
 
 @app.route('/detectSentiment', methods=['POST'])
 def detectSentiment():
-    # global word_unigram_vectorizer_ad, word_3gram_vectorizer_ad
-    global char_3gram_vectorizer_ad, char_5gram_vectorizer_ad
-    # global MNB_word_unigram_model_ad, MNB_word_3gram_model_ad
-    # global SVM_word_unigram_model_ad, SVM_word_3gram_model_ad
-    global SVM_char_3gram_model_ad, SVM_char_5gram_model_ad
-    ''' detects level of offensiveness in text posted'''
+
+    global char_3gram_vectorizer_sentiment, SVM_char_3gram_model_sentiment
 
     # Gets text and classifier from client
     user_query = [request.form["text"]]
@@ -803,18 +633,14 @@ def detectSentiment():
     n_gram_features = vectorizer.transform(user_query)
     predicted_labels = model.predict(n_gram_features)
     prediction = str(predicted_labels[0])
-    print (prediction)
 
     return jsonify({"level": prediction})
 
 @app.route('/querySentiment', methods=['POST'])
 def querySentiment():
-    global word_unigram_vectorizer_sentiment, word_3gram_vectorizer_sentiment
-    global char_3gram_vectorizer_sentiment, char_5gram_vectorizer_sentiment
-    # global MNB_word_unigram_model_ad, MNB_word_3gram_model_ad
-    # global SVM_word_unigram_model_ad, SVM_word_3gram_model_ad
-    global SVM_char_3gram_model_sentiment, SVM_char_5gram_model_sentiment
-    ''' detects level of offensiveness in text posted'''
+    ''' detects level of sentiment in text posted'''
+    global char_3gram_vectorizer_sentiment, SVM_char_3gram_model_sentiment
+
 
     # Gets text and classifier from client
     user_query = request.form["text"]
@@ -844,94 +670,6 @@ def querySentiment():
         model = SVM_char_3gram_model_sentiment
         vectorizer = char_3gram_vectorizer_sentiment
 
-    ## searches twitter for query
-    searched_tweets = []
-    last_id = -1
-    while len(searched_tweets) < max_tweets:
-        # print ("pookey")
-        count = max_tweets - len(searched_tweets)
-        # count = 5
-        try:
-            new_tweets = api.search(q=user_query, count=count, max_id=str(last_id - 1), result_type = result_type, lang = "ar")
-            if not new_tweets:
-                break
-            searched_tweets.extend(new_tweets)
-            last_id = new_tweets[-1].id
-        except tweepy.TweepError as e:
-            print (e)
-            # depending on TweepError.code, one may want to retry or wait
-            # to keep things simple, we will give up on an error
-            break
-
-    users = []
-    names = []
-    alltext = ""
-    searched_tweets = searched_tweets[:max_tweets]
-
-    # gets tweet text and info about the user
-    for i in range (len(searched_tweets)):
-
-        user = searched_tweets[i].user.screen_name
-        name = searched_tweets[i].user.name
-
-        users.append(user)
-        names.append(name)
-
-        searched_tweets[i] = searched_tweets[i].text
-
-
-
-
-    if len (searched_tweets) == 0:
-        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[], "word_counts":[], "hash_counts":[]})
-    # gets word n gram features and performs classification using
-    # model chosen
-    n_gram_features = vectorizer.transform(searched_tweets)
-    predicted_labels = list(model.predict(n_gram_features))
-
-    red_users = {}
-    blue_users = {}
-
-    reds = {}
-    blues = {}
-
-    for i in range (len(predicted_labels)):
-        label = predicted_labels[i]
-        user = users[i]
-        name = names[i]
-
-        if (label == "Positive"):
-            # stores name of the user
-            blues[user] = name
-            if user in blue_users:
-                blue_users[user] += 1
-            else:
-                blue_users[user] = 1
-        elif (label == "Negative"):
-
-            #stores name of the red user
-            reds[user] = name
-            if user in red_users:
-                red_users[user] += 1
-            else:
-                red_users[user] = 1
-            alltext += (" " + searched_tweets[i])
-
-    word_counts, hash_counts = get_frequency(alltext, 20)
-    sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
-    sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
-
-    blue_names = []
-    red_names = []
-    # gets user names of top 20
-    for x in sorted_blue:
-        blue_names.append(blues[x[0]])
-
-    for x in sorted_red:
-        red_names.append(reds[x[0]])
-
-    # prediction = str(predicted_labels[0])
-    # print (prediction)
-
-    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names, "word_counts":word_counts, "hash_counts":hash_counts})
+    return processTweets(user_query, model, vectorizer, "Negative", "Positive")
+   
 

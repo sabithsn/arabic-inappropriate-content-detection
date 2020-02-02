@@ -115,169 +115,147 @@ var hateSamples = [
 
 var wordCloud = "";
 var hashCloud = "";
+var filename  = "output.txt";
+var text = "";
+
+/** creates pie chart using chartjs **/
+function createPie (id, labels, title){
+  var pie = new Chart(document.getElementById(id), {
+    type: 'pie',
+    data: {
+      labels: labels,
+      datasets: [{
+        label: title,
+        backgroundColor: ["#D8401F", "#1F70D8"],
+        data: [0,0]
+      }]
+    },
+    options: {
+       tooltips: {
+    callbacks: {
+      // percentage label
+      label: function(tooltipItem, data) {
+        var dataset = data.datasets[tooltipItem.datasetIndex];
+        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
+        var total = meta.total;
+        var currentValue = dataset.data[tooltipItem.index];
+        var percentage = parseFloat((currentValue/total*100).toFixed(1));
+        return currentValue + ' (' + percentage + '%)';
+      },
+      title: function(tooltipItem, data) {
+        return data.labels[tooltipItem[0].index];
+      }
+    }
+  },
+      title: {
+        display: true,
+        text: title
+      }
+    }
+  });
+  return pie;
+}
+
+function download() {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+  // $(".file-processing").html("File processed and downloaded");
+
+}
+
+// Start file download.
+
+
+function upload(){
+
+  var data=new FormData();
+          var file = $("#fileupload")[0].files[0];
+          if (typeof file == "undefined"){
+            alert ("Please choose file.");
+            return;
+          }
+          data.append('file',file);
+          // $("#txtTest").val("Classifier training in progress. Please wait.....");
+          console.log("OI OI OI ");
+          $(".file-processing").show();
+          $.ajax({
+              url:"/upload",
+              type:'POST',
+              data:data,
+              cache:false,
+              processData:false,
+              contentType:false,
+              error:function(response){
+                  // alert ("Upload error");
+                  console.log(response);
+              },
+              success:function(data){
+                console.log("hio");
+                console.log(data);
+
+                $(".download-file").show();
+                text = data;
+                $(".file-processing").hide();
+
+                  // console.log(JSON.parse(data));
+                  // $("#txtTest").val("Classifier training complete. Your classifier will be used for violence detection.");
+              }
+          })
+}
+
 /* initiating function. hides some elements and initiates charts */
 $(document).ready(function(){
 
-    // clouds for offensive lang detection  
-    wordCloud = $("#word-cloud-off-blue").jQCloud([], {  autoResize: true, colors : ["8BCFFB", "0785D6"], });
-    wordCloud = $("#word-cloud-off-red").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
-    hashCloud = $("#hash-cloud-off-blue").jQCloud([], {  autoResize: true, colors : ["8BCFFB", "0785D6"], });
-    hashCloud = $("#hash-cloud-off-red").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+    // initiates all clouds for offensive lang detection  
+  $("#word-cloud-off-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#word-cloud-off-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
+  $("#hash-cloud-off-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#hash-cloud-off-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
 
+  $("#word-cloud-ad-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#word-cloud-ad-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
+  $("#hash-cloud-ad-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#hash-cloud-ad-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
 
-    wordCloud = $("#word-cloud-ad").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
-    hashCloud = $("#hash-cloud-ad").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
-    wordCloud = $("#word-cloud-hate").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
-    hashCloud = $("#hash-cloud-hate").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
-    wordCloud = $("#word-cloud-sentiment").jQCloud([], { width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
-    hashCloud = $("#hash-cloud-sentiment").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
+  $("#word-cloud-hate-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#word-cloud-hate-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
+  $("#hash-cloud-hate-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#hash-cloud-hate-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
+
+  $("#word-cloud-sent-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#word-cloud-sent-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
+  $("#hash-cloud-sent-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#hash-cloud-sent-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
+
   // hide all tables, info about tables etc
   $('.tables').hide();
   $(".infos").hide();
   $(".processing").hide();
   $(".top-blue").hide();
   $(".top-red").hide();
+  $(".download-file").hide();
+  $(".file-processing").hide();
 
 
   // initiates pie chart for offensive lang detection
-  pieChart =  new Chart(document.getElementById("pie-chart"), {
-    type: 'pie',
-    data: {
-      labels: ["Offensive", "Not Offensive"],
-      datasets: [{
-        label: "Offensiveness distribution",
-        backgroundColor: ["#D8401F", "#1F70D8"],
-        data: [0,0]
-      }]
-    },
-    options: {
-       tooltips: {
-    callbacks: {
-      // percentage label
-      label: function(tooltipItem, data) {
-        var dataset = data.datasets[tooltipItem.datasetIndex];
-        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-        var total = meta.total;
-        var currentValue = dataset.data[tooltipItem.index];
-        var percentage = parseFloat((currentValue/total*100).toFixed(1));
-        return currentValue + ' (' + percentage + '%)';
-      },
-      title: function(tooltipItem, data) {
-        return data.labels[tooltipItem[0].index];
-      }
-    }
-  },
-      title: {
-        display: true,
-        text: 'Offensiveness distribution'
-      }
-    }
-  });
+  pieChart =  createPie("pie-chart", ["Offensive", "Not Offensive"], "Offensiveness distribution");
 
   // initiates pie chart for advertisement detection
-  pieChart2 =  new Chart(document.getElementById("pie-chart2"), {
-    type: 'pie',
-    data: {
-      labels: ["Advertisement", "Not Advertisement"],
-      datasets: [{
-        label: "Advertisement distribution",
-        backgroundColor: ["#D8401F", "#1F70D8"],
-        data: [0,0]
-      }]
-    },
-    options: {
-       tooltips: {
-    callbacks: {
-      // percentage label
-      label: function(tooltipItem, data) {
-        var dataset = data.datasets[tooltipItem.datasetIndex];
-        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-        var total = meta.total;
-        var currentValue = dataset.data[tooltipItem.index];
-        var percentage = parseFloat((currentValue/total*100).toFixed(1));
-        return currentValue + ' (' + percentage + '%)';
-      },
-      title: function(tooltipItem, data) {
-        return data.labels[tooltipItem[0].index];
-      }
-    }
-  },
-      title: {
-        display: true,
-        text: 'Advertisement distribution'
-      }
-    }
-  });
+  pieChart2 =  createPie("pie-chart2", ["Advertisement", "Not Advertisement"], "Advertisement distribution");
 
   // initiates pie chart for hate speech detection
-  pieChart3 =  new Chart(document.getElementById("pie-chart3"), {
-    type: 'pie',
-    data: {
-      labels: ["Hate speech", "Not Hate speech"],
-      datasets: [{
-        label: "Hate speech distribution",
-        backgroundColor: ["#D8401F", "#1F70D8"],
-        data: [0,0]
-      }]
-    },
-    options: {
-       tooltips: {
-    callbacks: {
-      // percentage label
-      label: function(tooltipItem, data) {
-        var dataset = data.datasets[tooltipItem.datasetIndex];
-        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-        var total = meta.total;
-        var currentValue = dataset.data[tooltipItem.index];
-        var percentage = parseFloat((currentValue/total*100).toFixed(1));
-        return currentValue + ' (' + percentage + '%)';
-      },
-      title: function(tooltipItem, data) {
-        return data.labels[tooltipItem[0].index];
-      }
-    }
-  },
-      title: {
-        display: true,
-        text: 'Hate speech distribution'
-      }
-    }
-  });
+  pieChart3 =  createPie("pie-chart3", ["Hate speech", "Not Hate speech"], "Hate speech distribution");
 
-    // initiates pie chart for hate speech detection
-  pieChart4 =  new Chart(document.getElementById("pie-chart4"), {
-    type: 'pie',
-    data: {
-      labels: ["Positive", "Negative"],
-      datasets: [{
-        label: "Sentiment distribution",
-        backgroundColor: ["#1F70D8", "#D8401F" ],
-        data: [0,0]
-      }]
-    },
-    options: {
-       tooltips: {
-    callbacks: {
-      // percentage label
-      label: function(tooltipItem, data) {
-        var dataset = data.datasets[tooltipItem.datasetIndex];
-        var meta = dataset._meta[Object.keys(dataset._meta)[0]];
-        var total = meta.total;
-        var currentValue = dataset.data[tooltipItem.index];
-        var percentage = parseFloat((currentValue/total*100).toFixed(1));
-        return currentValue + ' (' + percentage + '%)';
-      },
-      title: function(tooltipItem, data) {
-        return data.labels[tooltipItem[0].index];
-      }
-    }
-  },
-      title: {
-        display: true,
-        text: 'Sentiment distribution'
-      }
-    }
-  });
+  // initiates pie chart for sentiment detection
+  pieChart4 =  createPie("pie-chart4", [ "Negative", "Positive"], "Sentiment distribution");
 
   // hides all the initiated charts
   $(".pies").hide();
@@ -292,13 +270,7 @@ function clear_table(){
   $(".top-blue").hide();
   $(".top-red").hide();
   $("table tbody").html('');
-
-
-  // $("#word-cloud").hide();
-  // $("#word-cloud").hide();
   $(".jqcloud").hide();
-
-
 }
 
 /**
@@ -328,8 +300,11 @@ function query_offense() {
       $('#indTable3').hide();
       $("#indTable").show();
       $('#indTable2').show();
-      $("#word-cloud").show();
-      $("#hash-cloud").show();
+      $("#word-cloud-off-red").show();
+      $("#word-cloud-off-blue").show();
+      $("#hash-cloud-off-red").show();
+      $("#hash-cloud-off-blue").show();
+
 
 
       $("#indTable table tbody").html("");
@@ -412,7 +387,7 @@ function query_offense() {
         freqWordsBlue.push({text : wordCountsBlue[i][0], weight : wordCountsBlue[i][1]});
       }
 
-      for (var i = 0; i < hashCountsRed.length; i++){
+      for (var i = 0; i < hashCountsBlue.length; i++){
         freqHashBlue.push({text : hashCountsBlue[i][0], weight : hashCountsBlue[i][1]});
       }
 
@@ -511,18 +486,18 @@ function query_ad(){
       model: classifier,
   }).done(function(response) {
 
+      // hides and shows appropriate tables
       $('#indTable6').hide();
       $("#indTable4").show();
       $('#indTable5').show();
-      $("#word-cloud-ad").show();
-      $("#hash-cloud-ad").show();
 
-      // $("#word-cloud-ad").jQCloud('destroy');
-      // $("#hash-cloud-ad").jQCloud('destroy');
-      // wordCloudSent = $("#word-cloud-ad").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
-      // hashCloudSent = $("#hash-cloud-ad").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+      // activates clouds
+      $("#word-cloud-ad-red").show();
+      $("#word-cloud-ad-blue").show();
+      $("#hash-cloud-ad-red").show();
+      $("#hash-cloud-ad-blue").show();
 
-
+      // empty previous tables
       $("#indTable4 table tbody").html("");
       $("#indTable5 table tbody").html("");
       $("#indTable6 table tbody").html("");
@@ -578,24 +553,39 @@ function query_ad(){
          $(".top-red table tbody").append(markup);
       }
 
-      var wordCounts = response["word_counts"];
-      var hashCounts = response["hash_counts"];
+      var wordCountsRed = response["word_counts_red"];
+      var hashCountsRed = response["hash_counts_red"];
+      var wordCountsBlue = response["word_counts_blue"];
+      var hashCountsBlue = response["hash_counts_blue"];
 
-      var freqWords = []
-      var freqHash = []
+      var freqWordsRed = []
+      var freqHashRed = []
+      var freqWordsBlue = []
+      var freqHashBlue = []
 
-      for (var i = 0; i < wordCounts.length; i++){
-        freqWords.push({text : wordCounts[i][0], weight : wordCounts[i][1]});
+      // word cloud and hash cloud for red
+      for (var i = 0; i < wordCountsRed.length; i++){
+        freqWordsRed.push({text : wordCountsRed[i][0], weight : wordCountsRed[i][1]});
       }
 
-      for (var i = 0; i < hashCounts.length; i++){
-        freqHash.push({text : hashCounts[i][0], weight : hashCounts[i][1]});
+      for (var i = 0; i < hashCountsRed.length; i++){
+        freqHashRed.push({text : hashCountsRed[i][0], weight : hashCountsRed[i][1]});
       }
-      console.log (freqHash);
-      console.log(freqWords);
 
-      $('#word-cloud-ad').jQCloud('update', freqWords);
-      $('#hash-cloud-ad').jQCloud('update', freqHash);
+      // word cloud and hash cloud for blue
+      for (var i = 0; i < wordCountsBlue.length; i++){
+        freqWordsBlue.push({text : wordCountsBlue[i][0], weight : wordCountsBlue[i][1]});
+      }
+
+      for (var i = 0; i < hashCountsBlue.length; i++){
+        freqHashBlue.push({text : hashCountsBlue[i][0], weight : hashCountsBlue[i][1]});
+      }
+
+
+      $('#word-cloud-ad-red').jQCloud('update', freqWordsRed);
+      $('#hash-cloud-ad-red').jQCloud('update', freqHashRed);
+      $('#word-cloud-ad-blue').jQCloud('update', freqWordsBlue);
+      $('#hash-cloud-ad-blue').jQCloud('update', freqHashBlue);
 
       // display the tables containing top users
       $(".top-blue").show();
@@ -696,13 +686,10 @@ function query_hate(){
       $('#indTable9').hide();
       $("#indTable7").show();
       $('#indTable8').show();
-      $("#word-cloud-hate").show();
-      $("#hash-cloud-hate").show();
-
-      // $("#word-cloud-hate").jQCloud('destroy');
-      // $("#hash-cloud-hate").jQCloud('destroy');
-      // wordCloudSent = $("#word-cloud-hate").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
-      // hashCloudSent = $("#hash-cloud-hate").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+      $("#word-cloud-hate-red").show();
+      $("#word-cloud-hate-blue").show();
+      $("#hash-cloud-hate-red").show();
+      $("#hash-cloud-hate-blue").show();
 
 
       $("#indTable7 table tbody").html("");
@@ -761,24 +748,40 @@ function query_hate(){
       }
 
 
-      var wordCounts = response["word_counts"];
-      var hashCounts = response["hash_counts"];
+      var wordCountsRed = response["word_counts_red"];
+      var hashCountsRed = response["hash_counts_red"];
+      var wordCountsBlue = response["word_counts_blue"];
+      var hashCountsBlue = response["hash_counts_blue"];
 
-      var freqWords = []
-      var freqHash = []
+      var freqWordsRed = []
+      var freqHashRed = []
+      var freqWordsBlue = []
+      var freqHashBlue = []
 
-      for (var i = 0; i < wordCounts.length; i++){
-        freqWords.push({text : wordCounts[i][0], weight : wordCounts[i][1]});
+      // word cloud and hash cloud for red
+      for (var i = 0; i < wordCountsRed.length; i++){
+        freqWordsRed.push({text : wordCountsRed[i][0], weight : wordCountsRed[i][1]});
       }
 
-      for (var i = 0; i < hashCounts.length; i++){
-        freqHash.push({text : hashCounts[i][0], weight : hashCounts[i][1]});
+      for (var i = 0; i < hashCountsRed.length; i++){
+        freqHashRed.push({text : hashCountsRed[i][0], weight : hashCountsRed[i][1]});
       }
-      console.log (freqHash);
-      console.log(freqWords);
 
-      $('#word-cloud-hate').jQCloud('update', freqWords);
-      $('#hash-cloud-hate').jQCloud('update', freqHash);
+      // word cloud and hash cloud for blue
+      for (var i = 0; i < wordCountsBlue.length; i++){
+        freqWordsBlue.push({text : wordCountsBlue[i][0], weight : wordCountsBlue[i][1]});
+      }
+
+      for (var i = 0; i < hashCountsBlue.length; i++){
+        freqHashBlue.push({text : hashCountsBlue[i][0], weight : hashCountsBlue[i][1]});
+      }
+
+
+      $('#word-cloud-hate-red').jQCloud('update', freqWordsRed);
+      $('#hash-cloud-hate-red').jQCloud('update', freqHashRed);
+      $('#word-cloud-hate-blue').jQCloud('update', freqWordsBlue);
+      $('#hash-cloud-hate-blue').jQCloud('update', freqHashBlue);
+
       // display the tables containing top users
       $(".top-blue").show();
       $(".top-red").show(); 
@@ -878,8 +881,10 @@ function query_sentiment(){
       $("#indTable11").show();
       $('#indTable10').show();
 
-      $('#word-cloud-sentiment').show();
-      $('#hash-cloud-sentiment').show();
+      $('#word-cloud-sent-red').show();
+      $('#word-cloud-sent-blue').show();
+      $('#hash-cloud-sent-red').show();
+      $('#hash-cloud-sent-blue').show();
       // $("#word-cloud-sentiment").jQCloud('destroy');
       // $("#hash-cloud-sentiment").jQCloud('destroy');
 
@@ -939,32 +944,45 @@ function query_sentiment(){
          $(".top-red table tbody").append(markup);
       }
 
-      var wordCounts = response["word_counts"];
-      var hashCounts = response["hash_counts"];
+      var wordCountsRed = response["word_counts_red"];
+      var hashCountsRed = response["hash_counts_red"];
+      var wordCountsBlue = response["word_counts_blue"];
+      var hashCountsBlue = response["hash_counts_blue"];
 
-      var freqWords = []
-      var freqHash = []
+      var freqWordsRed = []
+      var freqHashRed = []
+      var freqWordsBlue = []
+      var freqHashBlue = []
 
-      for (var i = 0; i < wordCounts.length; i++){
-        freqWords.push({text : wordCounts[i][0], weight : wordCounts[i][1]});
+      // word cloud and hash cloud for red
+      for (var i = 0; i < wordCountsRed.length; i++){
+        freqWordsRed.push({text : wordCountsRed[i][0], weight : wordCountsRed[i][1]});
       }
 
-      for (var i = 0; i < hashCounts.length; i++){
-        freqHash.push({text : hashCounts[i][0], weight : hashCounts[i][1]});
+      for (var i = 0; i < hashCountsRed.length; i++){
+        freqHashRed.push({text : hashCountsRed[i][0], weight : hashCountsRed[i][1]});
       }
 
-      console.log("HUHAH");
-      console.log (freqHash);
-      console.log(freqWords);
+      // word cloud and hash cloud for blue
+      for (var i = 0; i < wordCountsBlue.length; i++){
+        freqWordsBlue.push({text : wordCountsBlue[i][0], weight : wordCountsBlue[i][1]});
+      }
 
-      $('#word-cloud-sentiment').jQCloud('update', freqWords);
-      $('#hash-cloud-sentiment').jQCloud('update', freqHash);
+      for (var i = 0; i < hashCountsBlue.length; i++){
+        freqHashBlue.push({text : hashCountsBlue[i][0], weight : hashCountsBlue[i][1]});
+      }
+
+
+      $('#word-cloud-sent-red').jQCloud('update', freqWordsRed);
+      $('#hash-cloud-sent-red').jQCloud('update', freqHashRed);
+      $('#word-cloud-sent-blue').jQCloud('update', freqWordsBlue);
+      $('#hash-cloud-sent-blue').jQCloud('update', freqHashBlue);
       // display the tables containing top users
       $(".top-blue").show();
       $(".top-red").show(); 
 
       // updates piechart
-      pieChart4.data.datasets[0].data = [count1, count2]
+      pieChart4.data.datasets[0].data = [count2, count1]
       pieChart4.update();
       $("#pie-chart4").show();
 

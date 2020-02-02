@@ -1013,6 +1013,22 @@ legend {
   transition: all .2s ease-out, color .2s ease-out;
 }
 
+.btn-search {
+  height: 100%;
+  width: 100%;
+  white-space: nowrap;
+  color: #fff;
+  border: 0;
+  cursor: pointer;
+  background: #63c76a;
+  transition: all .2s ease-out, color .2s ease-out;
+}
+
+.btn-search svg {
+  width: 16px;
+}
+
+
 .s003 form .inner-form .input-field.third-wrap .btn-search svg {
   width: 16px;
 }
@@ -1164,3 +1180,13 @@ table tbody {
   border: 1px solid lightgrey !important;
 }
 
+.file-processing, .download-file, .processing{
+  max-width: 80%; margin: auto; padding-left: 1rem;
+}
+
+.s002{
+  margin:auto;
+}
+.up-instructions{
+  margin:auto; width:fit-content;
+}

@@ -156,9 +156,29 @@
                           </form>
                         </div> <!-- end of searchbox and buttons -->
 
+                        <div class = "s002">
+                          <p class = "up-instructions"> Upload text file. Input should be separated by newline.  </p>
+                          <p class ="up-instructions" > You will be able to download file with classification. </p>
+                          <div class="input-group" style = "margin:auto; width: fit-content; padding-top: 2rem;">
 
+                          <input type="file" id="fileupload" name="file" style = "padding: 1rem; cursor:pointer; background:aliceblue;">
+                          <button style = "padding:1rem;" class="btn-search up-instructions" type="button" onclick="upload()">                                   
+                            <svg class="svg-inline--fa fa-search fa-w-16" aria-hidden="true" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                                    <path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z"></path>
+                            </svg> &nbsp Classify file content 
+                          </button>
+
+                          </div>
+                          <!-- <div id = "haha"> haha </div> -->
+                          <!-- <img src = "" id = "poo"> -->
+                        </div>
+
+                        <p class = "file-processing" > Processing file..</p>
+                        <div class = "download-file text-center">
+                          Your download is ready. <button onclick = download()>Download</button> 
+                        </div> 
                         <!-- processomg message -->
-                        <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
+                        <p class = "processing"> Retrieving and analyzing tweets... </p>
 
 
                         <!-- pie chart for offensive lang queries -->
@@ -392,11 +412,22 @@
                                                   <!-- cloud of most frequent words and hashtags -->
                          <div class = "row" class = "cloud" style = "">
                           <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
-                              <div id="word-cloud-ad" class="jqcloud"></div>
+                              <div id="word-cloud-ad-red" class="jqcloud"></div>
+                          </div> 
+
+                          <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
+                            <div id = "word-cloud-ad-blue" class="jqcloud" > </div>
+                          </div> 
+                        </div>
+
+
+                        <div class = "row" class = "cloud" style = "">
+                          <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
+                              <div id="hash-cloud-ad-red" class="jqcloud"></div>
 
                           </div> 
                           <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
-                            <div id = "hash-cloud-ad" class="jqcloud" >
+                            <div id = "hash-cloud-ad-blue" class="jqcloud" >
                             </div>
                           </div> 
                         </div>
@@ -564,11 +595,22 @@
                                                   <!-- cloud of most frequent words and hashtags -->
                          <div class = "row" class = "cloud" style = "">
                           <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
-                              <div id="word-cloud-hate" class="jqcloud"></div>
+                              <div id="word-cloud-hate-red" class="jqcloud"></div>
+                          </div> 
+
+                          <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
+                            <div id = "word-cloud-hate-blue" class="jqcloud" > </div>
+                          </div> 
+                        </div>
+
+
+                        <div class = "row" class = "cloud" style = "">
+                          <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
+                              <div id="hash-cloud-hate-red" class="jqcloud"></div>
 
                           </div> 
                           <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
-                            <div id = "hash-cloud-hate" class="jqcloud" >
+                            <div id = "hash-cloud-hate-blue" class="jqcloud" >
                             </div>
                           </div> 
                         </div>
@@ -738,14 +780,26 @@
                          <!-- cloud of most frequent words and hashtags -->
                          <div class = "row" class = "cloud" style = "">
                           <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
-                              <div id="word-cloud-sentiment" class="jqcloud"></div>
+                              <div id="word-cloud-sent-red" class="jqcloud"></div>
+                          </div> 
+
+                          <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
+                            <div id = "word-cloud-sent-blue" class="jqcloud" > </div>
+                          </div> 
+                        </div>
+
+
+                        <div class = "row" class = "cloud" style = "">
+                          <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
+                              <div id="hash-cloud-sent-red" class="jqcloud"></div>
 
                           </div> 
                           <div class="col-lg-6 col-sm-6 col-xs-6 text-center ">
-                            <div id = "hash-cloud-sentiment" class="jqcloud" >
+                            <div id = "hash-cloud-sent-blue" class="jqcloud" >
                             </div>
                           </div> 
                         </div>
+
                         <!-- Tables for results -->
                         <div class="s004" style="">
                           <!-- info about table containing hate speech -->
@@ -757,7 +811,7 @@
                               <thead width = "20%">
                                 <tr>
                                   <th width = "80%">Text</th>
-                                  <th width = "20%">Hate speech?</th>
+                                  <th width = "20%">Sentiment</th>
                                 </tr>
                               </thead>
                               <tbody> <!-- body will be appended from javascript --> </tbody>
@@ -773,7 +827,7 @@
                               <thead width = "20%">
                                 <tr>
                                   <th width = "80%">Text</th>
-                                  <th width = "20%">sentiment</th>
+                                  <th width = "20%">Sentiment</th>
                                 </tr>
                               </thead>
                               <tbody> <!-- body will be appended from javascript --> </tbody>
