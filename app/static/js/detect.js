@@ -118,8 +118,12 @@ var hashCloud = "";
 /* initiating function. hides some elements and initiates charts */
 $(document).ready(function(){
 
-    wordCloud = $("#word-cloud").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
-    hashCloud = $("#hash-cloud").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+    // clouds for offensive lang detection  
+    wordCloud = $("#word-cloud-off-blue").jQCloud([], {  autoResize: true, colors : ["8BCFFB", "0785D6"], });
+    wordCloud = $("#word-cloud-off-red").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+    hashCloud = $("#hash-cloud-off-blue").jQCloud([], {  autoResize: true, colors : ["8BCFFB", "0785D6"], });
+    hashCloud = $("#hash-cloud-off-red").jQCloud([], {  autoResize: true, colors : ["C20202", "F38B81"], });
+
 
     wordCloud = $("#word-cloud-ad").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
     hashCloud = $("#hash-cloud-ad").jQCloud([], {  width:500, height: 200, autoResize: true, colors : ["C20202", "F38B81"], });
@@ -339,12 +343,6 @@ function query_offense() {
       var topBlue = response['blue'];
       var topRed = response['red'];
 
-
-      console.log("BLUE");
-      console.log(topBlue);
-      console.log("RED");
-      console.log(topRed);
-
       var level = '';
       var text = '';
       var count1 = 0;
@@ -390,24 +388,39 @@ function query_offense() {
       }
 
 
-      var wordCounts = response["word_counts"];
-      var hashCounts = response["hash_counts"];
+      var wordCountsRed = response["word_counts_red"];
+      var hashCountsRed = response["hash_counts_red"];
+      var wordCountsBlue = response["word_counts_blue"];
+      var hashCountsBlue = response["hash_counts_blue"];
 
-      var freqWords = []
-      var freqHash = []
+      var freqWordsRed = []
+      var freqHashRed = []
+      var freqWordsBlue = []
+      var freqHashBlue = []
 
-      for (var i = 0; i < wordCounts.length; i++){
-        freqWords.push({text : wordCounts[i][0], weight : wordCounts[i][1]});
+      // word cloud and hash cloud for red
+      for (var i = 0; i < wordCountsRed.length; i++){
+        freqWordsRed.push({text : wordCountsRed[i][0], weight : wordCountsRed[i][1]});
       }
 
-      for (var i = 0; i < hashCounts.length; i++){
-        freqHash.push({text : hashCounts[i][0], weight : hashCounts[i][1]});
+      for (var i = 0; i < hashCountsRed.length; i++){
+        freqHashRed.push({text : hashCountsRed[i][0], weight : hashCountsRed[i][1]});
       }
-      console.log (freqHash);
-      console.log(freqWords);
 
-      $('#word-cloud').jQCloud('update', freqWords);
-      $('#hash-cloud').jQCloud('update', freqHash);
+      // word cloud and hash cloud for blue
+      for (var i = 0; i < wordCountsBlue.length; i++){
+        freqWordsBlue.push({text : wordCountsBlue[i][0], weight : wordCountsBlue[i][1]});
+      }
+
+      for (var i = 0; i < hashCountsRed.length; i++){
+        freqHashBlue.push({text : hashCountsBlue[i][0], weight : hashCountsBlue[i][1]});
+      }
+
+
+      $('#word-cloud-off-red').jQCloud('update', freqWordsRed);
+      $('#hash-cloud-off-red').jQCloud('update', freqHashRed);
+      $('#word-cloud-off-blue').jQCloud('update', freqWordsBlue);
+      $('#hash-cloud-off-blue').jQCloud('update', freqHashBlue);
 
 
       // display the tables containing top users

@@ -29,7 +29,7 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify=True)
 
 
-max_tweets = 1000
+max_tweets = 100
 # query = "@QF OR @ajarabic"
 result_type = "recent"
 
@@ -75,6 +75,33 @@ def get_frequency(text, threshold):
 
     return (word_counts,list_counts)
 
+# filter returns true if word is not a hashtag, not same as query, not RT etc
+def filter_word(word, query):
+    return (len(word) > 0 and word[0] != '#' and word != query and word != query+":" and word != "RT")
+
+# filter returns true if word is a hashtag, not same as query, etc
+def filter_hash(word, query):
+    return ((len(word) > 0 and word[0] == '#' and word != query))
+
+# returns words and hashtags that appear more than threshold in text
+def get_frequency_words(text, threshold, query):
+    text = text.split(" ")
+    # all words frequency
+    word_counts = Counter(text)
+    word_counts = Counter({x: word_counts[x] for x in word_counts if (filter_word(x,query))})
+    word_counts = word_counts.most_common(threshold)
+    
+    return (word_counts)
+
+# returns words and hashtags that appear more than threshold in text
+def get_frequency_hashtags(text, threshold, query):
+    text = text.split(" ")
+    # all words frequency
+    word_counts = Counter(text)
+    hash_counts = Counter({x: word_counts[x] for x in word_counts if (filter_hash(x,query))})
+    hash_counts = hash_counts.most_common(threshold)
+
+    return (hash_counts)
 # loads all models
 
 
@@ -369,6 +396,106 @@ def detectOffense():
 
 
 
+def processTweets (user_query, model, vectorizer, pos_label, neg_label):
+    searched_tweets = []
+    last_id = -1
+    while len(searched_tweets) < max_tweets:
+        # print ("pookey")
+        count = max_tweets - len(searched_tweets)
+        # count = 5
+        try:
+            new_tweets = api.search(q=user_query, count=count, max_id=str(last_id - 1), result_type = result_type, lang = "ar")
+            if not new_tweets:
+                break
+            searched_tweets.extend(new_tweets)
+            last_id = new_tweets[-1].id
+        except tweepy.TweepError as e:
+            # depending on TweepError.code, one may want to retry or wait
+            # to keep things simple, we will give up on an error
+            break
+
+
+    users = []
+    names = []
+    red_text = ""
+    blue_text = ""
+    searched_tweets = searched_tweets[:max_tweets]
+
+    # gets tweet text and info about the user
+    for i in range (len(searched_tweets)):
+
+        user = searched_tweets[i].user.screen_name
+        name = searched_tweets[i].user.name
+
+        users.append(user)
+        names.append(name)
+
+        searched_tweets[i] = searched_tweets[i].text
+
+
+
+
+    if len (searched_tweets) == 0:
+        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[], 
+            "word_counts_red":[], "hash_counts_red":[], "word_counts_blue":[], "hash_counts_blue":[]})
+    # gets word n gram features and performs classification using
+    # model chosen
+    n_gram_features = vectorizer.transform(searched_tweets)
+    predicted_labels = list(model.predict(n_gram_features))
+
+    red_users = {}
+    blue_users = {}
+
+    reds = {}
+    blues = {}
+
+    for i in range (len(predicted_labels)):
+        label = predicted_labels[i]
+        user = users[i]
+        name = names[i]
+
+        if (label == neg_label):
+            # stores name of the user
+            blues[user] = name
+            if user in blue_users:
+                blue_users[user] += 1
+            else:
+                blue_users[user] = 1
+            blue_text += (" " + searched_tweets[i])
+        else:
+            #stores name of the red user
+            reds[user] = name
+            if user in red_users:
+                red_users[user] += 1
+            else:
+                red_users[user] = 1
+            red_text += (" " + searched_tweets[i])
+
+
+    word_counts_red = get_frequency_words(red_text, 20, user_query)
+    hash_counts_red = get_frequency_hashtags(red_text, 20, user_query)
+    word_counts_blue = get_frequency_words(blue_text, 20, user_query)
+    hash_counts_blue = get_frequency_hashtags(blue_text, 20, user_query)
+
+    sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
+    sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
+
+    blue_names = []
+    red_names = []
+    # gets user names of top 20
+    for x in sorted_blue:
+        blue_names.append(blues[x[0]])
+
+    for x in sorted_red:
+        red_names.append(reds[x[0]])
+
+    # prediction = str(predicted_labels[0])
+    # print (prediction)
+
+    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names, 
+        "word_counts_red":word_counts_red, "hash_counts_red":hash_counts_red, "word_counts_blue":word_counts_blue, "hash_counts_blue":hash_counts_blue})
+
+
 @app.route('/queryOffense', methods=['POST'])
 def queryOffense():
     global word_unigram_vectorizer, word_3gram_vectorizer
@@ -406,94 +533,7 @@ def queryOffense():
         model = SVM_char_3gram_model
         vectorizer = char_3gram_vectorizer
 
-    searched_tweets = []
-    last_id = -1
-    while len(searched_tweets) < max_tweets:
-        # print ("pookey")
-        count = max_tweets - len(searched_tweets)
-        # count = 5
-        try:
-            new_tweets = api.search(q=user_query, count=count, max_id=str(last_id - 1), result_type = result_type, lang = "ar")
-            if not new_tweets:
-                break
-            searched_tweets.extend(new_tweets)
-            last_id = new_tweets[-1].id
-        except tweepy.TweepError as e:
-            # depending on TweepError.code, one may want to retry or wait
-            # to keep things simple, we will give up on an error
-            break
-
-
-    users = []
-    names = []
-    alltext = ""
-    searched_tweets = searched_tweets[:max_tweets]
-
-    # gets tweet text and info about the user
-    for i in range (len(searched_tweets)):
-
-        user = searched_tweets[i].user.screen_name
-        name = searched_tweets[i].user.name
-
-        users.append(user)
-        names.append(name)
-
-        searched_tweets[i] = searched_tweets[i].text
-
-
-
-
-    if len (searched_tweets) == 0:
-        return jsonify({"tweets":[], "levels": [], "blue":[], "red":[], "blue_names":[], "red_names":[], "word_counts":[], "hash_counts":[]})
-    # gets word n gram features and performs classification using
-    # model chosen
-    n_gram_features = vectorizer.transform(searched_tweets)
-    predicted_labels = list(model.predict(n_gram_features))
-
-    red_users = {}
-    blue_users = {}
-
-    reds = {}
-    blues = {}
-
-    for i in range (len(predicted_labels)):
-        label = predicted_labels[i]
-        user = users[i]
-        name = names[i]
-
-        if (label == "NOT"):
-            # stores name of the user
-            blues[user] = name
-            if user in blue_users:
-                blue_users[user] += 1
-            else:
-                blue_users[user] = 1
-        else:
-            #stores name of the red user
-            reds[user] = name
-            if user in red_users:
-                red_users[user] += 1
-            else:
-                red_users[user] = 1
-            alltext += (" " + searched_tweets[i])
-
-    word_counts, hash_counts = get_frequency(alltext, 20)
-    sorted_blue = sorted(blue_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
-    sorted_red = sorted(red_users.items(), key=operator.itemgetter(1),reverse=True) [:20]
-
-    blue_names = []
-    red_names = []
-    # gets user names of top 20
-    for x in sorted_blue:
-        blue_names.append(blues[x[0]])
-
-    for x in sorted_red:
-        red_names.append(reds[x[0]])
-
-    # prediction = str(predicted_labels[0])
-    # print (prediction)
-
-    return jsonify({"tweets":list(searched_tweets), "levels": predicted_labels, "blue":sorted_blue, "red":sorted_red, "blue_names":blue_names, "red_names":red_names, "word_counts":word_counts, "hash_counts":hash_counts})
+    return processTweets(user_query, model, vectorizer, "OFF", "NOT")
 
 
 # detect hatespeech
