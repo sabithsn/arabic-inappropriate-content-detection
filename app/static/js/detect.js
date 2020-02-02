@@ -176,13 +176,37 @@ function download() {
 
 function upload(){
 
+  console.log($("#offensive").hasClass("active"));
+  console.log($("#advertisement").hasClass("active"));
+  console.log($("#hate-speech").hasClass("active"));
+  console.log($("#sentiment").hasClass("active"));
+  task = "";
+  var file = "";
+  if ($("#offensive").hasClass("active")){
+    task = "offensive";
+    file = $(".fileupload")[0].files[0];
+
+  } else if ($("#advertisement").hasClass("active")){
+    task = "advertisement";
+    file = $(".fileupload")[1].files[0];
+
+  } else if ($("#hate-speech").hasClass("active")){
+    task = "hate-speech";
+    file = $(".fileupload")[2].files[0];
+
+  } else if ($("#sentiment").hasClass("active")){
+    task = "sentiment";
+    file = $(".fileupload")[3].files[0];
+
+  }
+
   var data=new FormData();
-          var file = $("#fileupload")[0].files[0];
           if (typeof file == "undefined"){
             alert ("Please choose file.");
             return;
           }
           data.append('file',file);
+          data.append('task',task);
           // $("#txtTest").val("Classifier training in progress. Please wait.....");
           console.log("OI OI OI ");
           $(".file-processing").show();
@@ -271,6 +295,8 @@ function clear_table(){
   $(".top-red").hide();
   $("table tbody").html('');
   $(".jqcloud").hide();
+  $(".download-file").hide();
+  text = "";
 }
 
 /**

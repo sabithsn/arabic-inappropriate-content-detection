@@ -286,6 +286,24 @@ def index():
 @app.route('/upload', methods=['POST'])
 def upload():
     '''saves file in the request and loads it for training'''
+    task = request.form["task"]
+    print ("task", task)
+
+    if task == "offensive":
+        model = SVM_char_3gram_model
+        vectorizer = char_3gram_vectorizer
+    elif task == "advertisement":
+        model = SVM_char_3gram_model_ad
+        vectorizer = char_3gram_vectorizer_ad
+    elif task == "hate-speech":
+        model = SVM_char_3gram_model_hate
+        vectorizer = char_3gram_vectorizer_hate
+    elif task == "sentiment":
+        model = SVM_char_3gram_model_sentiment
+        vectorizer = char_3gram_vectorizer_sentiment
+    else:
+        print ("WHAt", task)
+        return jsonify("ERROR")
 
     ## gets file from request and saves it
     file=request.files['file']
@@ -305,8 +323,7 @@ def upload():
         return jsonify("ERROR")
     
     print (len (input_text))
-    model = SVM_char_3gram_model
-    vectorizer = char_3gram_vectorizer
+
 
     n_gram_features = vectorizer.transform(input_text)
     predicted_labels = list(model.predict(n_gram_features))
