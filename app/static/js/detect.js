@@ -267,6 +267,7 @@ $(document).ready(function(){
   $(".top-red").hide();
   $(".download-file").hide();
   $(".file-processing").hide();
+  $(".cloud").hide();
 
 
   // initiates pie chart for offensive lang detection
@@ -296,6 +297,8 @@ function clear_table(){
   $("table tbody").html('');
   $(".jqcloud").hide();
   $(".download-file").hide();
+  $(".cloud").hide();
+
   text = "";
 }
 
@@ -422,6 +425,7 @@ function query_offense() {
       $('#hash-cloud-off-red').jQCloud('update', freqHashRed);
       $('#word-cloud-off-blue').jQCloud('update', freqWordsBlue);
       $('#hash-cloud-off-blue').jQCloud('update', freqHashBlue);
+      $(".cloud").show();
 
 
       // display the tables containing top users
@@ -474,6 +478,8 @@ function detect_offense() {
       $(".top-blue").hide();
       $(".top-red").hide(); 
       $(".jqcloud").hide();
+      $(".cloud").hide();
+
 
       
       //  updates table based on label
@@ -616,6 +622,7 @@ function query_ad(){
       // display the tables containing top users
       $(".top-blue").show();
       $(".top-red").show(); 
+      $(".cloud").show();
 
       // updates pie chart of advertisment distribution
       pieChart2.data.datasets[0].data = [count2, count1]
@@ -665,6 +672,8 @@ function detect_ad() {
       $(".top-blue").hide();
       $(".top-red").hide();
       $(".jqcloud").hide();
+      $(".cloud").hide();
+
  
 
 
@@ -810,7 +819,9 @@ function query_hate(){
 
       // display the tables containing top users
       $(".top-blue").show();
-      $(".top-red").show(); 
+      $(".top-red").show();
+      $(".cloud").show();
+ 
 
       // updates piechart
       pieChart3.data.datasets[0].data = [count2, count1]
@@ -861,6 +872,8 @@ function detect_hate() {
       $(".top-blue").hide();
       $(".top-red").hide(); 
       $(".jqcloud").hide();
+      $(".cloud").hide();
+
 
       // $(".jqcloud").hide();
 
@@ -1005,7 +1018,9 @@ function query_sentiment(){
       $('#hash-cloud-sent-blue').jQCloud('update', freqHashBlue);
       // display the tables containing top users
       $(".top-blue").show();
-      $(".top-red").show(); 
+      $(".top-red").show();
+      $(".cloud").show();
+ 
 
       // updates piechart
       pieChart4.data.datasets[0].data = [count2, count1]
@@ -1056,6 +1071,8 @@ function detect_sentiment() {
       $(".top-blue").hide();
       $(".top-red").hide(); 
       $(".jqcloud").hide();
+      $(".cloud").hide();
+
 
       // $("#word-cloud-hate").jQCloud('destroy');
       // $("#hash-cloud-hate").jQCloud('destroy');
