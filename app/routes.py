@@ -289,7 +289,7 @@ SVM_char_3gram_model, char_3gram_vectorizer = load_model ("./app/static/models/S
 SVM_char_3gram_model_ad, char_3gram_vectorizer_ad = load_model ("./app/static/models/SVM_Add_model_char_3-gram.pckl")
 SVM_char_3gram_model_hate, char_3gram_vectorizer_hate = load_model ("./app/static/models/SVM_Hate_model_char_5-gram.pckl")
 SVM_char_3gram_model_sentiment, char_3gram_vectorizer_sentiment = load_model ("./app/static/models/SVM_Sent_model_char_3-gram.pckl")
-
+SVM_char_3gram_model_porno, char_3gram_vectorizer_porno = load_model ("./app/static/models/SVM_Porno_model_char_3-gram.pckl")
 
 print ("All models loaded")
 
@@ -341,6 +341,9 @@ def upload():
     elif task == "sentiment":
         model = SVM_char_3gram_model_sentiment
         vectorizer = char_3gram_vectorizer_sentiment
+    elif task == "porno":
+        model = SVM_char_3gram_model_porno
+        vectorizer = char_3gram_vectorizer_porno
     else:
         print ("WHAt", task)
         return jsonify("ERROR")
@@ -730,3 +733,30 @@ def querySentiment():
     return processTweets(user_query, model, vectorizer, "Negative", "Positive")
    
 
+@app.route('/detectPorno', methods=['POST'])
+def detectPorno():
+
+    global char_3gram_vectorizer_porno, SVM_char_3gram_model_porno
+
+    # Gets text and classifier from client
+    user_query = [request.form["text"]]
+    classifier = request.form["model"]
+
+
+    # gets the model chosen by client
+    model = None
+    vectorizer = None
+
+
+    model = SVM_char_3gram_model_porno
+    vectorizer = char_3gram_vectorizer_porno
+
+    # gets word n gram features and performs classification using
+    # model chosen
+    n_gram_features = vectorizer.transform(user_query)
+    predicted_labels = model.predict(n_gram_features)
+    prediction = str(predicted_labels[0])
+    print ("HIO")
+    print (prediction)
+
+    return jsonify({"level": prediction})
