@@ -343,7 +343,6 @@ select{
   }
 
 .masthead h2 {
-  max-width: 20rem;
   font-size: 1.5rem;
   color: #D8D8D8;
 
@@ -368,7 +367,6 @@ select{
   }
   .masthead h2 {
     padding-bottom: 0.5rem;
-    max-width: 30rem;
     font-size: 1.25rem;
     color: #D8D8D8;
   }
@@ -386,7 +384,6 @@ select{
   }
   .masthead h2 {
     padding-bottom: 0.5rem;
-    max-width: 30rem;
     font-size: 1.25rem;
     color: #D8D8D8;
   }

@@ -829,7 +829,7 @@ legend {
 }
 
 .s002 {
-  min-height: 10vh;
+  /*min-height: 10vh;*/
   display: block;
   width: 90%;
   margin-left: 50px;
@@ -839,7 +839,6 @@ legend {
   font-color:   #FFFFFF;
   background-size: cover;
   background-position: center center;
-  padding: 15px;
 }
 
 
@@ -1181,7 +1180,7 @@ table tbody {
 }
 
 .file-processing, .download-file, .processing{
-  max-width: 80%; margin: auto; padding-left: 1rem;
+  max-width: 80%; margin: auto; padding-left: 1rem; width: fit-content;
 }
 
 .s002{

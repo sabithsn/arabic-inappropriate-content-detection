@@ -55,7 +55,7 @@
     <div class="row container-fluid" id = "cols" >
 
       <!-- tabs for different kinds of content detection -->
-      <div class="col-lg-12 col-sm-12 col-xs-12 text-left" id = "freespace" style = "padding:0rem; margin-top:3rem;" >
+      <div class="col-lg-12 col-sm-12 col-xs-12 text-left" id = "freespace" style = "padding:0rem; margin-top:2rem;" >
         <ul class="nav nav-tabs" role="tablist" style = "width:100%;">
           <!-- offensive lang detection tab -->
           <li class="nav-item " >
@@ -89,7 +89,7 @@
 
       <!-- offensive language detection -->
       <div class="row container-fluid" id = "cols" style = "margin-left:0rem;">
-        <section style=" width:100%; max-width:100%; padding-top: 10px;">
+        <section style=" width:100%; max-width:100%;">
           <div class="container-fluid">
             <div class="row">
               <div class="col-lg-12">
@@ -99,16 +99,12 @@
                   <div class="tab-pane fade active show" id="offensive" role="tabpanel" aria-labelledby="offensive"> 
                         
                         <!-- instructions for user -->
-                        <div class = "s002">
-                          <h2> Please choose classifier and enter your text </h2>
-                          <div class = "line-break"></div>
-                          <p1> Your entered text will be run with the classifier selected to detect offensiveness in the text. 
-                           If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
-                           The model only works for Arabic text. </p1>
+                        <div style = "width: 80%; margin: auto; padding-left: 1rem;">
+                          <h2> Enter text or query Twitter or upload file for offensive language detection. The model only works for Arabic text. </h2>
                         </div>
                         <!-- end of class s002 -->
 
-                        <!-- checkbox to decide whether to query twitter and analyze tweets or analyze input text -->
+                        <!-- checkbox to decide whether to query Twitter and analyze tweets or analyze input text -->
                         <div style = "width: 80%; margin: auto; padding-left: 1rem;">
                           <input id = "searchType" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
                           <br>
@@ -136,7 +132,7 @@
 
                               <!-- input field for query/text -->
                               <div class="input-field second-wrap">
-                                <input id="search" type="text" placeholder="Enter text for offensive language detection" />
+                                <input id="search" type="text" placeholder="Enter text/query for offensive language detection" />
                               </div>
 
                               <!-- btn for making query -->
@@ -158,8 +154,7 @@
 
                         <div class = "s002">
                           <p class = "up-instructions"> Upload text file. Input should be separated by newline.  </p>
-                          <p class ="up-instructions" > You will be able to download file with classification. </p>
-                          <div class="input-group" style = "margin:auto; width: fit-content; padding-top: 2rem;">
+                          <div class="input-group" style = "margin:auto; width: fit-content; padding-top:0.5rem; padding-bottom:0.5rem;">
 
                           <input type="file" class="fileupload" name="file" style = "padding: 1rem; cursor:pointer; background:aliceblue;">
                           <button style = "padding:1rem;" class="btn-search up-instructions" type="button" onclick="upload()">                                   
@@ -176,7 +171,7 @@
                         </div> 
                         <!-- processomg message -->
                         <p class = "processing"> Retrieving and analyzing tweets... </p>
-
+                        <hr>
 
                         <!-- pie chart for offensive lang queries -->
                         <div class = "row" style = "max-width: 80%; margin: auto;">
@@ -302,15 +297,11 @@
                   <div class="tab-pane fade" id="advertisement" role="tabpanel" aria-labelledby="advertisement">
                         
                         <!-- user instructions -->
-                        <div class = "s002">
-                          <h2> Please choose classifier and enter your text </h2>
-                          <div class = "line-break"></div>
-                          <p1> Your entered text will be run with the classifier selected to detect if it's an advertisement.
-                          If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
-                          The model only works for Arabic text. </p1>
+                        <div style = "width: 80%; margin: auto; padding-left: 1rem;">
+                          <h2> Enter text or query Twitter or upload file for advertisement detection. The model only works for Arabic text. </h2>
                         </div>
 
-                        <!-- checkbox for deciding whether to query twitter and analyze result or just analyze input text -->
+                        <!-- checkbox for deciding whether to query Twitter and analyze result or just analyze input text -->
                         <div style = "width: 80%; margin: auto; padding-left: 1rem;">
                           <input id = "searchType2" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
                           <br>
@@ -339,7 +330,7 @@
 
                               <!-- text for query/analysis -->
                               <div class="input-field second-wrap">
-                                <input id="search2" type="text" placeholder="Enter text for advertisement detection" />
+                                <input id="search2" type="text" placeholder="Enter text/query for advertisement detection" />
                               </div>
 
                               <!-- search button -->
@@ -362,8 +353,7 @@
 
                         <div class = "s002">
                           <p class = "up-instructions"> Upload text file. Input should be separated by newline.  </p>
-                          <p class ="up-instructions" > You will be able to download file with classification. </p>
-                          <div class="input-group" style = "margin:auto; width: fit-content; padding-top: 2rem;">
+                          <div class="input-group" style = "margin:auto; width: fit-content; padding-top:0.5rem; padding-bottom:0.5rem;">
 
                           <input type="file" class="fileupload" name="file" style = "padding: 1rem; cursor:pointer; background:aliceblue;">
                           <button style = "padding:1rem;" class="btn-search up-instructions" type="button" onclick="upload()">                                   
@@ -381,7 +371,8 @@
                         <!--  message shown whilr processing  -->
                         <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
 
-                        <!-- pie chart for advertisment distribution if twitter is queried -->
+                        <!-- pie chart for advertisment distribution if Twitter is queried -->
+                        <hr>
                         <div class = "row" style = "max-width: 80%; margin: auto;">
 
                           <div class="col-lg-3 col-sm-3 col-xs-3 text-center"> 
@@ -506,16 +497,11 @@
                   <div class="tab-pane fade" id="hate-speech" role="tabpanel" aria-labelledby="hate-speech-tab">
                         
                         <!-- instructions for user -->
-                        <div class = "s002">
-                          <h2> Please choose classifier and enter your text </h2>
-                          <div class = "line-break"></div>
-                          <p1> Your entered text will be run with the classifier selected to detect if it's hate speech.
-
-                          If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
-                          The model only works for Arabic text. </p1>
+                        <div style = "width: 80%; margin: auto; padding-left: 1rem;">
+                          <h2> Enter text or query Twitter or upload file for hate speech detection. The model only works for Arabic text. </h2>
                         </div>
 
-                        <!-- checkbox for deciding whether to query twitter and analyze result or just analyze input text -->
+                        <!-- checkbox for deciding whether to query Twitter and analyze result or just analyze input text -->
                         <div style = "width: 80%; margin: auto; padding-left: 1rem;">
                           <input id = "searchType3" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
                           <br>
@@ -543,7 +529,7 @@
 
                               <!-- input text/query -->
                               <div class="input-field second-wrap">
-                                <input id="search3" type="text" placeholder="Enter text for hate speech detection" />
+                                <input id="search3" type="text" placeholder="Enter text/query for hate speech detection" />
                               </div>
 
                               <!-- search button -->
@@ -566,8 +552,7 @@
 
                         <div class = "s002">
                           <p class = "up-instructions"> Upload text file. Input should be separated by newline.  </p>
-                          <p class ="up-instructions" > You will be able to download file with classification. </p>
-                          <div class="input-group" style = "margin:auto; width: fit-content; padding-top: 2rem;">
+                          <div class="input-group" style = "margin:auto; width: fit-content; padding-top:0.5rem; padding-bottom:0.5rem;">
 
                           <input type="file" class="fileupload" name="file" style = "padding: 1rem; cursor:pointer; background:aliceblue;">
                           <button style = "padding:1rem;" class="btn-search up-instructions" type="button" onclick="upload()">                                   
@@ -585,7 +570,7 @@
 
                         <!--  message shown whilE processing  -->
                         <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
-
+                        <hr>
                         <!-- pie chart for hate speech detection -->
                         <div class = "row" style = "max-width: 80%; margin: auto;">
 
@@ -711,16 +696,11 @@
                   <div class="tab-pane fade" id="sentiment" role="tabpanel" aria-labelledby="sentiment">
                         
                         <!-- instructions for user -->
-                        <div class = "s002">
-                          <h2> Please choose classifier and enter your text </h2>
-                          <div class = "line-break"></div>
-                          <p1> Your entered text will be run with the classifier selected to detect sentiment.
-
-                          If no classifier is selected, character 3-gram model with Linear SVM classifier will be used.
-                          The model only works for Arabic text. </p1>
+                        <div style = "width: 80%; margin: auto; padding-left: 1rem;">
+                          <h2> Enter text or query Twitter or upload file for sentiment analysis. The model only works for Arabic text. </h2>
                         </div>
 
-                        <!-- checkbox for deciding whether to query twitter and analyze result or just analyze input text -->
+                        <!-- checkbox for deciding whether to query Twitter and analyze result or just analyze input text -->
                         <div style = "width: 80%; margin: auto; padding-left: 1rem;">
                           <input id = "searchType4" type="checkbox" name="vehicle1"> Query Twitter for Tweets </input> 
                           <br>
@@ -748,7 +728,7 @@
 
                               <!-- input text/query -->
                               <div class="input-field second-wrap">
-                                <input id="search4" type="text" placeholder="Enter text for Sentiment Analysis" />
+                                <input id="search4" type="text" placeholder="Enter text/query for Sentiment Analysis" />
                               </div>
 
                               <!-- search button -->
@@ -771,8 +751,7 @@
                         
                         <div class = "s002">
                           <p class = "up-instructions"> Upload text file. Input should be separated by newline.  </p>
-                          <p class ="up-instructions" > You will be able to download file with classification. </p>
-                          <div class="input-group" style = "margin:auto; width: fit-content; padding-top: 2rem;">
+                          <div class="input-group" style = "margin:auto; width: fit-content; padding-top:0.5rem; padding-bottom:0.5rem;">
 
                           <input type="file" class="fileupload" name="file" style = "padding: 1rem; cursor:pointer; background:aliceblue;">
                           <button style = "padding:1rem;" class="btn-search up-instructions" type="button" onclick="upload()">                                   
@@ -789,6 +768,8 @@
                         </div> 
                         <!--  message shown whilE processing  -->
                         <p class = "processing" style = "max-width: 80%; margin: auto; padding-left: 1rem;"> Retrieving and analyzing tweets... </p>
+
+                        <hr>
 
                         <!-- pie chart for hate speech detection -->
                         <div class = "row" style = "max-width: 80%; margin: auto;">

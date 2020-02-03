@@ -87,7 +87,7 @@ def get_valence_score(freqs1, freqs2):
 
     for freq in freqs1:
         try:
-            if freqs1[freq] < 2:
+            if freqs1[freq] < 3:
                 continue
             new_freqs1[freq] = 2.0*((1.0*freqs1[freq]/tot_words1)/ ((1.0*freqs1[freq]/tot_words1) + (1.0*freqs2[freq]/tot_words2)))-1.0
             # if (new_freqs1[freq] >= 1):
@@ -109,10 +109,14 @@ def get_valence_score(freqs1, freqs2):
 
 # filter returns true if word is not a hashtag, not same as query, not RT etc
 def filter_word(word, query):
-    return (len(word) > 0 and word[0] != '#' and word != query and word != query+":" and word != "RT")
+    word = word.lower()
+    query = query.lower()
+    return (len(word) > 0 and word[0] != '#' and word != query and word != query+":" and word != "rt")
 
 # filter returns true if word is a hashtag, not same as query, etc
 def filter_hash(word, query):
+    word = word.lower()
+    query = query.lower()
     return ((len(word) > 0 and word[0] == '#' and word != query))
 
 # returns words and hashtags that appear more than threshold in text
@@ -125,6 +129,13 @@ def get_frequency_words(blue_text, red_text, threshold, query):
     word_counts_red = Counter({x: word_counts_red[x] for x in word_counts_red if (filter_word(x,query))})
 
     # word_counts_blue, word_counts_red = get_valence_score(word_counts_blue, word_counts_red)
+    # print ("BLUE WORDS")
+    # print (word_counts_blue)
+    # print ("##############")
+    # print ("RED WORDS")
+    # print (word_counts_red)
+    # print ("##############")
+
 
     word_counts_blue = word_counts_blue.most_common(threshold)
     word_counts_red = word_counts_red.most_common(threshold)
@@ -141,6 +152,13 @@ def get_frequency_hashtags(blue_text, red_text, threshold, query):
     hash_counts_red = Counter({x: hash_counts_red[x] for x in hash_counts_red if (filter_hash(x,query))})
     
     # hash_counts_blue, hash_counts_red = get_valence_score (hash_counts_blue, hash_counts_red)
+
+    # print ("BLUE HASH")
+    # print (hash_counts_blue)
+    # print ("##############")
+    # print ("RED HASH")
+    # print (hash_counts_red)
+    # print ("##############")
 
     hash_counts_blue = hash_counts_blue.most_common(threshold)
     hash_counts_red = hash_counts_red.most_common(threshold)
