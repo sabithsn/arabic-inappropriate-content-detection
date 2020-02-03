@@ -294,6 +294,28 @@ SVM_char_3gram_model_sentiment, char_3gram_vectorizer_sentiment = load_model (".
 print ("All models loaded")
 
 
+def change_labels(label):
+    if label == "OFF":
+        label = "Offensive"
+    elif label == "NOT":
+        label = "NotOffensive"
+    elif label == "__label__ADS":
+        label = "Advertisement"
+    elif label == "__label__NOTADS":
+        label = "NotAdvertisement"
+    elif label == "HS":
+        label = "HateSpeech"
+    elif label == "NOT_HS":
+        label = "NotHateSpeech"
+    elif label == "PORNO":
+        label = "PornoAccount"
+    elif label == "NOT_PORNO":
+        label = "NotPornoAccount"
+
+    return label
+
+
+
 @app.route('/')
 @app.route('/index')
 def index():
@@ -348,7 +370,7 @@ def upload():
 
     with open (path, 'w') as f:
         for i in range (len(input_text)):
-            f.write(input_text[i] + "\t" + predicted_labels[i] + "\n")
+            f.write(input_text[i] + "\t" + change_labels(predicted_labels[i]) + "\n")
 
     # path = "/static/data/" + filename
     # file = open(path, 'rb')
