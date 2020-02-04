@@ -308,9 +308,9 @@ def change_labels(label):
     elif label == "NOT_HS":
         label = "NotHateSpeech"
     elif label == "PORNO":
-        label = "PornoAccount"
+        label = "Porno"
     elif label == "NOT_PORNO":
-        label = "NotPornoAccount"
+        label = "NotPorno"
 
     return label
 
