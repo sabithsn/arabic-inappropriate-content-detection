@@ -16,6 +16,7 @@ import operator
 from collections import Counter
 import tweepy
 
+
 from flask import send_file, send_from_directory, safe_join, abort
 
 
@@ -290,8 +291,23 @@ SVM_char_3gram_model_ad, char_3gram_vectorizer_ad = load_model ("./app/static/mo
 SVM_char_3gram_model_hate, char_3gram_vectorizer_hate = load_model ("./app/static/models/SVM_Hate_model_char_5-gram.pckl")
 SVM_char_3gram_model_sentiment, char_3gram_vectorizer_sentiment = load_model ("./app/static/models/SVM_Sent_model_char_3-gram.pckl")
 SVM_char_3gram_model_porno, char_3gram_vectorizer_porno = load_model ("./app/static/models/SVM_Porno_model_char_3-gram.pckl")
+SVM_char_3gram_model_dialect, char_3gram_vectorizer_dialect = load_model ("./app/static/models/SVM_DID_model_char_3-gram.pckl")
+unique_labels = ["AE", "BH", "DZ", "EG", "IQ", "JO", "KW", "LB", "LY", "MA", "OM", "PL", "QA", "SA", "SD", "SY", "TN", "YE", "MSA"]
+unique_countries = np.array(["UAE", "Bahrain", "Algeria", "Egypt", "Iraq", "Jordan", "Kuwait", "Lebanon", "Libya", "Morocco", "Oman", "Palestine", "Qatar", "Saudi-Arabia", "Sudan", "Syria", "Tunisia", "Yemen", "MSA"])
+
+longitudes = np.array([55.1713, 50.5344606, 2.9999825, 29.2675469, 44.1749775, 36.941628, 47.4979476, 35.843409, 18.1236723, -7.3362482, 57.0036901, 35.27386547291496, 51.2295295, 42.3528328, 29.4917691, 39.0494106, 9.400138, 47.8915271, 119.30288209432254])
+latitudes = np.array([25.0657, 26.1551249, 28.0000272, 26.2540493, 33.0955793, 31.1667049, 29.2733964, 33.8750629, 26.8234472, 31.1728205, 21.0000287, 31.94696655, 25.3336984, 25.6242618, 14.5844444, 34.6401861, 33.8439408, 16.3471243, -3.14958435])
 
 print ("All models loaded")
+
+
+def map_country_code(label):
+    try:
+        ind = unique_labels.index(label)
+        country = unique_countries[ind]
+        return country
+    except:
+        return label
 
 
 def change_labels(label):
@@ -311,6 +327,8 @@ def change_labels(label):
         label = "Porno"
     elif label == "NOT_PORNO":
         label = "NotPorno"
+    else:
+        label = map_country_code(label)
 
     return label
 
@@ -344,6 +362,9 @@ def upload():
     elif task == "porno":
         model = SVM_char_3gram_model_porno
         vectorizer = char_3gram_vectorizer_porno
+    elif task == "dialect":
+        model = SVM_char_3gram_model_dialect
+        vectorizer = char_3gram_vectorizer_dialect
     else:
         print ("WHAt", task)
         return jsonify("ERROR")
@@ -760,3 +781,52 @@ def detectPorno():
     print (prediction)
 
     return jsonify({"level": prediction})
+
+@app.route('/detectDialect', methods=['POST'])
+def detectDialect():
+
+    global char_3gram_vectorizer_dialect, SVM_char_3gram_model_dialect
+
+    # Gets text and classifier from client
+    user_query = [request.form["text"]]
+    classifier = request.form["model"]
+
+
+    # gets the model chosen by client
+    model = None
+    vectorizer = None
+
+
+    model = SVM_char_3gram_model_dialect
+    vectorizer = char_3gram_vectorizer_dialect
+
+    # gets word n gram features and performs classification using
+    # model chosen
+    n_gram_features = vectorizer.transform(user_query)
+    predicted_labels = model.predict(n_gram_features)
+    probas = model.predict_proba(n_gram_features)[0]
+
+    # top 3 probabilities and their respective countries
+    top3 = probas.argsort()[-3:][::-1]
+    top3_probs = list(probas[top3])
+    top3_countries = list(unique_countries[top3])
+    top3_langs = list(longitudes[top3])
+    top3_lats = list(latitudes[top3])
+
+    print (top3_countries, top3_probs)
+    sum_probs = sum(top3_probs)
+    print ("probability sum", sum_probs)
+
+
+    # normalize the top 3 probas
+    for i in range (len(top3_probs)):
+        top3_probs[i] = round((top3_probs[i]/sum_probs) * 100, 2)
+
+    print ("after normalize")
+
+    print (top3_countries, top3_probs)
+    # prediction = str(predicted_labels[0])
+    # print ("HIO")
+    # print (prediction)
+
+    return jsonify({"percentages": top3_probs, "countries":top3_countries, "longitudes": top3_langs, "latitudes": top3_lats})

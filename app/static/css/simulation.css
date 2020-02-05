@@ -182,8 +182,10 @@ select{
 }
 
 #map {
-  height: 400px;  /* The height is 400 pixels */
-  opacity: 0.4;
+  height: 900px;  /* The height is 400 pixels */
+  width: 80%;
+  margin: auto;
+  opacity: 1;
 }
 
 /*navbar*/
