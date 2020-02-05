@@ -288,8 +288,8 @@ function initiateMap(){
   map = new google.maps.Map(document.getElementById('map'),
             {
                 zoom: 4,
-                center: { lat: 25.28, lng:  51.53},
-                mapTypeId: 'hybrid'
+                center: { lat: 22.6714, lng: 17.6998},
+                mapTypeId: 'terrain'
             });
   updateMap(heatMapData);
 }

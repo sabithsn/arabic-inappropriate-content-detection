@@ -820,7 +820,7 @@ def detectDialect():
 
     # normalize the top 3 probas
     for i in range (len(top3_probs)):
-        top3_probs[i] = round((top3_probs[i]/sum_probs) * 100, 2)
+        top3_probs[i] = int((top3_probs[i]/sum_probs) * 100)
 
     print ("after normalize")
 

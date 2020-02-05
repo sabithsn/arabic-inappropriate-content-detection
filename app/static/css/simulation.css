@@ -182,7 +182,7 @@ select{
 }
 
 #map {
-  height: 900px;  /* The height is 400 pixels */
+  height: 500px;  /* The height is 400 pixels */
   width: 80%;
   margin: auto;
   opacity: 1;
