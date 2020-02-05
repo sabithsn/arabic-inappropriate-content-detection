@@ -1321,10 +1321,10 @@ function detect_porno() {
       //  updates table based on predicted label
       var level = response['level']
       if (level == "NOT_PORNO"){
-        var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  Non Porno </font>  </td></tr>";
+        var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  Non adult content </font>  </td></tr>";
         $("#indTable15 table tbody").append(markup);
       } else {
-        var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  Porno </font> </td></tr>";
+        var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  Adult content </font> </td></tr>";
         $("#indTable15 table tbody").append(markup);
       } 
 

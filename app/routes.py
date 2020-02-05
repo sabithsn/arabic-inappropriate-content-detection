@@ -324,9 +324,9 @@ def change_labels(label):
     elif label == "NOT_HS":
         label = "NotHateSpeech"
     elif label == "PORNO":
-        label = "Porno"
+        label = "AdultContent"
     elif label == "NOT_PORNO":
-        label = "NotPorno"
+        label = "NotAdultContent"
     else:
         label = map_country_code(label)
 

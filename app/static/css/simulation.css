@@ -182,7 +182,7 @@ select{
 }
 
 #map {
-  height: 500px;  /* The height is 400 pixels */
+  height: 600px;  /* The height is 400 pixels */
   width: 80%;
   margin: auto;
   opacity: 1;
@@ -190,7 +190,8 @@ select{
 
 /*navbar*/
 #mainNav {
-  min-height: 6rem;
+  min-height: 2%;
+  max-height: 3%;
   background-color: #581845;
 }
 
