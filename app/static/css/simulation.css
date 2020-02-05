@@ -190,7 +190,7 @@ select{
 
 /*navbar*/
 #mainNav {
-  min-height: 2%;
+  min-height: 3%;
   max-height: 3%;
   background-color: #581845;
 }
@@ -505,7 +505,7 @@ footer#simfooter {
 
 footer {
   background-color: #0b0c29;
-  padding: 1rem;
+  padding: 2rem 0;
   padding-right: 3rem;
      opacity: 95%;
 
