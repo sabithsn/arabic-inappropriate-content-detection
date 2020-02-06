@@ -1205,3 +1205,13 @@ a {
 .nav-item{
   /*width: 15%;*/
 }
+th {
+  padding: 0.5rem;
+}
+.blue-text{
+  color:#2354C6;
+}
+
+.red-text{
+  color:#C20202;
+}

@@ -32,7 +32,7 @@ auth.set_access_token(access_token, access_token_secret)
 api = tweepy.API(auth, wait_on_rate_limit = True, wait_on_rate_limit_notify=True)
 
 # search params
-max_tweets = 1000
+max_tweets = 100
 result_type = "recent"
 
 

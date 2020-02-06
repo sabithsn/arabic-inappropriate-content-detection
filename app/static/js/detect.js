@@ -303,7 +303,7 @@ function createPie (id, labels, title){
       labels: labels,
       datasets: [{
         label: title,
-        backgroundColor: ["#D8401F", "#1F70D8"],
+        backgroundColor: ["#C20202", "#2354C6"],
         data: [0,0]
       }]
     },
@@ -423,29 +423,29 @@ $(document).ready(function(){
 
   initiateMap();
     // initiates all clouds for offensive lang detection  
-  $("#word-cloud-off-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#word-cloud-off-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["2354C6", "2F81F6"], });
   $("#word-cloud-off-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
-  $("#hash-cloud-off-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#hash-cloud-off-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["2354C6", "2F81F6"], });
   $("#hash-cloud-off-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
 
-  $("#word-cloud-ad-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#word-cloud-ad-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["2354C6", "2F81F6"], });
   $("#word-cloud-ad-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
-  $("#hash-cloud-ad-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#hash-cloud-ad-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["2354C6", "2F81F6"], });
   $("#hash-cloud-ad-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
 
-  $("#word-cloud-hate-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#word-cloud-hate-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["2354C6", "2F81F6"], });
   $("#word-cloud-hate-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
-  $("#hash-cloud-hate-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#hash-cloud-hate-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["2354C6", "2F81F6"], });
   $("#hash-cloud-hate-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
 
-  $("#word-cloud-sent-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#word-cloud-sent-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["2354C6", "2F81F6"], });
   $("#word-cloud-sent-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
-  $("#hash-cloud-sent-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#hash-cloud-sent-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["2354C6", "2F81F6"], });
   $("#hash-cloud-sent-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
 
-  $("#word-cloud-porno-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#word-cloud-porno-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["2354C6", "2F81F6"], });
   $("#word-cloud-porno-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
-  $("#hash-cloud-porno-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#hash-cloud-porno-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["2354C6", "2F81F6"], });
   $("#hash-cloud-porno-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
 
   // hide all tables, info about tables etc
@@ -549,11 +549,11 @@ function query_offense() {
         text = tweets[i];
         if (level == "NOT"){
           count1 += 1;
-          var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not offensive </font>  </td></tr>";
+          var markup = "<tr><td> <font class = 'blue-text'>" + text + "</td><td> </font> <font class = 'blue-text'>  not offensive </font>  </td></tr>";
           $("#indTable2 table tbody").append(markup);
         } else {
           count2 += 1;
-          var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  offensive </font> </td></tr>";
+          var markup = "<tr><td> <font class = 'red-text'>" + text + "</td><td> </font> <font class = 'red-text'>  offensive </font> </td></tr>";
           $("#indTable table tbody").append(markup);
         }
       }
@@ -571,14 +571,14 @@ function query_offense() {
 
       // UPDATES DOM WITH TOP 20 BLUE USERSS
       for (var i = 0; i < topBlue.length; i++){
-         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font color = 'blue'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'blue'> " + blueNames[i] + "</font>  </td><td> </font> <font color = 'blue'> " + topBlue[i][1] + "</font>  </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font class = 'blue-text'>" + topBlue[i][0] + "</a></td><td> </font> <font class = 'blue-text'> " + blueNames[i] + "</font>  </td><td> </font> <font class = 'blue-text'> " + topBlue[i][1] + "</font>  </td></tr>";
          $(".top-blue table tbody").append(markup);
       }
 
 
       // UPDATES DOM WITH TOP 20 RED USERSS
       for (var i = 0; i < topRed.length; i++){
-         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> " + redNames[i] + "</font>  </td><td> </font> <font color = 'red'> " + topRed[i][1] + "</font>  </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font class = 'red-text'>" + topRed[i][0] + "</a></td><td> </font> <font class = 'red-text'> " + redNames[i] + "</font>  </td><td> </font> <font class = 'red-text'> " + topRed[i][1] + "</font>  </td></tr>";
          $(".top-red table tbody").append(markup);
       }
 
@@ -676,10 +676,10 @@ function detect_offense() {
       //  updates table based on label
       var level = response['level']
       if (level == "NOT"){
-        var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not offensive </font>  </td></tr>";
+        var markup = "<tr><td> <font class = 'blue-text'>" + text + "</td><td> </font> <font class = 'blue-text'>  not offensive </font>  </td></tr>";
         $("#indTable3 table tbody").append(markup);
       } else {
-        var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  offensive </font> </td></tr>";
+        var markup = "<tr><td> <font class = 'red-text'>" + text + "</td><td> </font> <font class = 'red-text'>  offensive </font> </td></tr>";
         $("#indTable3 table tbody").append(markup);
       }
 
@@ -743,11 +743,11 @@ function query_ad(){
         text = tweets[i];
         if (level == "__label__NOTADS"){
           count1 += 1;
-          var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not advertisement </font>  </td></tr>";
+          var markup = "<tr><td> <font class = 'blue-text'>" + text + "</td><td> </font> <font class = 'blue-text'>  not advertisement </font>  </td></tr>";
           $("#indTable5 table tbody").append(markup);
         } else {
           count2 += 1;
-          var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  advertisement </font> </td></tr>";
+          var markup = "<tr><td> <font class = 'red-text'>" + text + "</td><td> </font> <font class = 'red-text'>  advertisement </font> </td></tr>";
           $("#indTable4 table tbody").append(markup);
         }
       }
@@ -765,14 +765,14 @@ function query_ad(){
 
       // UPDATES DOM WITH TOP 20 BLUE USERSS
       for (var i = 0; i < topBlue.length; i++){
-         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font color = 'blue'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'blue'> " + blueNames[i] + "</font>  </td><td> </font> <font color = 'blue'> " + topBlue[i][1] + "</font>  </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font class = 'blue-text'>" + topBlue[i][0] + "</a></td><td> </font> <font class = 'blue-text'> " + blueNames[i] + "</font>  </td><td> </font> <font class = 'blue-text'> " + topBlue[i][1] + "</font>  </td></tr>";
          $(".top-blue table tbody").append(markup);
       }
 
 
       // UPDATES DOM WITH TOP 20 RED USERSS
       for (var i = 0; i < topRed.length; i++){
-         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> " + redNames[i] + "</font>  </td><td> </font> <font color = 'red'> " + topRed[i][1] + "</font>  </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font class = 'red-text'>" + topRed[i][0] + "</a></td><td> </font> <font class = 'red-text'> " + redNames[i] + "</font>  </td><td> </font> <font class = 'red-text'> " + topRed[i][1] + "</font>  </td></tr>";
          $(".top-red table tbody").append(markup);
       }
 
@@ -875,10 +875,10 @@ function detect_ad() {
       // updates table based on predicted label
       var level = response['level']
       if (level == "__label__NOTADS"){
-        var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not advertisement </font>  </td></tr>";
+        var markup = "<tr><td> <font class = 'blue-text'>" + text + "</td><td> </font> <font class = 'blue-text'>  not advertisement </font>  </td></tr>";
         $("#indTable6 table tbody").append(markup);
       } else {
-        var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  advertisement </font> </td></tr>";
+        var markup = "<tr><td> <font class = 'red-text'>" + text + "</td><td> </font> <font class = 'red-text'>  advertisement </font> </td></tr>";
         $("#indTable6 table tbody").append(markup);
       }
 
@@ -940,11 +940,11 @@ function query_hate(){
         text = tweets[i];
         if (level == "NOT_HS"){
           count1 += 1;
-          var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not hate speech </font>  </td></tr>";
+          var markup = "<tr><td> <font class = 'blue-text'>" + text + "</td><td> </font> <font class = 'blue-text'>  not hate speech </font>  </td></tr>";
           $("#indTable8 table tbody").append(markup);
         } else {
           count2 += 1;
-          var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  hate speech </font> </td></tr>";
+          var markup = "<tr><td> <font class = 'red-text'>" + text + "</td><td> </font> <font class = 'red-text'>  hate speech </font> </td></tr>";
           $("#indTable7 table tbody").append(markup);
         }
       }
@@ -962,14 +962,14 @@ function query_hate(){
 
       // UPDATES DOM WITH TOP 20 BLUE USERSS
       for (var i = 0; i < topBlue.length; i++){
-         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font color = 'blue'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'blue'> " + blueNames[i] + "</font>  </td><td> </font> <font color = 'blue'> " + topBlue[i][1] + "</font>  </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font class = 'blue-text'>" + topBlue[i][0] + "</a></td><td> </font> <font class = 'blue-text'> " + blueNames[i] + "</font>  </td><td> </font> <font class = 'blue-text'> " + topBlue[i][1] + "</font>  </td></tr>";
          $(".top-blue table tbody").append(markup);
       }
 
 
       // UPDATES DOM WITH TOP 20 RED USERSS
       for (var i = 0; i < topRed.length; i++){
-         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> " + redNames[i] + "</font>  </td><td> </font> <font color = 'red'> " + topRed[i][1] + "</font>  </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font class = 'red-text'>" + topRed[i][0] + "</a></td><td> </font> <font class = 'red-text'> " + redNames[i] + "</font>  </td><td> </font> <font class = 'red-text'> " + topRed[i][1] + "</font>  </td></tr>";
          $(".top-red table tbody").append(markup);
       }
 
@@ -1074,10 +1074,10 @@ function detect_hate() {
       //  updates table based on predicted label
       var level = response['level']
       if (level == "NOT_HS"){
-        var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  not hate speech </font>  </td></tr>";
+        var markup = "<tr><td> <font class = 'blue-text'>" + text + "</td><td> </font> <font class = 'blue-text'>  not hate speech </font>  </td></tr>";
         $("#indTable9 table tbody").append(markup);
       } else {
-        var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  hate speech </font> </td></tr>";
+        var markup = "<tr><td> <font class = 'red-text'>" + text + "</td><td> </font> <font class = 'red-text'>  hate speech </font> </td></tr>";
         $("#indTable9 table tbody").append(markup);
       }
 
@@ -1141,11 +1141,11 @@ function query_sentiment(){
         text = tweets[i];
         if (level == "Positive"){
           count1 += 1;
-          var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  positive </font>  </td></tr>";
+          var markup = "<tr><td> <font class = 'blue-text'>" + text + "</td><td> </font> <font class = 'blue-text'>  positive </font>  </td></tr>";
           $("#indTable11 table tbody").append(markup);
         } else if (level == "Negative") {
           count2 += 1;
-          var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  negative </font> </td></tr>";
+          var markup = "<tr><td> <font class = 'red-text'>" + text + "</td><td> </font> <font class = 'red-text'>  negative </font> </td></tr>";
           $("#indTable10 table tbody").append(markup);
         }
       }
@@ -1163,14 +1163,14 @@ function query_sentiment(){
 
       // UPDATES DOM WITH TOP 20 BLUE USERSS
       for (var i = 0; i < topBlue.length; i++){
-         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font color = 'blue'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'blue'> " + blueNames[i] + "</font>  </td><td> </font> <font color = 'blue'> " + topBlue[i][1] + "</font>  </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font class = 'blue-text'>" + topBlue[i][0] + "</a></td><td> </font> <font class = 'blue-text'> " + blueNames[i] + "</font>  </td><td> </font> <font class = 'blue-text'> " + topBlue[i][1] + "</font>  </td></tr>";
          $(".top-blue table tbody").append(markup);
       }
 
 
       // UPDATES DOM WITH TOP 20 RED USERSS
       for (var i = 0; i < topRed.length; i++){
-         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> " + redNames[i] + "</font>  </td><td> </font> <font color = 'red'> " + topRed[i][1] + "</font>  </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font class = 'red-text'>" + topRed[i][0] + "</a></td><td> </font> <font class = 'red-text'> " + redNames[i] + "</font>  </td><td> </font> <font class = 'red-text'> " + topRed[i][1] + "</font>  </td></tr>";
          $(".top-red table tbody").append(markup);
       }
 
@@ -1272,10 +1272,10 @@ function detect_sentiment() {
       //  updates table based on predicted label
       var level = response['level']
       if (level == "Positive"){
-        var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  positive </font>  </td></tr>";
+        var markup = "<tr><td> <font class = 'blue-text'>" + text + "</td><td> </font> <font class = 'blue-text'>  positive </font>  </td></tr>";
         $("#indTable12 table tbody").append(markup);
       } else if (level == "Negative") {
-        var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  negative </font> </td></tr>";
+        var markup = "<tr><td> <font class = 'red-text'>" + text + "</td><td> </font> <font class = 'red-text'>  negative </font> </td></tr>";
         $("#indTable12 table tbody").append(markup);
       } else if (level == "Mixed") {
         var markup = "<tr><td> <font color = 'orange'>" + text + "</td><td> </font> <font color = 'orange'>  mixed </font> </td></tr>";
@@ -1346,11 +1346,11 @@ function query_porno(){
         text = tweets[i];
         if (level == "NOT_PORNO"){
           count1 += 1;
-          var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  Non adult content </font>  </td></tr>";
+          var markup = "<tr><td> <font class = 'blue-text'>" + text + "</td><td> </font> <font class = 'blue-text'>  Non adult content </font>  </td></tr>";
           $("#indTable14 table tbody").append(markup);
         } else if (level == "PORNO") {
           count2 += 1;
-          var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  Adult content </font> </td></tr>";
+          var markup = "<tr><td> <font class = 'red-text'>" + text + "</td><td> </font> <font class = 'red-text'>  Adult content </font> </td></tr>";
           $("#indTable13 table tbody").append(markup);
         }
       }
@@ -1368,14 +1368,14 @@ function query_porno(){
 
       // UPDATES DOM WITH TOP 20 BLUE USERSS
       for (var i = 0; i < topBlue.length; i++){
-         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font color = 'blue'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'blue'> " + blueNames[i] + "</font>  </td><td> </font> <font color = 'blue'> " + topBlue[i][1] + "</font>  </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font class = 'blue-text'>" + topBlue[i][0] + "</a></td><td> </font> <font class = 'blue-text'> " + blueNames[i] + "</font>  </td><td> </font> <font class = 'blue-text'> " + topBlue[i][1] + "</font>  </td></tr>";
          $(".top-blue table tbody").append(markup);
       }
 
 
       // UPDATES DOM WITH TOP 20 RED USERSS
       for (var i = 0; i < topRed.length; i++){
-         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> " + redNames[i] + "</font>  </td><td> </font> <font color = 'red'> " + topRed[i][1] + "</font>  </td></tr>";
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font class = 'red-text'>" + topRed[i][0] + "</a></td><td> </font> <font class = 'red-text'> " + redNames[i] + "</font>  </td><td> </font> <font class = 'red-text'> " + topRed[i][1] + "</font>  </td></tr>";
          $(".top-red table tbody").append(markup);
       }
 
@@ -1472,10 +1472,10 @@ function detect_porno() {
       //  updates table based on predicted label
       var level = response['level']
       if (level == "NOT_PORNO"){
-        var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  Non adult content </font>  </td></tr>";
+        var markup = "<tr><td> <font class = 'blue-text'>" + text + "</td><td> </font> <font class = 'blue-text'>  Non adult content </font>  </td></tr>";
         $("#indTable15 table tbody").append(markup);
       } else {
-        var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  Adult content </font> </td></tr>";
+        var markup = "<tr><td> <font class = 'red-text'>" + text + "</td><td> </font> <font class = 'red-text'>  Adult content </font> </td></tr>";
         $("#indTable15 table tbody").append(markup);
       } 
 
