@@ -443,6 +443,11 @@ $(document).ready(function(){
   $("#hash-cloud-sent-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
   $("#hash-cloud-sent-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
 
+  $("#word-cloud-porno-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#word-cloud-porno-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
+  $("#hash-cloud-porno-blue").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["8BCFFB", "0785D6"], });
+  $("#hash-cloud-porno-red").jQCloud([], {  width:800, height:300, autoResize: true, colors : ["C20202", "F38B81"], });
+
   // hide all tables, info about tables etc
   $('.tables').hide();
   $(".infos").hide();
@@ -465,6 +470,8 @@ $(document).ready(function(){
 
   // initiates pie chart for sentiment detection
   pieChart4 =  createPie("pie-chart4", [ "Negative", "Positive"], "Sentiment distribution");
+  pieChart5 =  createPie("pie-chart5", [ "Adult Content", "Non Adult Content"], "Adult content distribution");
+
 
   // hides all the initiated charts
   $(".pies").hide();
@@ -1284,6 +1291,152 @@ function detect_sentiment() {
 }
 
 
+/* query twitter to find tweets and then classify */
+function query_porno(){
+  // gets input from user
+  var classifier = $('#classifiername5').find(":selected").text();
+  var text = $('#search5').val();
+
+  if (text.length < 1){
+    alert ("Empty text. Please enter text.");
+    return
+  }
+
+  $('html, body').css("cursor", "wait");
+  $(".processing").show();
+
+
+  // makes request to server and updates dom
+  $.post('/queryPorno', {
+      text: text,
+      model: classifier,
+  }).done(function(response) {
+
+      $('#indTable15').hide();
+      $("#indTable13").show();
+      $('#indTable14').show();
+
+      $('#word-cloud-porno-red').show();
+      $('#word-cloud-porno-blue').show();
+      $('#hash-cloud-porno-red').show();
+      $('#hash-cloud-porno-blue').show();
+      // $("#word-cloud-sentiment").jQCloud('destroy');
+      // $("#hash-cloud-sentiment").jQCloud('destroy');
+
+
+      $("#indTable13 table tbody").html("");
+      $("#indTable14 table tbody").html("");
+      $("#indTable15 table tbody").html("");
+      $(".top-red table tbody").html("");
+      $(".top-blue table tbody").html("");
+
+      var levels = response['levels'];
+      var tweets = response['tweets'];
+      var topBlue = response['blue'];
+      var topRed = response['red'];
+
+      var level = '';
+      var text = '';
+      var count1 = 0;
+      var count2 = 0;
+      
+      // updates tables based on HS or NOT-HS
+      for (var i = 0; i < levels.length; i++){
+        level = levels[i];
+        text = tweets[i];
+        if (level == "NOT_PORNO"){
+          count1 += 1;
+          var markup = "<tr><td> <font color = 'blue'>" + text + "</td><td> </font> <font color = 'blue'>  Non adult content </font>  </td></tr>";
+          $("#indTable14 table tbody").append(markup);
+        } else if (level == "PORNO") {
+          count2 += 1;
+          var markup = "<tr><td> <font color = 'red'>" + text + "</td><td> </font> <font color = 'red'>  Adult content </font> </td></tr>";
+          $("#indTable13 table tbody").append(markup);
+        }
+      }
+
+      // displays info about tweets found
+      $("#info9").html("Found " + count2.toString() + " adult content tweets out of " + (count1 + count2).toString() + " tweets.");
+      $("#info10").html("Found " + count1.toString() + " non adult content speech tweets out of " + (count1 + count2).toString() +  " tweets.");
+      $("#info9").show();
+      $("#info10").show();
+
+
+      // names of usesrs
+      var redNames = response["red_names"];
+      var blueNames = response["blue_names"];
+
+      // UPDATES DOM WITH TOP 20 BLUE USERSS
+      for (var i = 0; i < topBlue.length; i++){
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topBlue[i][0] +"'>  <font color = 'blue'>" + topBlue[i][0] + "</a></td><td> </font> <font color = 'blue'> " + blueNames[i] + "</font>  </td><td> </font> <font color = 'blue'> " + topBlue[i][1] + "</font>  </td></tr>";
+         $(".top-blue table tbody").append(markup);
+      }
+
+
+      // UPDATES DOM WITH TOP 20 RED USERSS
+      for (var i = 0; i < topRed.length; i++){
+         var markup = "<tr><td> <a target='_blank' href='https://www.twitter.com/" +topRed[i][0] +"'>  <font color = 'RED'>" + topRed[i][0] + "</a></td><td> </font> <font color = 'red'> " + redNames[i] + "</font>  </td><td> </font> <font color = 'red'> " + topRed[i][1] + "</font>  </td></tr>";
+         $(".top-red table tbody").append(markup);
+      }
+
+      var wordCountsRed = response["word_counts_red"];
+      var hashCountsRed = response["hash_counts_red"];
+      var wordCountsBlue = response["word_counts_blue"];
+      var hashCountsBlue = response["hash_counts_blue"];
+
+      var freqWordsRed = []
+      var freqHashRed = []
+      var freqWordsBlue = []
+      var freqHashBlue = []
+
+      // word cloud and hash cloud for red
+      for (var i = 0; i < wordCountsRed.length; i++){
+        freqWordsRed.push({text : wordCountsRed[i][0], weight : wordCountsRed[i][1]});
+      }
+
+      for (var i = 0; i < hashCountsRed.length; i++){
+        freqHashRed.push({text : hashCountsRed[i][0], weight : hashCountsRed[i][1]});
+      }
+
+      // word cloud and hash cloud for blue
+      for (var i = 0; i < wordCountsBlue.length; i++){
+        freqWordsBlue.push({text : wordCountsBlue[i][0], weight : wordCountsBlue[i][1]});
+      }
+
+      for (var i = 0; i < hashCountsBlue.length; i++){
+        freqHashBlue.push({text : hashCountsBlue[i][0], weight : hashCountsBlue[i][1]});
+      }
+
+
+      $('#word-cloud-porno-red').jQCloud('update', freqWordsRed);
+      $('#hash-cloud-porno-red').jQCloud('update', freqHashRed);
+      $('#word-cloud-porno-blue').jQCloud('update', freqWordsBlue);
+      $('#hash-cloud-porno-blue').jQCloud('update', freqHashBlue);
+      // display the tables containing top users
+      $(".top-blue").show();
+      $(".top-red").show();
+      $(".cloud").show();
+ 
+
+      // updates piechart
+      pieChart5.data.datasets[0].data = [count2, count1]
+      pieChart5.update();
+      $("#pie-chart5").show();
+
+      $('html, body').css("cursor", "auto");
+      $(".processing").hide();
+
+  }).fail(function() {
+      alert("Server error");
+      $('html, body').css("cursor", "auto");
+      $(".processing").hide();
+
+
+  });
+  
+}
+
+
 function detect_porno() {
   // $("#pie-chart4").hide();
 
@@ -1302,21 +1455,19 @@ function detect_porno() {
       model: classifier,
   }).done(function(response) {
       // hide query tables
-      // $("#info7").hide();
-      // $("#info8").hide();
-      // $("#indTable10").hide();
-      // $('#indTable11').hide();
+      $("#info9").hide();
+      $("#info10").hide();
+      $("#indTable13").hide();
+      $('#indTable14').hide();
       $('#indTable15').show();
-      // $(".top-blue").hide();
-      // $(".top-red").hide(); 
-      // $(".jqcloud").hide();
-      // $(".cloud").hide();
+      $(".top-blue").hide();
+      $(".top-red").hide(); 
+      $(".jqcloud").hide();
+      $(".cloud").hide();
 
       console.log("miss me?");
       console.log(response);
-      // $("#word-cloud-hate").jQCloud('destroy');
-      // $("#hash-cloud-hate").jQCloud('destroy');
-      // $(".jqcloud").hide();
+
 
       //  updates table based on predicted label
       var level = response['level']
@@ -1362,6 +1513,8 @@ function detect_dialect() {
       console.log(percentages);
       console.log(longitudes);
       console.log(latitudes);
+      $('#indTable16').hide();
+
 
       content = "<strong> Dialect Probabilities: </strong> ";
       for (var i = 0; i < numItems; i ++){
@@ -1385,6 +1538,85 @@ function detect_dialect() {
       alert("Server error");
   });
 }
+
+
+function query_dialect() {
+  // $("#pie-chart4").hide();
+
+  // gets input from user
+  var classifier = $('#classifiername6').find(":selected").text();
+  var text = $('#search6').val();
+
+  if (text.length < 1){
+    alert ("Empty text. Please enter text.");
+    return
+  }
+  $('html, body').css("cursor", "wait");
+  $(".processing").show();
+
+  // makes request to server and updates dom
+  $.post('/queryDialect', {
+      text: text,
+      model: classifier,
+  }).done(function(response) {
+
+      console.log("miss me?");
+      console.log(response);
+      var countries = response["countries"];
+      var percentages = response["percentages"];
+      var longitudes = response["longitudes"];
+      var latitudes = response["latitudes"];
+      var numItems = countries.length;
+      console.log(countries);
+      console.log(percentages);
+      console.log(longitudes);
+      console.log(latitudes);
+      $('#indTable16').show();
+
+
+      content = "<strong> Dialect distribution across tweets: </strong> ";
+      for (var i = 0; i < numItems; i ++){
+        content += "<strong>" + countries[i] + ": </strong>"
+        if (i < numItems-1){
+          content += percentages[i].toString() + "%, &nbsp"
+        } else {
+          content += percentages[i].toString() + "% &nbsp"
+
+        }
+      }
+      $("#output").html(content);
+
+      heatMapData = [];
+      for (var i = 0; i < numItems-1; i++){
+        heatMapData.push({location: new google.maps.LatLng( latitudes[i], longitudes[i]), weight: percentages[i]})
+      }
+      updateMap(heatMapData);
+      var levels = response['levels'];
+      var tweets = response['tweets'];
+
+      var level = '';
+      var text = '';
+
+      
+      // updates tables based on HS or NOT-HS
+      for (var i = 0; i < levels.length; i++){
+        level = levels[i];
+        text = tweets[i];
+
+        var markup = "<tr><td> <font color = 'black'>" + text + "</td><td> </font> <font color = 'black'>"  + level + "</font> </td></tr>";
+        $("#indTable16 table tbody").append(markup);
+        
+      }
+      $('html, body').css("cursor", "auto");
+      $(".processing").hide();
+
+  }).fail(function() {
+      $('html, body').css("cursor", "auto");
+      $(".processing").hide();
+      alert("Server error");
+  });
+}
+
 
 
 // gets random input for offense detection
@@ -1441,27 +1673,28 @@ function randomizeSentiment() {
 
 // gets random input for hate-speech detection
 function randomizePorno() {
-  // if (document.getElementById('searchType5').checked){
-  //   console.log ("GOTCHU");
-  //   var rand = queries[Math.floor(Math.random() * queries.length)];
-  //   document.getElementById("search4").value = rand;
-  // } else {
+  if (document.getElementById('searchType5').checked){
+    console.log ("GOTCHU");
+    var rand = queries[Math.floor(Math.random() * queries.length)];
+    document.getElementById("search5").value = rand;
+  } else {
     console.log("I WEEP");
     var rand = pornoSamples[Math.floor(Math.random() * pornoSamples.length)];
     document.getElementById("search5").value = rand;
+  }
   // }
 }
 
 function randomizeDialect() {
-  // if (document.getElementById('searchType5').checked){
-  //   console.log ("GOTCHU");
-  //   var rand = queries[Math.floor(Math.random() * queries.length)];
-  //   document.getElementById("search4").value = rand;
-  // } else {
+  if (document.getElementById('searchType6').checked){
+    console.log ("GOTCHU");
+    var rand = queries[Math.floor(Math.random() * queries.length)];
+    document.getElementById("search6").value = rand;
+  } else {
     console.log("I WEEP");
     var rand = dialectSamples[Math.floor(Math.random() * dialectSamples.length)];
     document.getElementById("search6").value = rand;
-  // }
+  }
 }
 
 // checks if user wants to analyze text or make a query. redirects request accordingly
@@ -1497,5 +1730,21 @@ function check_sentiment(){
     query_sentiment();
   } else {
     detect_sentiment();
+  }
+}
+
+function check_porno(){
+  if (document.getElementById('searchType5').checked){
+    query_porno();
+  } else {
+    detect_porno();
+  }
+}
+
+function check_dialect(){
+  if (document.getElementById('searchType6').checked){
+    query_dialect();
+  } else {
+    detect_dialect();
   }
 }

@@ -101,7 +101,7 @@ def get_valence_score(freqs1, freqs2):
 
     for freq in freqs2:
         try:
-            if freqs2[freq] < 2:
+            if freqs2[freq] < 3:
                 continue
             new_freqs2[freq] = 2.0*((1.0*freqs2[freq]/tot_words2)/ ((1.0*freqs2[freq]/tot_words2) + (1.0*freqs1[freq]/tot_words1)))-1.0
         except:
@@ -129,7 +129,7 @@ def get_frequency_words(blue_text, red_text, threshold, query):
     word_counts_red = Counter(red_text)
     word_counts_red = Counter({x: word_counts_red[x] for x in word_counts_red if (filter_word(x,query))})
 
-    # word_counts_blue, word_counts_red = get_valence_score(word_counts_blue, word_counts_red)
+    word_counts_blue, word_counts_red = get_valence_score(word_counts_blue, word_counts_red)
     # print ("BLUE WORDS")
     # print (word_counts_blue)
     # print ("##############")
@@ -152,7 +152,7 @@ def get_frequency_hashtags(blue_text, red_text, threshold, query):
     hash_counts_red = Counter(red_text)
     hash_counts_red = Counter({x: hash_counts_red[x] for x in hash_counts_red if (filter_hash(x,query))})
     
-    # hash_counts_blue, hash_counts_red = get_valence_score (hash_counts_blue, hash_counts_red)
+    hash_counts_blue, hash_counts_red = get_valence_score (hash_counts_blue, hash_counts_red)
 
     # print ("BLUE HASH")
     # print (hash_counts_blue)
@@ -170,7 +170,7 @@ def get_frequency_hashtags(blue_text, red_text, threshold, query):
 
 
 # calls twitter with query, classifies each tweet with model and vectorizer. analyzes results.
-def processTweets (user_query, model, vectorizer, pos_label, neg_label):
+def processTweets (user_query, model, vectorizer, pos_label, neg_label, dialect = False):
 
     # searches twitter with query
     searched_tweets = []
@@ -190,6 +190,11 @@ def processTweets (user_query, model, vectorizer, pos_label, neg_label):
 
     # in case more than max_tweets are retrieved
     searched_tweets = searched_tweets[:max_tweets]
+
+    if dialect:
+        for i in range (len (searched_tweets)):
+            searched_tweets[i] = searched_tweets[i].text
+        return searched_tweets
 
     # screen name + user name
     users = []
@@ -492,27 +497,9 @@ def queryAd():
 
 
     # gets the model chosen by client
-    model = None
-    vectorizer = None
 
-    if (classifier == "Multinomial Naive Bayes (Word Unigram)"):
-        model = MNB_word_unigram_model_ad
-        vectorizer = word_unigram_vectorizer_ad
-    elif (classifier == "Multinomial Naive Bayes (Word Bigram)"):
-        model = MNB_word_3gram_model_ad
-        vectorizer = word_3gram_vectorizer_ad
-    elif (classifier == "Linear SVM (Word Unigram)"):
-        model = SVM_word_unigram_model_ad
-        vectorizer = word_unigram_vectorizer_ad
-    elif (classifier == "Linear SVM (Word 3-gram)"):
-        model = SVM_word_3gram_model_ad
-        vectorizer = word_3gram_vectorizer_ad
-    elif (classifier == "Linear SVM (Char 3-gram)"):
-        model = SVM_char_3gram_model_ad
-        vectorizer = char_3gram_vectorizer_ad
-    else:
-        model = SVM_char_3gram_model_ad
-        vectorizer = char_3gram_vectorizer_ad
+    model = SVM_char_3gram_model_ad
+    vectorizer = char_3gram_vectorizer_ad
 
     return processTweets(user_query, model, vectorizer, "__label__ADS", "__label__NOTADS")
 
@@ -528,27 +515,9 @@ def detectOffense():
 
 
     # gets the model chosen by client
-    model = None
-    vectorizer = None
 
-    if (classifier == "Multinomial Naive Bayes (Word Unigram)"):
-        model = MNB_word_unigram_model
-        vectorizer = word_unigram_vectorizer
-    elif (classifier == "Multinomial Naive Bayes (Word Bigram)"):
-        model = MNB_word_3gram_model
-        vectorizer = word_3gram_vectorizer
-    elif (classifier == "Linear SVM (Word Unigram)"):
-        model = SVM_word_unigram_model
-        vectorizer = word_unigram_vectorizer
-    elif (classifier == "Linear SVM (Word 3-gram)"):
-        model = SVM_word_3gram_model
-        vectorizer = word_3gram_vectorizer
-    elif (classifier == "Linear SVM (Char 3-gram)"):
-        model = SVM_char_3gram_model
-        vectorizer = char_3gram_vectorizer
-    else:
-        model = SVM_char_3gram_model
-        vectorizer = char_3gram_vectorizer
+    model = SVM_char_3gram_model
+    vectorizer = char_3gram_vectorizer
 
     # gets word n gram features and performs classification using
     # model chosen
@@ -572,27 +541,9 @@ def queryOffense():
 
 
     # gets the model chosen by client
-    model = None
-    vectorizer = None
 
-    if (classifier == "Multinomial Naive Bayes (Word Unigram)"):
-        model = MNB_word_unigram_model
-        vectorizer = word_unigram_vectorizer
-    elif (classifier == "Multinomial Naive Bayes (Word Bigram)"):
-        model = MNB_word_3gram_model
-        vectorizer = word_3gram_vectorizer
-    elif (classifier == "Linear SVM (Word Unigram)"):
-        model = SVM_word_unigram_model
-        vectorizer = word_unigram_vectorizer
-    elif (classifier == "Linear SVM (Word 3-gram)"):
-        model = SVM_word_3gram_model
-        vectorizer = word_3gram_vectorizer
-    elif (classifier == "Linear SVM (Char 3-gram)"):
-        model = SVM_char_3gram_model
-        vectorizer = char_3gram_vectorizer
-    else:
-        model = SVM_char_3gram_model
-        vectorizer = char_3gram_vectorizer
+    model = SVM_char_3gram_model
+    vectorizer = char_3gram_vectorizer
 
     return processTweets(user_query, model, vectorizer, "OFF", "NOT")
 
@@ -609,27 +560,9 @@ def detectHate():
 
 
     # gets the model chosen by client
-    model = None
-    vectorizer = None
 
-    if (classifier == "Multinomial Naive Bayes (Word Unigram)"):
-        model = MNB_word_unigram_model_hate
-        vectorizer = word_unigram_vectorizer_hate
-    elif (classifier == "Multinomial Naive Bayes (Word Bigram)"):
-        model = MNB_word_3gram_model_hate
-        vectorizer = word_3gram_vectorizer_hate
-    elif (classifier == "Linear SVM (Word Unigram)"):
-        model = SVM_word_unigram_model_hate
-        vectorizer = word_unigram_vectorizer_hate
-    elif (classifier == "Linear SVM (Word 3-gram)"):
-        model = SVM_word_3gram_model_hate
-        vectorizer = word_3gram_vectorizer_hate
-    elif (classifier == "Linear SVM (Char 3-gram)"):
-        model = SVM_char_3gram_model_hate
-        vectorizer = char_3gram_vectorizer_hate
-    else:
-        model = SVM_char_3gram_model_hate
-        vectorizer = char_3gram_vectorizer_hate
+    model = SVM_char_3gram_model_hate
+    vectorizer = char_3gram_vectorizer_hate
 
     # gets word n gram features and performs classification using
     # model chosen
@@ -650,27 +583,9 @@ def queryHate():
 
 
     # gets the model chosen by client
-    model = None
-    vectorizer = None
 
-    if (classifier == "Multinomial Naive Bayes (Word Unigram)"):
-        model = MNB_word_unigram_model_hate
-        vectorizer = word_unigram_vectorizer_hate
-    elif (classifier == "Multinomial Naive Bayes (Word Bigram)"):
-        model = MNB_word_3gram_model_hate
-        vectorizer = word_3gram_vectorizer_hate
-    elif (classifier == "Linear SVM (Word Unigram)"):
-        model = SVM_word_unigram_model_hate
-        vectorizer = word_unigram_vectorizer_hate
-    elif (classifier == "Linear SVM (Word 3-gram)"):
-        model = SVM_word_3gram_model_hate
-        vectorizer = word_3gram_vectorizer_hate
-    elif (classifier == "Linear SVM (Char 3-gram)"):
-        model = SVM_char_3gram_model_hate
-        vectorizer = char_3gram_vectorizer_hate
-    else:
-        model = SVM_char_3gram_model_hate
-        vectorizer = char_3gram_vectorizer_hate
+    model = SVM_char_3gram_model_hate
+    vectorizer = char_3gram_vectorizer_hate
 
     return processTweets(user_query, model, vectorizer, "HS", "NOT_HS")
 
@@ -687,27 +602,9 @@ def detectSentiment():
 
 
     # gets the model chosen by client
-    model = None
-    vectorizer = None
 
-    if (classifier == "Multinomial Naive Bayes (Word Unigram)"):
-        model = MNB_word_unigram_model_sentiment
-        vectorizer = word_unigram_vectorizer_sentiment
-    elif (classifier == "Multinomial Naive Bayes (Word Bigram)"):
-        model = MNB_word_3gram_model_sentiment
-        vectorizer = word_3gram_vectorizer_sentiment
-    elif (classifier == "Linear SVM (Word Unigram)"):
-        model = SVM_word_unigram_model_sentiment
-        vectorizer = word_unigram_vectorizer_sentiment
-    elif (classifier == "Linear SVM (Word 3-gram)"):
-        model = SVM_word_3gram_model_sentiment
-        vectorizer = word_3gram_vectorizer_sentiment
-    elif (classifier == "Linear SVM (Char 3-gram)"):
-        model = SVM_char_3gram_model_sentiment
-        vectorizer = char_3gram_vectorizer_sentiment
-    else:
-        model = SVM_char_3gram_model_sentiment
-        vectorizer = char_3gram_vectorizer_sentiment
+    model = SVM_char_3gram_model_sentiment
+    vectorizer = char_3gram_vectorizer_sentiment
 
     # gets word n gram features and performs classification using
     # model chosen
@@ -729,27 +626,9 @@ def querySentiment():
 
 
     # gets the model chosen by client
-    model = None
-    vectorizer = None
 
-    if (classifier == "Multinomial Naive Bayes (Word Unigram)"):
-        model = MNB_word_unigram_model_sentiment
-        vectorizer = word_unigram_vectorizer_sentiment
-    elif (classifier == "Multinomial Naive Bayes (Word Bigram)"):
-        model = MNB_word_3gram_model_sentiment
-        vectorizer = word_3gram_vectorizer_sentiment
-    elif (classifier == "Linear SVM (Word Unigram)"):
-        model = SVM_word_unigram_model_sentiment
-        vectorizer = word_unigram_vectorizer_sentiment
-    elif (classifier == "Linear SVM (Word 3-gram)"):
-        model = SVM_word_3gram_model_sentiment
-        vectorizer = word_3gram_vectorizer_sentiment
-    elif (classifier == "Linear SVM (Char 3-gram)"):
-        model = SVM_char_3gram_model_sentiment
-        vectorizer = char_3gram_vectorizer_sentiment
-    else:
-        model = SVM_char_3gram_model_sentiment
-        vectorizer = char_3gram_vectorizer_sentiment
+    model = SVM_char_3gram_model_sentiment
+    vectorizer = char_3gram_vectorizer_sentiment
 
     return processTweets(user_query, model, vectorizer, "Negative", "Positive")
    
@@ -765,9 +644,6 @@ def detectPorno():
 
 
     # gets the model chosen by client
-    model = None
-    vectorizer = None
-
 
     model = SVM_char_3gram_model_porno
     vectorizer = char_3gram_vectorizer_porno
@@ -777,10 +653,25 @@ def detectPorno():
     n_gram_features = vectorizer.transform(user_query)
     predicted_labels = model.predict(n_gram_features)
     prediction = str(predicted_labels[0])
-    print ("HIO")
-    print (prediction)
+
 
     return jsonify({"level": prediction})
+
+@app.route('/queryPorno', methods=['POST'])
+def queryPorno():
+    ''' detects level of offensiveness in text posted'''
+    global char_3gram_vectorizer_porno, SVM_char_3gram_model_porno
+
+
+    # Gets text and classifier from client
+    user_query = request.form["text"]
+    classifier = request.form["model"]
+
+
+    model = SVM_char_3gram_model_porno
+    vectorizer = char_3gram_vectorizer_porno
+
+    return processTweets(user_query, model, vectorizer, "PORNO", "NOT_PORNO")
 
 @app.route('/detectDialect', methods=['POST'])
 def detectDialect():
@@ -793,9 +684,6 @@ def detectDialect():
 
 
     # gets the model chosen by client
-    model = None
-    vectorizer = None
-
 
     model = SVM_char_3gram_model_dialect
     vectorizer = char_3gram_vectorizer_dialect
@@ -830,3 +718,69 @@ def detectDialect():
     # print (prediction)
 
     return jsonify({"percentages": top3_probs, "countries":top3_countries, "longitudes": top3_langs, "latitudes": top3_lats})
+
+@app.route('/queryDialect', methods=['POST'])
+def queryDialect():
+    ''' detects level of offensiveness in text posted'''
+    global char_3gram_vectorizer_dialect, SVM_char_3gram_model_dialect
+
+    # Gets text and classifier from client
+    user_query = request.form["text"]
+    classifier = request.form["model"]
+
+
+    # gets the model chosen by client
+
+    model = SVM_char_3gram_model_dialect
+    vectorizer = char_3gram_vectorizer_dialect
+
+    searched_tweets = processTweets(user_query, model, vectorizer, "_", "_", dialect = True)
+
+    # gets word n gram features and performs classification using
+    # model chosen
+    n_gram_features = vectorizer.transform(searched_tweets)
+    predicted_labels = list(model.predict(n_gram_features))
+
+    country_counts = Counter(predicted_labels)
+    only_counts = []
+
+    for country in unique_labels:
+        only_counts.append(country_counts[country])
+
+    only_counts = np.array(only_counts)
+
+    # top 3 probabilities and their respective countries
+    top3 = only_counts.argsort()[-3:][::-1]
+    top3_probs = list(only_counts[top3])
+
+    top3_countries = list(unique_countries[top3])
+    top3_langs = list(longitudes[top3])
+    top3_lats = list(latitudes[top3])
+
+    print (top3_countries, top3_probs)
+    sum_probs = sum(list(only_counts))
+
+    # probability of other countries:
+    other_probs = ((sum_probs - sum (top3_probs))/sum_probs)*100
+
+    print ("probability sum", sum_probs)
+
+    for i in range (len(predicted_labels)):
+        predicted_labels[i] = map_country_code(predicted_labels[i])
+
+
+    # normalize the top 3 probas
+    for i in range (len(top3_probs)):
+        top3_probs[i] = int((top3_probs[i]/sum_probs) * 100)
+
+    top3_probs.append(other_probs)
+    top3_countries.append("Other")
+
+    print ("after normalize")
+
+    print (top3_countries, top3_probs)
+    # prediction = str(predicted_labels[0])
+    # print ("HIO")
+    # print (prediction)
+
+    return jsonify({"percentages": top3_probs, "countries":top3_countries, "longitudes": top3_langs, "latitudes": top3_lats, "tweets":list(searched_tweets), "levels": predicted_labels,})

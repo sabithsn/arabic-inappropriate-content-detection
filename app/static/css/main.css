@@ -1152,7 +1152,7 @@ legend {
 
 }
 
-#indTable3, #indTable6, #indTable9, #indTable12, #indTable15{
+#indTable3, #indTable6, #indTable9, #indTable12, #indTable15, #indTable16{
   max-height:600px;
   overflow-y:scroll;
   width: 80%;
@@ -1167,7 +1167,7 @@ legend {
   background-color: #5EBEF9;
 }
 
-#indTable3, #indTable6, #indTable9, #indTable12, #indTable15 thead{
+#indTable3, #indTable6, #indTable9, #indTable12, #indTable15, #indTable16 thead{
   background-color: #F5F9C5;
 }
 
