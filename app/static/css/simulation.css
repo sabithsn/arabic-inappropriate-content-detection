@@ -403,7 +403,7 @@ select{
   width: 100%;
   
   min-height: 50rem;
-  padding: 5rem 0;
+  padding: 2rem 0;
 
 }
 
@@ -541,7 +541,7 @@ textarea.transparent-input{
 /*space for desktop version*/
 @media (min-width: 992px) {
   #home, #FAQ, #contact{
-    padding: 6rem 0;
+    padding: 2rem 0;
   }
 }
 

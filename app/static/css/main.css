@@ -1176,7 +1176,7 @@ table tbody {
 }
 
 .nav-tabs .nav-link {
-  border: 1px solid lightgrey !important;
+  /*border: 1px solid lightgrey !important;*/
 }
 
 .file-processing, .download-file, .processing{
@@ -1192,4 +1192,16 @@ table tbody {
 
 hr {
   border-top:2px solid rgba(0,0,0,.2) !important;
+}
+
+.row {
+  margin-right: 0px !important;
+  margin-left: 0px !important;
+}
+
+a {
+  color: inherit !important;
+}
+.nav-item{
+  /*width: 15%;*/
 }
