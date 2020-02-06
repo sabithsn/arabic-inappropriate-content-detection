@@ -81,31 +81,57 @@ def get_valence_score(freqs1, freqs2):
     tot_words1 = sum(list(freqs1.values()))
     tot_words2 = sum(list(freqs2.values()))
 
-    # print ("total words:")
-    # print (tot_words1, tot_words2)
+    freq1Words = list(freqs1.keys())
+    freq2Words = list (freqs2.keys())
+
+    all_words = list(set(freq1Words + freq2Words))
+
     new_freqs1 = {}
     new_freqs2 = {}
 
-    for freq in freqs1:
-        try:
-            if freqs1[freq] < 3:
-                continue
-            new_freqs1[freq] = 2.0*((1.0*freqs1[freq]/tot_words1)/ ((1.0*freqs1[freq]/tot_words1) + (1.0*freqs2[freq]/tot_words2)))-1.0
-            # if (new_freqs1[freq] >= 1):
-                # print (new_freqs1[freq])
-                # print (freqs1[freq], tot_words1, freqs2[freq], tot_words2)
+    for word in all_words:
+        # if (freqs1[word] < 2 and freqs2[word]) < 2:
+        #         continue
 
-        except:
-            # print (freqs1[freq], tot_words1, freqs2[freq], tot_words2)
-            new_freqs1[freq] = 1.0*freqs1[freq]/tot_words1
+        if word not in freqs1:
+            valence = -1
+        elif word not in freqs2:
+            valence = 1
+        else:
+            valence = 2.0*((1.0*freqs1[word]/tot_words1)/ ((1.0*freqs1[word]/tot_words1) + (1.0*freqs2[word]/tot_words2)))-1.0
 
-    for freq in freqs2:
-        try:
-            if freqs2[freq] < 3:
-                continue
-            new_freqs2[freq] = 2.0*((1.0*freqs2[freq]/tot_words2)/ ((1.0*freqs2[freq]/tot_words2) + (1.0*freqs1[freq]/tot_words1)))-1.0
-        except:
-            new_freqs2[freq] = 1.0*freqs2[freq]/tot_words2
+        # print (word, valence)
+
+        if valence < 0:
+            new_freqs2[word] = valence
+        else:
+            new_freqs1[word] = valence
+
+
+
+
+    # print ("total words:")
+    # print (tot_words1, tot_words2)
+
+
+    # for freq in freqs1:
+    #     try:
+            
+    #         # if (new_freqs1[freq] >= 1):
+    #             # print (new_freqs1[freq])
+    #             # print (freqs1[freq], tot_words1, freqs2[freq], tot_words2)
+
+    #     except:
+    #         # print (freqs1[freq], tot_words1, freqs2[freq], tot_words2)
+    #         new_freqs1[freq] = 1.0*freqs1[freq]/tot_words1
+
+    # for freq in freqs2:
+    #     try:
+    #         if freqs2[freq] < 3:
+    #             continue
+    #         new_freqs2[freq] = 2.0*((1.0*freqs2[freq]/tot_words2)/ ((1.0*freqs2[freq]/tot_words2) + (1.0*freqs1[freq]/tot_words1)))-1.0
+    #     except:
+    #         new_freqs2[freq] = 1.0*freqs2[freq]/tot_words2
     return (Counter(new_freqs1), Counter(new_freqs2))
 
 # filter returns true if word is not a hashtag, not same as query, not RT etc
