@@ -1487,6 +1487,9 @@ function detect_porno() {
 function detect_dialect() {
   // $("#pie-chart4").hide();
 
+  $('#indTable16').hide();
+  $('#info11').hide();
+
   // gets input from user
   var classifier = $('#classifiername6').find(":selected").text();
   var text = $('#search6').val();
@@ -1553,6 +1556,8 @@ function query_dialect() {
   }
   $('html, body').css("cursor", "wait");
   $(".processing").show();
+  $("#indTable16 table tbody").html("");
+
 
   // makes request to server and updates dom
   $.post('/queryDialect', {
@@ -1607,6 +1612,9 @@ function query_dialect() {
         $("#indTable16 table tbody").append(markup);
         
       }
+      $("#info11").html("Found " + levels.length + " tweets for dialect identification.");
+      $("#info11").show();
+
       $('html, body').css("cursor", "auto");
       $(".processing").hide();
 
